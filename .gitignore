@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+
+# Disk Images
+*.iso
+*.img

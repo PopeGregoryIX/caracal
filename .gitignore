@@ -4,7 +4,7 @@
 # Compiled Object files
 *.slo
 *.lo
-*.o
+*.o*
 *.obj
 
 # Precompiled Headers
@@ -30,7 +30,12 @@
 *.exe
 *.out
 *.app
+*.sys
 
 # Disk Images
 *.iso
 *.img
+*INITRD*
+*.o.txt
+*.sys.txt
+*.efi

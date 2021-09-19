@@ -1,1 +1,77 @@
-# Caracal Kernel Makefile
+#	General Makefile for all architectures
+ifeq ($(ARCH),)
+ARCH:= pc
+endif
+
+ifeq ($(CPU),)
+CPU:= x86_64
+endif
+
+ifeq ($(BINFORMAT),)
+BINFORMAT:= elf
+endif
+
+#	Global Definitions
+BINDIR:= ./bin/$(ARCH)/$(CPU)-$(BINFORMAT)
+SRCDIR:= ./src
+DEBUG:= DEBUG
+FILESYSDIR:= ../iso
+FILESYSBOOTDIR:= $(FILESYSDIR)/BOOTBOOT
+FILESYSBINARY:= INITRD
+ISODIR:= ../images
+ISOFILE:= caracal.iso
+
+#	Basic File Definitions
+CPPSRC := $(shell find $(SRCDIR) -type f -name "*.cpp" -not -path "*arch*" -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/machine/$(ARCH) -type f -name "*.cpp" -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type f -name "*.cpp" -not -path "*include*")
+
+ASMSRC := $(shell find $(SRCDIR)/arch/machine/$(ARCH) -type f -name "*.s" -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type f -name "*.s" -not -path "*include*")
+
+NASMSRC:=	$(shell find $(SRCDIR)/arch/machine/$(ARCH) -type f -name "*.asm" -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type f -name "*.asm" -not -path "*include*")
+
+FONTSRC:= $(shell find $(SRCDIR) -type f -name "*.psf" -not -path "*arch*" -not -path "*include*")
+
+ALLSRC := $(CPPSRC) $(ASMSRC) $(NASMSRC) $(FONTSRC)
+
+HDRFILES := $(shell find $(SRCDIRS) -type f -name "*.h" -not -path "*arch*") \
+			$(shell find $(SRCDIR)/../include/arch/ -maxdepth 1 -type f -name "*.h") \
+			$(shell find $(SRCDIR)/../include/arch/machine/$(ARCH) -type f -name "*.h") \
+			$(shell find $(SRCDIR)/../include/arch/cpu/$(CPU) -type f -name "*.h")
+
+SRCDIRS :=$(shell find $(SRCDIR) -type d -not -path "*arch*" -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/machine/$(ARCH) -type d -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type d -not -path "*include*")
+
+BINDIRS := $(patsubst $(SRCDIR)%,$(BINDIR)%,$(SRCDIRS))
+OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(BINDIR)%.cpp.o,$(CPPSRC)) $(patsubst $(SRCDIR)%.s,$(BINDIR)%.s.o,$(ASMSRC)) \
+			$(patsubst $(SRCDIR)%.asm,$(BINDIR)%.asm.o,$(NASMSRC)) $(patsubst $(SRCDIR)%.psf,$(BINDIR)%.psf.o,$(FONTSRC))
+			
+DEPFILES := $(patsubst %.cpp,%.cpp.d,$(CPPSRC))
+
+#	Flags for Assembler - See arch/cpu/Makefile for specific arch-based definitions
+CPPVER:=11.2.0
+ASFLAGS:= --fatal-warnings
+
+#	Flags for C++ start here - See arch/cpu/Makefile for specific arch-based definitions
+WFLAGS:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align
+WFLAGS+= -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion
+WFLAGS+= -Wmissing-declarations -Wno-long-long -Werror
+
+INCLUDES:= -I $(SRCDIR)/include -I $(SRCDIR)/include/arch
+INCLUDES+= -I $(SRCDIR)/include/arch/cpu/$(CPU) -I $(SRCDIR)/include/arch/$(ARCH)
+INCLUDES+= -I /usr/local/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
+INCLUDES+= -I /usr/local/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
+
+CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -fpic -pedantic -pedantic-errors
+CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
+CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer
+CPPFLAGS+= -D $(DEBUG) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
+
+#	Flags for LD start here
+LDFLAGS:= -T $(SRCDIR)/arch/cpu/$(CPU)/link.ld -nostdlib $(OBJFILES)
+LDADD:= --start-group -L /usr/local/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/no-red-zone --end-group
+
+-include ./src/arch/cpu/$(CPU)/Makefile

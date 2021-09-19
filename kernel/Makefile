@@ -60,10 +60,10 @@ WFLAGS:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align
 WFLAGS+= -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion
 WFLAGS+= -Wmissing-declarations -Wno-long-long -Werror
 
-INCLUDES:= -I $(SRCDIR)/include -I $(SRCDIR)/include/arch
-INCLUDES+= -I $(SRCDIR)/include/arch/cpu/$(CPU) -I $(SRCDIR)/include/arch/$(ARCH)
-INCLUDES+= -I /usr/local/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
-INCLUDES+= -I /usr/local/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
+INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)../include/arch
+INCLUDES+= -I $(SRCDIR)/../include/arch/cpu/$(CPU) -I $(SRCDIR)/../include/arch/$(ARCH)
+INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
+INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
 
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -fpic -pedantic -pedantic-errors
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
@@ -72,6 +72,6 @@ CPPFLAGS+= -D $(DEBUG) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFOR
 
 #	Flags for LD start here
 LDFLAGS:= -T $(SRCDIR)/arch/cpu/$(CPU)/link.ld -nostdlib $(OBJFILES)
-LDADD:= --start-group -L /usr/local/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/no-red-zone --end-group
+LDADD:= --start-group -L $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/no-red-zone -lgcc --end-group
 
 -include ./src/arch/cpu/$(CPU)/Makefile

@@ -6,8 +6,8 @@ CPPFLAGS+= -mno-red-zone -mcmodel=large
 
 -include $(DEPFILES)
 
-all: makedirs $(OBJFILES) Makefile
-	$(CPU)-$(BINFORMAT)-ld $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
+all: makedirs $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(CRTEND_OBJ) $(CRTN_OBJ) $(OBJFILES) Makefile
+	@$(CPU)-$(BINFORMAT)-ld $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
 	@$(CPU)-$(BINFORMAT)-objdump -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(BINARY).txt
 
 dist:
@@ -24,6 +24,14 @@ $(BINDIR)/%.cpp.o: $(SRCDIR)/%.cpp
 	@$(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -MP -MMD -c $< -o $@
 	@x86_64-elf-objdump -xD $@ > $@.txt
 	
+$(BINDIR)/runtime/crti.o: $(SRCDIR)/runtime/crti.s
+	@$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
+	@x86_64-elf-objdump -xD $@ > $@.txt
+
+$(BINDIR)/runtime/crtn.o: $(SRCDIR)/runtime/crtn.s
+	@$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
+	@x86_64-elf-objdump -xD $@ > $@.txt
+
 $(BINDIR)/%.s.o: $(SRCDIR)/%.s
 	@$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
 	@x86_64-elf-objdump -xD $@ > $@.txt

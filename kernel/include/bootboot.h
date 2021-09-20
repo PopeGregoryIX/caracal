@@ -152,4 +152,7 @@ typedef struct {
 }
 #endif
 
+extern BOOTBOOT bootboot;
+extern unsigned char environment[4096]; // configuration, UTF-8 text key=value pairs
+
 #endif

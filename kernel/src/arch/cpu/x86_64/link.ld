@@ -45,6 +45,17 @@ SECTIONS
     .text : {
         KEEP(*(.text.boot)) *(.text .text.*)   /* code */
         *(.rodata .rodata.*)                   /* data */
+
+        start_ctors = .;
+		*(.ctor*)
+		end_ctors = .;
+
+		start_dtors = .;
+		*(.dtor*)
+		end_dtors = .;
+		
+		*(.ehframe*)
+		
         *(.data .data.*)
     } :boot
     .bss (NOLOAD) : {                          /* bss */
@@ -53,5 +64,5 @@ SECTIONS
         *(COMMON)
     } :boot
 
-    /DISCARD/ : { *(.eh_frame) *(.comment) }
+    /DISCARD/ : { *(.comment) }
 }

@@ -45,6 +45,12 @@ SRCDIRS :=$(shell find $(SRCDIR) -type d -not -path "*arch*" -not -path "*includ
 			$(shell find $(SRCDIR)/arch/machine/$(ARCH) -type d -not -path "*include*") \
 			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type d -not -path "*include*")
 
+CPPVER:=11.2.0
+CRTI_OBJ=$(BINDIR)/runtime/crti.o
+CRTBEGIN_OBJ:=$(shell $(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ:=$(shell $(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -print-file-name=crtend.o)
+CRTN_OBJ=$(BINDIR)/runtime/crtn.o
+
 BINDIRS := $(patsubst $(SRCDIR)%,$(BINDIR)%,$(SRCDIRS))
 OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(BINDIR)%.cpp.o,$(CPPSRC)) $(patsubst $(SRCDIR)%.s,$(BINDIR)%.s.o,$(ASMSRC)) \
 			$(patsubst $(SRCDIR)%.asm,$(BINDIR)%.asm.o,$(NASMSRC)) $(patsubst $(SRCDIR)%.psf,$(BINDIR)%.psf.o,$(FONTSRC))
@@ -52,7 +58,6 @@ OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(BINDIR)%.cpp.o,$(CPPSRC)) $(patsubst $(S
 DEPFILES := $(patsubst %.cpp,%.cpp.d,$(CPPSRC))
 
 #	Flags for Assembler - See arch/cpu/Makefile for specific arch-based definitions
-CPPVER:=11.2.0
 ASFLAGS:= --fatal-warnings
 
 #	Flags for C++ start here - See arch/cpu/Makefile for specific arch-based definitions
@@ -67,11 +72,11 @@ INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fi
 
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -fpic -pedantic -pedantic-errors
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
-CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer
+CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -mcmodel=large
 CPPFLAGS+= -D $(DEBUG) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
 
 #	Flags for LD start here
-LDFLAGS:= -T $(SRCDIR)/arch/cpu/$(CPU)/link.ld -nostdlib $(OBJFILES)
+LDFLAGS:= -T $(SRCDIR)/arch/cpu/$(CPU)/link.ld -nostdlib $(CRTI_OBJ) $(OBJFILES) $(CRTN_OBJ)
 LDADD:= --start-group -L $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/no-red-zone -lgcc --end-group
 
 -include ./src/arch/cpu/$(CPU)/Makefile

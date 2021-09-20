@@ -7,7 +7,7 @@ CPPFLAGS+= -mno-red-zone -mcmodel=large
 -include $(DEPFILES)
 
 all: makedirs $(OBJFILES) Makefile
-	@$(CPU)-$(BINFORMAT)-ld $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
+	$(CPU)-$(BINFORMAT)-ld $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
 	@$(CPU)-$(BINFORMAT)-objdump -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(BINARY).txt
 
 dist:

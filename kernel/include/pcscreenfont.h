@@ -16,6 +16,6 @@ typedef struct {
     uint8_t glyphs;
 } __attribute__((packed)) psf2_t;
 
-extern volatile unsigned char _binary_src_font_psf_start;
+extern volatile unsigned char _binary_src_data_font_psf_start;
 
 #endif

@@ -1,0 +1,9 @@
+make --dry-run --keep-going --print-directory
+make: Entering directory '/home/adam/projects/caracal/kernel'
+ 
+mkdir -p ./bin/pc/x86_64-elf ./bin/pc/x86_64-elf/data ./bin/pc/x86_64-elf/arch/machine/pc ./bin/pc/x86_64-elf/arch/cpu/x86_64
+ 
+x86_64-elf-ld -T ./src/arch/cpu/x86_64/link.ld -nostdlib ./bin/pc/x86_64-elf/kmain.cpp.o   ./bin/pc/x86_64-elf/data/font.psf.o -o ./bin/pc/x86_64-elf/kernel.sys --start-group -L /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/no-red-zone -lgcc --end-group
+x86_64-elf-objdump -xD ./bin/pc/x86_64-elf/kernel.sys > ./bin/pc/x86_64-elf/kernel.sys.txt
+make: Leaving directory '/home/adam/projects/caracal/kernel'
+ 

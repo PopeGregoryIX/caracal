@@ -10,7 +10,7 @@ extern uint8_t fb;                      // linear framebuffer mapped
 class MyKernel {
 
 public:
-    /* contructor */
+    /* constructor */
     MyKernel()
     {
         /*** NOTE: this code runs on all cores in parallel ***/
@@ -46,11 +46,11 @@ private:
      **************************/
     void puts(const char *s)
     {
-        psf2_t *font = (psf2_t*)&_binary_src_font_psf_start;
+        psf2_t *font = (psf2_t*)&_binary_src_data_font_psf_start;
         uint32_t x,y,kx=0,line,mask,offs;
         int bpl=(font->width+7)/8;
         while(*s) {
-            unsigned char *glyph = (unsigned char*)&_binary_src_font_psf_start + font->headersize +
+            unsigned char *glyph = (unsigned char*)&_binary_src_data_font_psf_start + font->headersize +
                 (*s>0&&(uint32_t)(*s)<font->numglyph?*s:0)*font->bytesperglyph;
             offs = (kx * (font->width+1) * 4);
             for(y=0;y<font->height;y++) {

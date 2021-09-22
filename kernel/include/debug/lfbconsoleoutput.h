@@ -11,6 +11,7 @@
 #include <stdint.h>
 #include <debug/consoleoutput.h>
 #include <pcscreenfont.h>
+#include <debug/consolecolour.h>
 
 namespace arch
 {
@@ -18,11 +19,21 @@ namespace arch
 	{
 	public:
 		static LfbConsoleOutput& GetInstance( void ) { return _instance; }
+		LfbConsoleOutput( void );
 
 		void PutChar(const char c);
-		void PutString(const char* s);
+
+		void Cls ( void );
+
+		void Scroll( void );
 	private:
 		static LfbConsoleOutput _instance;
+
+		uint32_t _widthChars, _heightChars;
+		uint32_t _currentX, _currentY, _tabStop;
+		uint32_t _bytesPerPixel;
+
+
 
 		const psf2_t *font = (const psf2_t*)&_binary_src_data_font_psf_start;
 

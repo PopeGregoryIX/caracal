@@ -9,8 +9,13 @@
 #define CPU_H_
 
 #include <stdint.h>
+#include <stddef.h>
 
-typedef uint64_t size_t;
-
+class Cpu
+{
+	public:
+		static bool IsBsp( void );
+		static unsigned int ProcessorId( void );
+};
 
 #endif /* CPU_H_ */

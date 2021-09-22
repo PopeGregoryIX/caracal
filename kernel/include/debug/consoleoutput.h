@@ -8,13 +8,25 @@
 #ifndef KERNEL_INCLUDE_DEBUG_CONSOLEOUTPUT_H_
 #define KERNEL_INCLUDE_DEBUG_CONSOLEOUTPUT_H_
 
+#include <stdint.h>
+#include <debug/consolecolour.h>
+
 class ConsoleOutput
 {
 public:
-	virtual void PutChar(const char c){(void)c;}
-	virtual void PutString(const char* s){(void)s;}
+	ConsoleOutput();
+
+	virtual void PutChar(const char c) = 0;
+	virtual void PutString(const char* s);
+
+	virtual void Cls( void ) = 0;
+
+	inline void SetColour(ConsoleColour c) { SetColour(c.Foreground, c.Background); }
+	void SetColour(uint32_t foreground, uint32_t background);
 
 	virtual ~ConsoleOutput(){}
+protected:
+	ConsoleColour _colour;
 };
 
 #endif /* KERNEL_INCLUDE_DEBUG_CONSOLEOUTPUT_H_ */

@@ -11,58 +11,6 @@ uint8_t String::numBase_ = 16;
 const char String::ltHexUpper_[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
 const char String::ltHexLower_[16] = {'0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f'};
 
-String::String(const char* s, size_t len)
-{
-    len_ = len;
-    str_ = 0;
-    if(len_ > 0)
-    {
-        str_ = new char[len_];
-        memorycopy(str_, s, len_);
-    }
-}
-
-String& String::operator=(const char* s)
-{
-    if(len_ > 0) delete str_;
-    len_ = String::length(s);
-    str_ = new char[len_];
-    memorycopy(str_, s, len_);
-    return *this;
-}
-
-String& String::operator=(uint64_t n)
-{
-    char tmp[65];
-    *this = this->itoa(n, tmp);
-    return *this;
-}
-
-String& String::operator=(const String& s)
-{
-    len_ = s.len_;
-    if(len_ > 0)
-    {
-        str_ = new char[len_];
-        memorycopy(str_, s.str_, len_);
-    }
-    return *this;
-}
-
-String& String::operator=(const bool b)
-{
-    if(b) *this = "true"; else *this = "false";
-    return *this;
-}
-
-char String::operator[](size_t index) const
-{
-    //if(index >= length())
-    //    FATAL("Attempted read beyond limit in String::operator[]");
-
-    return (char)str_[index];
-}
-
 int String::compare(const char* s1, const char* s2, int maxLength)
 {
     int len = (int)length(s1);
@@ -97,12 +45,12 @@ size_t String::length(const char* s)
 	return i;
 }
 
-char* String::itoa(uint64_t num, char* buffer)
+char* String::itoa(uint64_t num, char* buffer, uint8_t base)
 {
 	int index = 0;
 	int bitshift;
 
-	switch(numBase_)
+	switch(base)
 	{
 	case 2:
 		// Binary

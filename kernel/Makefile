@@ -65,8 +65,8 @@ WFLAGS:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align
 WFLAGS+= -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion
 WFLAGS+= -Wmissing-declarations -Wno-long-long -Werror
 
-INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)../include/arch
-INCLUDES+= -I $(SRCDIR)/../include/arch/cpu/$(CPU) -I $(SRCDIR)/../include/arch/$(ARCH)
+INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)/../include/arch/machine -I $(SRCDIR)/../include/arch/cpu
+INCLUDES+= -I $(SRCDIR)/../include/arch/cpu/$(CPU) -I $(SRCDIR)/../include/arch/machine/$(ARCH)
 INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
 INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
 
@@ -76,7 +76,7 @@ CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -mcmodel=large
 CPPFLAGS+= -D $(DEBUG) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
 
 #	Flags for LD start here
-LDFLAGS:= -T $(SRCDIR)/arch/cpu/$(CPU)/link.ld -nostdlib $(CRTI_OBJ) $(OBJFILES) $(CRTN_OBJ)
+LDFLAGS:= -T $(SRCDIR)/arch/cpu/$(CPU)/link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
 LDADD:= --start-group -L $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/no-red-zone -lgcc --end-group
 
 -include ./src/arch/cpu/$(CPU)/Makefile

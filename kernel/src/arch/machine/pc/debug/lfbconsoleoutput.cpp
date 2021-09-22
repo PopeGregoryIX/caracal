@@ -7,36 +7,101 @@
 #include <stdint.h>
 #include <debug/lfbconsoleoutput.h>
 #include <bootboot.h>
+#include <debug/consolecolour.h>
+#include <runtime/cxx.h>
+#include <string.h>
 
-extern uint8_t fb;                      // linear framebuffer mapped
+extern uint8_t linearFrameBuffer;
 
 namespace arch
 {
 	LfbConsoleOutput LfbConsoleOutput::_instance;
 
-	void LfbConsoleOutput::PutChar(char)
+	LfbConsoleOutput::LfbConsoleOutput( void )
 	{
+		_widthChars = bootboot.fb_scanline / font->width;
+		_heightChars = bootboot.fb_height / font->height;
+		_currentX = _currentY = 0;
+		_bytesPerPixel = 4;
+		_tabStop = 5;
+	}
+
+	void LfbConsoleOutput::Cls( void )
+	{
+		uint32_t* lfb = (uint32_t*)&linearFrameBuffer;
+
+		for(size_t i = 0; i <  bootboot.fb_width * bootboot.fb_height; ++i)
+			lfb[i] = _colour.Background;
+
+		_currentX = _currentY = 0;
+	}
+
+	void LfbConsoleOutput::PutChar(const char c)
+	{
+		int glyphBytesPerLine = (font->width + 7) / 8;
+		unsigned char *glyph = GetGlyph(c);
+
+		switch(c)
+		{
+			case('\n'):
+				_currentX = 0;
+				_currentY++;
+				break;
+			case('\t'):
+				_currentX+= 5 - (_currentX % _tabStop);
+				Scroll();
+				break;
+			default:
+				int offset =	(_currentY * font->height * bootboot.fb_scanline) +
+								(_currentX * (font->width + 1) * _bytesPerPixel);
+
+				unsigned int glyphX, glyphY, glyphLine, glyphMask;
+
+				for(glyphY=0;glyphY<font->height;glyphY++){
+					/* save the starting position of the line */
+					glyphLine=offset;
+					glyphMask=1<<(font->width-1);
+					/* display a row */
+					for(glyphX=0;glyphX<=font->width;glyphX++){
+						*((uint32_t*)((uint64_t)&linearFrameBuffer+glyphLine)) =
+								*((unsigned int*)glyph) & glyphMask ? _colour.Foreground : _colour.Background;
+						/* adjust to the next pixel */
+						glyphMask >>= 1;
+						glyphLine += _bytesPerPixel;
+					}
+					/* adjust to the next line */
+					glyph += glyphBytesPerLine;
+					offset  += bootboot.fb_scanline;
+				}
+				_currentX++;
+		}
+
+		if(_currentX >= _widthChars)
+		{
+			_currentX = 0;
+			_currentY++;
+		}
+
+		if(_currentY > _heightChars)
+		{
+			Scroll();
+			_currentX = 0;
+			_currentY = _heightChars;
+		}
 
 	}
 
-	void LfbConsoleOutput::PutString(const char* s)
+	void LfbConsoleOutput::Scroll( void )
 	{
-		uint32_t x,y,kx=0,line,mask,offs;
+		uint32_t* dest = (uint32_t*)&linearFrameBuffer;
+		uint32_t* src = &dest[bootboot.fb_width * font->height];
 
-		int bpl=(font->width+7)/8;
+		::memorycopy<uint32_t>(dest, src, bootboot.fb_width * ((bootboot.fb_height * font->height) -1));
 
-			while(*s) {
-				unsigned char *glyph = GetGlyph(*s);
-				offs = (kx * (font->width+1) * 4);
-				for(y=0;y<font->height;y++) {
-					line=offs; mask=1<<(font->width-1);
-					for(x=0;x<font->width;x++) {
-						*((uint32_t*)((uint64_t)&fb+line))=((int)*glyph) & (mask)?0xFFFFFF:0;
-						mask>>=1; line+=4;
-					}
-					*((uint32_t*)((uint64_t)&fb+line))=0; glyph+=bpl; offs+=bootboot.fb_scanline;
-				}
-				s++; kx++;
-			}
+		uint32_t startClear = bootboot.fb_width * ((bootboot.fb_height * font->height) -1);
+		uint32_t endClear = bootboot.fb_width * ((bootboot.fb_height * font->height));
+
+		for(uint32_t c = startClear; c < endClear ; ++c)
+			dest[c] = _colour.Background;
 	}
 }

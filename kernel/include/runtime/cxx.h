@@ -15,6 +15,7 @@
 #define SUPPORT_H_
 
 #include <stdint.h>
+#include <stddef.h>
 #include <cpu.h>
 
 extern "C"
@@ -81,9 +82,6 @@ void __cxa_pure_virtual();
 
 }
 
-#define NULL	0
-void callConstructors( void );
-void callDestructors( void );
 
 //	Memory Copy Template and Specializations///////////////////////////
 /**

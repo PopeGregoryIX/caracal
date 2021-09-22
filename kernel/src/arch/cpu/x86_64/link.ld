@@ -31,7 +31,7 @@
 ENTRY(kmain)
 
 mmio        = 0xfffffffff8000000;              /* these are configurable for level 2 loaders */
-fb          = 0xfffffffffc000000;
+linearFrameBuffer = 0xfffffffffc000000;
 bootboot    = 0xffffffffffe00000;
 environment = 0xffffffffffe01000;
 /* initstack = 1024; */

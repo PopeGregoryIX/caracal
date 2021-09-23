@@ -18,11 +18,7 @@ namespace arch
 		static Idt& GetInstance( void ) { return _instance; }
 
 		void Initialise( void );
-	private:
-		static Idt _instance;
-
-		uint64_t* DefaultHandler(uint64_t* regs);
-
+	public:
 		struct Entry
 		{
 			uint16_t 	LowAddress;
@@ -32,8 +28,18 @@ namespace arch
 			uint16_t	MidAddress;
 			uint32_t	HighAddress;
 			uint32_t	Reserved;
-		};
+		} __attribute__((packed));
+	private:
+		static Idt _instance;
+		
+		uint64_t* DefaultHandler(uint64_t* regs);
+
+		
+
+		
 	};
 }
+
+extern "C" arch::Idt::Entry __idt[256];
 
 #endif /* KERNEL_INCLUDE_ARCH_CPU_X86_64_IDT_H_ */

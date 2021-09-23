@@ -11,6 +11,7 @@
 
 #include "debugconsole.h"
 #include "consolecolour.h"
+#include <machine.h>
 
 #ifdef DEBUG
 #define INFO(x)	{	DebugConsole::GetInstance() << ConsoleColour(0x00FF00, 0x000000) << "[INFO]    " << ConsoleColour(0xFFFFFF, 0x000000) << x << '\n';	}

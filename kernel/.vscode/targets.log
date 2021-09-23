@@ -6,14 +6,13 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-# Make data base, printed on Mon Sep 20 10:14:38 2021
+# Make data base, printed on Thu Sep 23 21:18:08 2021
 
 # Variables
 
 # automatic
 <D = $(patsubst %/,%,$(dir $<))
 # automatic
- 
 ?F = $(notdir $?)
 # environment
 WSLENV = ELECTRON_RUN_AS_NODE/w:
@@ -26,9 +25,9 @@ VSCODE_LOG_NATIVE = false
 # automatic
 ?D = $(patsubst %/,%,$(dir $?))
 # makefile (from 'src/arch/cpu/x86_64/Makefile', line 3)
-CPPFLAGS := -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion -Wmissing-declarations -Wno-long-long -Werror -I ./src/../include -I ./src../include/arch -I ./src/../include/arch/cpu/x86_64 -I ./src/../include/arch/pc -I /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/include -I /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/include-fixed -std=c++11 -O0 -fpic -pedantic -pedantic-errors -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -D DEBUG -D __CPU=x86_64 -D __ARCH=pc -D __BINFORMAT=elf -mno-red-zone -mcmodel=large
-# makefile (from 'Makefile', line 66)
-INCLUDES := -I ./src/../include -I ./src../include/arch -I ./src/../include/arch/cpu/x86_64 -I ./src/../include/arch/pc -I /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/include -I /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/include-fixed
+CPPFLAGS := -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion -Wmissing-declarations -Wno-long-long -Werror -I ./src/../include -I ./src/../include/arch/machine -I ./src/../include/arch/cpu -I ./src/../include/arch/cpu/x86_64 -I ./src/../include/arch/machine/pc -I /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/include -I /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/include-fixed -std=c++11 -O0 -fpic -pedantic -pedantic-errors -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -mcmodel=large -D DEBUG -D __CPU=x86_64 -D __ARCH=pc -D __BINFORMAT=elf -mno-red-zone -mcmodel=large
+# makefile (from 'Makefile', line 71)
+INCLUDES := -I ./src/../include -I ./src/../include/arch/machine -I ./src/../include/arch/cpu -I ./src/../include/arch/cpu/x86_64 -I ./src/../include/arch/machine/pc -I /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/include -I /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/include-fixed
 # automatic
 @D = $(patsubst %/,%,$(dir $@))
 # automatic
@@ -40,11 +39,11 @@ SHELL = /bin/sh
 # environment
 VSCODE_NLS_CONFIG = {"locale":"en","availableLanguages":{}}
 # environment
-_ = /mnt/c/Users/Adam.DEC/AppData/Local/Programs/Microsoft VS Code/bin/code
+_ = /mnt/c/Users/mail/AppData/Local/Programs/Microsoft VS Code/bin/code
 # makefile (from 'src/arch/cpu/x86_64/Makefile', line 1)
 MAKEFILE_LIST :=  Makefile src/arch/cpu/x86_64/Makefile
 # makefile (from 'Makefile', line 29)
-ASMSRC := $(subst ,, )
+ASMSRC :=  ./src/arch/cpu/x86_64/exceptions.s
 # makefile (from 'Makefile', line 17)
 DEBUG := DEBUG
 # 'override' directive
@@ -55,33 +54,31 @@ XDG_DATA_DIRS = /usr/local/share:/usr/share:/var/lib/snapd/desktop
 ISODIR := ../images
 # environment
 VSCODE_VERBOSE_LOGGING = true
-# makefile (from 'Makefile', line 55)
+# makefile (from 'Makefile', line 48)
 CPPVER := 11.2.0
-# makefile (from 'Makefile', line 52)
-DEPFILES := ./src/kmain.cpp.d
+# makefile (from 'Makefile', line 58)
+DEPFILES := ./src/String.cpp.d ./src/debug/debugconsole.cpp.d ./src/debug/consoleoutput.cpp.d ./src/kmain.cpp.d ./src/runtime/memory/memset.cpp.d ./src/runtime/new.cpp.d ./src/runtime/__cxa_finalize.cpp.d ./src/runtime/delete.cpp.d ./src/runtime/__cxa_pure_virtual.cpp.d ./src/runtime/__cxa_atexit.cpp.d ./src/runtime/__aeabi_atexit.cpp.d ./src/runtime/__dso_handle.cpp.d ./src/arch/machine/pc/pc.cpp.d ./src/arch/machine/pc/debug/lfbconsoleoutput.cpp.d ./src/arch/cpu/x86_64/x86_64.cpp.d ./src/arch/cpu/x86_64/idt.cpp.d
 # environment
 LESSOPEN = | /usr/bin/lesspipe %s
 # environment
-VSCODE_CWD = /mnt/c/Users/Adam.DEC/AppData/Local/Programs/Microsoft VS Code
-# makefile (from 'Makefile', line 48)
-BINDIRS := ./bin/pc/x86_64-elf ./bin/pc/x86_64-elf/data ./bin/pc/x86_64-elf/arch/machine/pc ./bin/pc/x86_64-elf/arch/cpu/x86_64
+VSCODE_CWD = /mnt/c/Users/mail/AppData/Local/Programs/Microsoft VS Code
+# makefile (from 'Makefile', line 54)
+BINDIRS := ./bin/pc/x86_64-elf ./bin/pc/x86_64-elf/data ./bin/pc/x86_64-elf/debug ./bin/pc/x86_64-elf/runtime ./bin/pc/x86_64-elf/runtime/memory ./bin/pc/x86_64-elf/arch/machine/pc ./bin/pc/x86_64-elf/arch/machine/pc/debug ./bin/pc/x86_64-elf/arch/cpu/x86_64
 # default
 MAKE_HOST := x86_64-pc-linux-gnu
 # environment
-PATH = /home/adam/.vscode-server/bin/83bd43bc519d15e50c4272c6cf5c1479df196a4d/bin:/home/adam/opt/cross/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files/WindowsApps/CanonicalGroupLimited.Ubuntu20.04onWindows_2004.2021.825.0_x64__79rhkp1fndgsc:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/Microsoft SQL Server/130/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files (x86)/Microsoft SQL Server/150/DTS/Binn/:/mnt/c/Program Files/Azure Data Studio/bin:/mnt/c/Users/Adam.DEC/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/Adam.DEC/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/d/xampp/php:/mnt/c/Users/Adam.DEC/.dotnet/tools:/snap/bin
-# environment
-PICO_EXAMPLES_PATH = /home/adam/pico/pico-examples
+PATH = /home/adam/.vscode-server/bin/83bd43bc519d15e50c4272c6cf5c1479df196a4d/bin:/home/adam/opt/cross/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/mnt/c/Program Files/WindowsApps/CanonicalGroupLimited.Ubuntu20.04onWindows_2004.2021.825.0_x64__79rhkp1fndgsc:/mnt/c/Program Files (x86)/Common Files/Intel/Shared Libraries/redist/intel64/compiler:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/Microsoft SQL Server/130/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files (x86)/Common Files/Acronis/SnapAPI/:/mnt/c/Program Files (x86)/Common Files/Acronis/VirtualFile/:/mnt/c/Program Files (x86)/Common Files/Acronis/VirtualFile64/:/mnt/c/Program Files (x86)/Common Files/Acronis/FileProtector/:/mnt/c/Program Files (x86)/Common Files/Acronis/FileProtector64/:/mnt/c/Program Files/PuTTY/:/mnt/c/Program Files/dotnet/:/mnt/c/Program Files (x86)/Microsoft SQL Server/150/DTS/Binn/:/mnt/c/Program Files/Azure Data Studio/bin:/mnt/c/Program Files/Qemu:/mnt/c/Users/mail/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/mail/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/mail/AppData/Local/GitHubDesktop/bin:/mnt/c/Users/mail/.dotnet/tools:/snap/bin
 # makefile (from 'Makefile', line 32)
 NASMSRC := $(subst ,, )
 # makefile (from 'Makefile', line 44)
-SRCDIRS := ./src ./src/data ./src/arch/machine/pc ./src/arch/cpu/x86_64
+SRCDIRS := ./src ./src/data ./src/debug ./src/runtime ./src/runtime/memory ./src/arch/machine/pc ./src/arch/machine/pc/debug ./src/arch/cpu/x86_64
 # environment
 VSCODE_LOG_STACK = false
 # environment
-VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-a4f9947e-de6b-4d72-a30f-b2b601aa7f65.sock
+VSCODE_IPC_HOOK_CLI = /tmp/vscode-ipc-2f32c4f5-792b-4afd-b6cc-96cf90933cda.sock
 # makefile (from 'Makefile', line 19)
 FILESYSBOOTDIR := ../iso/BOOTBOOT
-# makefile (from 'Makefile', line 61)
+# makefile (from 'Makefile', line 66)
 WFLAGS := -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion -Wmissing-declarations -Wno-long-long -Werror
 # default
 .FEATURES := target-specific order-only second-expansion else-if shortest-stem undefine oneshell archives jobserver output-sync check-symlink load
@@ -91,8 +88,8 @@ LS_COLORS = rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:
 SRCDIR := ./src
 # automatic
 %F = $(notdir $%)
-# makefile (from 'Makefile', line 49)
-OBJFILES := ./bin/pc/x86_64-elf/kmain.cpp.o   ./bin/pc/x86_64-elf/data/font.psf.o
+# makefile (from 'Makefile', line 55)
+OBJFILES := ./bin/pc/x86_64-elf/String.cpp.o ./bin/pc/x86_64-elf/debug/debugconsole.cpp.o ./bin/pc/x86_64-elf/debug/consoleoutput.cpp.o ./bin/pc/x86_64-elf/kmain.cpp.o ./bin/pc/x86_64-elf/runtime/memory/memset.cpp.o ./bin/pc/x86_64-elf/runtime/new.cpp.o ./bin/pc/x86_64-elf/runtime/__cxa_finalize.cpp.o ./bin/pc/x86_64-elf/runtime/delete.cpp.o ./bin/pc/x86_64-elf/runtime/__cxa_pure_virtual.cpp.o ./bin/pc/x86_64-elf/runtime/__cxa_atexit.cpp.o ./bin/pc/x86_64-elf/runtime/__aeabi_atexit.cpp.o ./bin/pc/x86_64-elf/runtime/__dso_handle.cpp.o ./bin/pc/x86_64-elf/arch/machine/pc/pc.cpp.o ./bin/pc/x86_64-elf/arch/machine/pc/debug/lfbconsoleoutput.cpp.o ./bin/pc/x86_64-elf/arch/cpu/x86_64/x86_64.cpp.o ./bin/pc/x86_64-elf/arch/cpu/x86_64/idt.cpp.o ./bin/pc/x86_64-elf/arch/cpu/x86_64/exceptions.s.o  ./bin/pc/x86_64-elf/data/font.psf.o
 # environment
 VSCODE_PIPE_LOGGING = true
 # environment
@@ -102,8 +99,8 @@ BINFORMAT := elf
 # default
 .LOADED := 
 # environment
-WSL_INTEROP = /run/WSL/1867_interop
-# makefile (from 'Makefile', line 75)
+WSL_INTEROP = /run/WSL/14406_interop
+# makefile (from 'Makefile', line 80)
 LDADD := --start-group -L /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/no-red-zone -lgcc --end-group
 # environment
 VSCODE_AMD_ENTRYPOINT = vs/server/remoteExtensionHostProcess
@@ -114,13 +111,11 @@ LESSCLOSE = /usr/bin/lesspipe %s %s
 # makefile (from 'src/arch/cpu/x86_64/Makefile', line 1)
 BINARY := kernel.sys
 # environment
-PICO_EXTRAS_PATH = /home/adam/pico/pico-extras
-# environment
 LOGNAME = adam
 # environment
 APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
 # makefile (from 'Makefile', line 39)
-HDRFILES := ./include/bootboot.h ./include/pcscreenfont.h   
+HDRFILES := ./include/bootboot.h ./include/pcscreenfont.h ./include/string.h ./include/debug/lfbconsoleoutput.h ./include/debug/consoleoutput.h ./include/debug/debugconsole.h ./include/debug/consolecolour.h ./include/debug/debug.h ./include/runtime/cxx.h  ./src/../include/arch/machine/pc/pc.h ./src/../include/arch/machine/pc/noinclude.h ./src/../include/arch/cpu/x86_64/x86_64.h ./src/../include/arch/cpu/x86_64/idt.h
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
@@ -135,7 +130,7 @@ MAKECMDGOALS := all
 SHLVL = 1
 # makefile (from 'Makefile', line 15)
 BINDIR := ./bin/pc/x86_64-elf
-# makefile (from 'Makefile', line 56)
+# makefile (from 'Makefile', line 61)
 ASFLAGS := --fatal-warnings
 # default
 MAKE_VERSION := 4.2.1
@@ -144,7 +139,7 @@ USER = adam
 # makefile
 .DEFAULT_GOAL := all
 # makefile (from 'Makefile', line 37)
-ALLSRC := ./src/kmain.cpp       ./src/data/font.psf
+ALLSRC := ./src/String.cpp ./src/debug/debugconsole.cpp ./src/debug/consoleoutput.cpp ./src/kmain.cpp ./src/runtime/memory/memset.cpp ./src/runtime/new.cpp ./src/runtime/__cxa_finalize.cpp ./src/runtime/delete.cpp ./src/runtime/__cxa_pure_virtual.cpp ./src/runtime/__cxa_atexit.cpp ./src/runtime/__aeabi_atexit.cpp ./src/runtime/__dso_handle.cpp ./src/arch/machine/pc/pc.cpp ./src/arch/machine/pc/debug/lfbconsoleoutput.cpp ./src/arch/cpu/x86_64/x86_64.cpp ./src/arch/cpu/x86_64/idt.cpp  ./src/arch/cpu/x86_64/exceptions.s   ./src/data/font.psf
 # environment
 NAME = Code
 # automatic
@@ -152,7 +147,7 @@ NAME = Code
 # makefile (from 'Makefile', line 7)
 CPU := x86_64
 # environment
-VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/Adam.DEC/.vscode/extensions/ms-vscode-remote.remote-wsl-0.58.2
+VSCODE_WSL_EXT_LOCATION = /mnt/c/Users/mail/.vscode/extensions/ms-vscode-remote.remote-wsl-0.58.2
 # default
 MAKE_COMMAND := make
 # default
@@ -167,18 +162,18 @@ MAKEFLAGS = pqrR
 MFLAGS = -pqrR
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
-# environment
-PICO_PLAYGROUND_PATH = /home/adam/pico/pico-playground
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
 +F = $(notdir $+)
+# makefile (from 'Makefile', line 51)
+CRTEND_OBJ := /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/crtend.o
 # makefile (from 'Makefile', line 18)
 FILESYSDIR := ../iso
-# makefile (from 'Makefile', line 74)
-LDFLAGS := -T ./src/arch/cpu/x86_64/link.ld -nostdlib ./bin/pc/x86_64-elf/kmain.cpp.o   ./bin/pc/x86_64-elf/data/font.psf.o
+# makefile (from 'Makefile', line 79)
+LDFLAGS := -T ./src/arch/cpu/x86_64/link.ld -nostdlib ./bin/pc/x86_64-elf/runtime/crti.o /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/crtbegin.o ./bin/pc/x86_64-elf/String.cpp.o ./bin/pc/x86_64-elf/debug/debugconsole.cpp.o ./bin/pc/x86_64-elf/debug/consoleoutput.cpp.o ./bin/pc/x86_64-elf/kmain.cpp.o ./bin/pc/x86_64-elf/runtime/memory/memset.cpp.o ./bin/pc/x86_64-elf/runtime/new.cpp.o ./bin/pc/x86_64-elf/runtime/__cxa_finalize.cpp.o ./bin/pc/x86_64-elf/runtime/delete.cpp.o ./bin/pc/x86_64-elf/runtime/__cxa_pure_virtual.cpp.o ./bin/pc/x86_64-elf/runtime/__cxa_atexit.cpp.o ./bin/pc/x86_64-elf/runtime/__aeabi_atexit.cpp.o ./bin/pc/x86_64-elf/runtime/__dso_handle.cpp.o ./bin/pc/x86_64-elf/arch/machine/pc/pc.cpp.o ./bin/pc/x86_64-elf/arch/machine/pc/debug/lfbconsoleoutput.cpp.o ./bin/pc/x86_64-elf/arch/cpu/x86_64/x86_64.cpp.o ./bin/pc/x86_64-elf/arch/cpu/x86_64/idt.cpp.o ./bin/pc/x86_64-elf/arch/cpu/x86_64/exceptions.s.o  ./bin/pc/x86_64-elf/data/font.psf.o /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/crtend.o ./bin/pc/x86_64-elf/runtime/crtn.o
 # makefile (from 'Makefile', line 25)
-CPPSRC := ./src/kmain.cpp  
+CPPSRC := ./src/String.cpp ./src/debug/debugconsole.cpp ./src/debug/consoleoutput.cpp ./src/kmain.cpp ./src/runtime/memory/memset.cpp ./src/runtime/new.cpp ./src/runtime/__cxa_finalize.cpp ./src/runtime/delete.cpp ./src/runtime/__cxa_pure_virtual.cpp ./src/runtime/__cxa_atexit.cpp ./src/runtime/__aeabi_atexit.cpp ./src/runtime/__dso_handle.cpp ./src/arch/machine/pc/pc.cpp ./src/arch/machine/pc/debug/lfbconsoleoutput.cpp ./src/arch/cpu/x86_64/x86_64.cpp ./src/arch/cpu/x86_64/idt.cpp
 # 'override' directive
 .SHELLSTATUS := 0
 # default
@@ -195,6 +190,8 @@ HOSTTYPE = x86_64
 SUFFIXES := 
 # makefile (from 'Makefile', line 35)
 FONTSRC := ./src/data/font.psf
+# makefile (from 'Makefile', line 49)
+CRTI_OBJ = $(BINDIR)/runtime/crti.o
 # makefile (from 'Makefile', line 20)
 FILESYSBINARY := INITRD
 # default
@@ -203,20 +200,22 @@ FILESYSBINARY := INITRD
 VSCODE_INJECT_NODE_MODULE_LOOKUP_PATH = /home/adam/.vscode-server/bin/83bd43bc519d15e50c4272c6cf5c1479df196a4d/remote/node_modules
 # default
 .RECIPEPREFIX := 
-# environment
-PICO_SDK_PATH = /home/adam/pico/pico-sdk
 # makefile (from 'Makefile', line 22)
 ISOFILE := caracal.iso
+# makefile (from 'Makefile', line 50)
+CRTBEGIN_OBJ := /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/crtbegin.o
 # environment
 LANG = C
 # environment
 TERM = xterm-256color
 # environment
 VSCODE_EXTHOST_WILL_SEND_SOCKET = true
+# makefile (from 'Makefile', line 52)
+CRTN_OBJ = $(BINDIR)/runtime/crtn.o
 # environment
 WSL_DISTRO_NAME = Ubuntu-20.04
 # variable set hash-table stats:
-# Load=102/1024=10%, Rehash=0, Collisions=14/298=5%
+# Load=102/1024=10%, Rehash=0, Collisions=20/331=6%
 
 # Pattern-specific Variable Values
 
@@ -224,10 +223,10 @@ WSL_DISTRO_NAME = Ubuntu-20.04
 
 # Directories
 
-# . (device 2064, inode 72987): 9 files, no impossibilities.
-# src (device 2064, inode 73013): No files, no impossibilities so far.
+# . (device 2064, inode 188552): 8 files, no impossibilities.
+# src (device 2064, inode 188554): No files, no impossibilities so far.
 
-# 9 files, no impossibilities in 2 directories.
+# 8 files, no impossibilities in 2 directories.
 
 # Implicit Rules
 
@@ -238,12 +237,12 @@ bin/pc/x86_64-elf/%.cpp.o: src/%.cpp
 	
 
 bin/pc/x86_64-elf/%.s.o: src/%.s
-#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 28):
+#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 36):
 	@$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
 	@x86_64-elf-objdump -xD $@ > $@.txt
 
 bin/pc/x86_64-elf/%.psf.o: src/%.psf
-#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 32):
+#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 40):
 	@x86_64-elf-ld -r -b binary -o $@ $<
 	@x86_64-elf-objdump -xD $@ > $@.txt
 
@@ -251,7 +250,40 @@ bin/pc/x86_64-elf/%.psf.o: src/%.psf
 
 # Files
 
-all: makedirs bin/pc/x86_64-elf/kmain.cpp.o bin/pc/x86_64-elf/data/font.psf.o Makefile
+# Not a target:
+src/debug/consoleoutput.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+src/runtime/delete.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+bin/pc/x86_64-elf/debug/consoleoutput.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+/home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/crtbegin.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+ 
+bin/pc/x86_64-elf/runtime/delete.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+all: makedirs bin/pc/x86_64-elf/runtime/crti.o /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/crtbegin.o /home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/crtend.o bin/pc/x86_64-elf/runtime/crtn.o bin/pc/x86_64-elf/String.cpp.o bin/pc/x86_64-elf/debug/debugconsole.cpp.o bin/pc/x86_64-elf/debug/consoleoutput.cpp.o bin/pc/x86_64-elf/kmain.cpp.o bin/pc/x86_64-elf/runtime/memory/memset.cpp.o bin/pc/x86_64-elf/runtime/new.cpp.o bin/pc/x86_64-elf/runtime/__cxa_finalize.cpp.o bin/pc/x86_64-elf/runtime/delete.cpp.o bin/pc/x86_64-elf/runtime/__cxa_pure_virtual.cpp.o bin/pc/x86_64-elf/runtime/__cxa_atexit.cpp.o bin/pc/x86_64-elf/runtime/__aeabi_atexit.cpp.o bin/pc/x86_64-elf/runtime/__dso_handle.cpp.o bin/pc/x86_64-elf/arch/machine/pc/pc.cpp.o bin/pc/x86_64-elf/arch/machine/pc/debug/lfbconsoleoutput.cpp.o bin/pc/x86_64-elf/arch/cpu/x86_64/x86_64.cpp.o bin/pc/x86_64-elf/arch/cpu/x86_64/idt.cpp.o bin/pc/x86_64-elf/arch/cpu/x86_64/exceptions.s.o bin/pc/x86_64-elf/data/font.psf.o Makefile
 #  Phony target (prerequisite of .PHONY).
 #  Command line target.
 #  Implicit rule search has not been done.
@@ -261,10 +293,22 @@ all: makedirs bin/pc/x86_64-elf/kmain.cpp.o bin/pc/x86_64-elf/data/font.psf.o Ma
 # variable set hash-table stats:
 # Load=0/32=0%, Rehash=0, Collisions=0/4=0%
 #  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 10):
-	$(CPU)-$(BINFORMAT)-ld $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
+	@$(CPU)-$(BINFORMAT)-ld $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
 	@$(CPU)-$(BINFORMAT)-objdump -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(BINARY).txt
 
 .PHONY: all makedirs clean dump dist
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+bin/pc/x86_64-elf/arch/cpu/x86_64/exceptions.s.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/runtime/crti.s:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -278,9 +322,16 @@ all: makedirs bin/pc/x86_64-elf/kmain.cpp.o bin/pc/x86_64-elf/data/font.psf.o Ma
 # Not a target:
 Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-09-20 09:51:47.54
+#  Last modified 2021-09-23 21:09:16.8775067
 #  File has been updated.
 #  Successfully updated.
+
+# Not a target:
+src/runtime/__cxa_finalize.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
 
 dump:
 #  Phony target (prerequisite of .PHONY).
@@ -288,8 +339,19 @@ dump:
 #  File does not exist.
 #  File has not been updated.
 #  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 21):
- 
 	@$(CPU)-$(BINFORMAT)-objdump -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(BINARY).txt
+
+# Not a target:
+bin/pc/x86_64-elf/runtime/__cxa_finalize.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/runtime/crtn.s:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 src/kmain.cpp.d:
@@ -303,6 +365,20 @@ bin/pc/x86_64-elf/kmain.cpp.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
+
+# Not a target:
+src/arch/cpu/x86_64/idt.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+src/runtime/__cxa_atexit.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
 
 makedirs:
 #  Phony target (prerequisite of .PHONY).
@@ -329,11 +405,66 @@ makedirs:
 # ? := 
 # variable set hash-table stats:
 # Load=8/32=25%, Rehash=0, Collisions=1/12=8%
-#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 39):
+#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 47):
 	@mkdir -p $(BINDIRS)
+
+bin/pc/x86_64-elf/runtime/crtn.o: src/runtime/crtn.s
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 32):
+	@$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
+	@x86_64-elf-objdump -xD $@ > $@.txt
+
+# Not a target:
+src/String.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+bin/pc/x86_64-elf/arch/cpu/x86_64/idt.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
 
 # Not a target:
 .DEFAULT:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+bin/pc/x86_64-elf/runtime/__cxa_atexit.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/runtime/__aeabi_atexit.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+bin/pc/x86_64-elf/runtime/crti.o: src/runtime/crti.s
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 28):
+	@$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
+	@x86_64-elf-objdump -xD $@ > $@.txt
+
+# Not a target:
+src/debug/debugconsole.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+bin/pc/x86_64-elf/String.cpp.o:
 #  Implicit rule search has not been done.
 #  Modification time never checked.
 #  File has not been updated.
@@ -344,19 +475,44 @@ bin/pc/x86_64-elf/data/font.psf.o:
 #  Modification time never checked.
 #  File has not been updated.
 
+# Not a target:
+src/runtime/new.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+bin/pc/x86_64-elf/runtime/__aeabi_atexit.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
 clean:
 #  Phony target (prerequisite of .PHONY).
 #  Implicit rule search has not been done.
 #  File does not exist.
 #  File has not been updated.
-#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 36):
+#  recipe to execute (from 'src/arch/cpu/x86_64/Makefile', line 44):
 	@rm -rf $(BINDIR)
 		
 
 # Not a target:
+bin/pc/x86_64-elf/debug/debugconsole.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+bin/pc/x86_64-elf/runtime/new.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
 src/arch/cpu/x86_64/Makefile:
 #  Implicit rule search has been done.
-#  Last modified 2021-09-20 10:13:41.19
+#  Last modified 2021-09-23 21:09:16.8775067
 #  File has been updated.
 #  Successfully updated.
 
@@ -372,20 +528,105 @@ dist:
 	rm -f $(ISODIR)/$(ISOFILE)
 	xorriso -as mkisofs -R -f -no-emul-boot -o $(ISODIR)/$(ISOFILE) $(FILESYSDIR)
 
+# Not a target:
+src/arch/machine/pc/debug/lfbconsoleoutput.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+/home/adam/opt/cross/lib/gcc/x86_64-elf/11.2.0/crtend.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+bin/pc/x86_64-elf/arch/machine/pc/debug/lfbconsoleoutput.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/arch/machine/pc/pc.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+src/arch/cpu/x86_64/x86_64.cpp.d:
+ 
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+src/runtime/memory/memset.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+bin/pc/x86_64-elf/arch/machine/pc/pc.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+src/runtime/__dso_handle.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+src/runtime/__cxa_pure_virtual.cpp.d:
+#  Implicit rule search has been done.
+#  File does not exist.
+#  File has been updated.
+#  Failed to be updated.
+
+# Not a target:
+bin/pc/x86_64-elf/arch/cpu/x86_64/x86_64.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+bin/pc/x86_64-elf/runtime/memory/memset.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+bin/pc/x86_64-elf/runtime/__dso_handle.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
+# Not a target:
+bin/pc/x86_64-elf/runtime/__cxa_pure_virtual.cpp.o:
+#  Implicit rule search has not been done.
+#  Modification time never checked.
+#  File has not been updated.
+
 # files hash-table stats:
-# Load=13/1024=1%, Rehash=0, Collisions=0/40=0%
+# Load=50/1024=5%, Rehash=0, Collisions=6/116=5%
 # VPATH Search Paths
 
 # No 'vpath' search paths.
 
 # No general ('VPATH' variable) search path.
 
-# strcache buffers: 1 (0) / strings = 29 / storage = 352 B / avg = 12 B
-# current buf: size = 8162 B / used = 352 B / count = 29 / avg = 12 B
+# strcache buffers: 1 (0) / strings = 65 / storage = 1744 B / avg = 26 B
+# current buf: size = 8162 B / used = 1744 B / count = 65 / avg = 26 B
 
-# strcache performance: lookups = 51 / hit rate = 43%
+# strcache performance: lookups = 106 / hit rate = 38%
 # hash-table stats:
-# Load=29/8192=0%, Rehash=0, Collisions=1/51=2%
-# Finished Make data base on Mon Sep 20 10:14:38 2021
+# Load=65/8192=1%, Rehash=0, Collisions=1/106=1%
+# Finished Make data base on Thu Sep 23 21:18:08 2021
 
  

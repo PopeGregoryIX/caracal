@@ -9,7 +9,7 @@
 #include<x86_64.h>
 #include<bootboot.h>
 #include <cpuid.h>
-#include <debug/debugconsole.h>
+#include <debug/debug.h>
 
 bool Cpu::IsBsp( void )
 {
@@ -18,8 +18,8 @@ bool Cpu::IsBsp( void )
 
 unsigned int Cpu::ProcessorId()
 {
-	volatile uint32_t eax, ebx, ecx, edx;
-	__cpuid(1, eax, ebx, ecx, edx);
+	volatile uint32_t discard, ebx;
+	__cpuid(1, discard, ebx, discard, discard);
 
 	return ((ebx >> 24) & 0xFF);
 }

@@ -17,6 +17,8 @@ namespace arch
 	public:
 		static Pc& GetPcInstance( void ) { return _instance; }
 
+		bool Boot( void );
+
 		void AddDefaultConsoleDevices( DebugConsole& console );
 	private:
 		static Pc _instance;

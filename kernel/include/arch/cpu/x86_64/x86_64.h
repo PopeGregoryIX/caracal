@@ -12,11 +12,12 @@
 
 namespace arch
 {
-	class x86_64 : public Cpu
+	class X86_64 : public Cpu
 	{
 
 	};
 }
 
+typedef arch::X86_64 CPU;
 
 #endif /* KERNEL_INCLUDE_ARCH_CPU_X86_64_X86_64_H_ */

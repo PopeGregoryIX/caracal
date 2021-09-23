@@ -21,6 +21,10 @@ public:
 
 	virtual void AddDefaultConsoleDevices( DebugConsole& ) = 0;
 
+	virtual bool Boot( void ) = 0;
+
+	virtual void Halt() { while(1); }
+
 	virtual ~Machine( void ){}
 };
 

@@ -36,6 +36,9 @@ $(BINDIR)/%.s.o: $(SRCDIR)/%.s
 	@$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
 	@x86_64-elf-objdump -xD $@ > $@.txt
 
+$(BINDIR)/%.asm.o: $(SRCDIR)/%.asm
+	@nasm -o $@ -f elf64 $<
+
 $(BINDIR)/%.psf.o: $(SRCDIR)/%.psf
 	@x86_64-elf-ld -r -b binary -o $@ $<
 	@x86_64-elf-objdump -xD $@ > $@.txt

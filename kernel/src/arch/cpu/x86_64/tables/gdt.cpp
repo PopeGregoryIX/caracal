@@ -5,7 +5,7 @@
  *      Author: Adam
  */
 #include <stdint.h>
-#include <gdt.h>
+#include <tables/gdt.h>
 
 namespace arch
 {

@@ -49,7 +49,6 @@ namespace arch
 				break;
 			case('\t'):
 				_currentX+= 5 - (_currentX % _tabStop);
-				Scroll();
 				break;
 			default:
 				int offset =	(_currentY * font->height * bootboot.fb_scanline) +

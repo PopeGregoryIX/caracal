@@ -1,8 +1,12 @@
-/*
+/**
  * @file idt.h
- *
- *  Created on: 23 Sept 2021
- *      Author: Adam
+ * @author Adam Jones (mail@ajsoft.co.uk)
+ * @brief Contains definitions associated with the IDT class.
+ * @version 0.1
+ * @date 2021-09-26
+ * 
+ * @copyright Copyright (c) 2021
+ * 
  */
 
 #ifndef KERNEL_INCLUDE_ARCH_CPU_X86_64_IDT_H_
@@ -56,17 +60,26 @@ extern "C" void isr31( void );
 
 namespace arch
 {
+	/**
+	 * @brief A singleton class which manages the interrupt descriptor table.
+	 */
 	class Idt
 	{
 	public:
+		/// @brief Return the singleton instance of this class.
 		static Idt& GetInstance( void ) { return _instance; }
 
 		Idt( void );
 
+		/// @brief Load the current IDT in to the current CPU.
 		void Load( void );
 
+		/// @brief Set up a specific entry in the IDT
 		void SetEntry(uint8_t index, uint64_t address);
 	public:
+		/**
+		 * @brief An entry in the Interrupt Desciptor Table
+		 */
 		struct IdtEntry
 		{
 		   uint16_t offsetLow;
@@ -85,18 +98,9 @@ namespace arch
 			   offsetExtended = (uint32_t)((((uintptr_t)isr) >> 32) & 0xFFFFFFFF);
 		   }
 		} __attribute__((packed));
-
-		struct IdtDescriptor
-		{
-			uint16_t size;
-			uint64_t offset;
-		} __attribute__((packed));
 	private:
 		static Idt _instance;
-
-		Registers* DefaultHandler(Registers* regs);
-
-		IdtDescriptor _idtr;
+		static Registers* DefaultHandler(Registers* regs);
 	};
 }
 

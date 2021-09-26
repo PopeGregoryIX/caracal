@@ -1,7 +1,12 @@
 /**
- * \file registers.h
- * \author Adam Jones
- * \copyright (c) 2014 Adam Jones
+ * @file registers.h
+ * @author Adam Jones (mail@ajsoft.co.uk)
+ * @brief X86-64 registers saved on the stack during an interrupt.
+ * @version 0.1
+ * @date 2021-09-26
+ * 
+ * @copyright Copyright (c) 2021
+ * 
  */
 
 #ifndef REGISTERS_H_
@@ -11,16 +16,18 @@
 
 namespace arch
 {
+	/**
+	 * @brief X86-64 general-purpose registers plus the ISR call stack.
+	 * 
+	 */
 	struct Registers
 	{
-	   uint64_t	ds;
 	   uint64_t r15, r14, r13, r12, r11, r10, r9, r8;
-	   uint64_t rsi, rdi, rsp, rbp, rdx, rcx, rbx, rax;
+	   uint64_t rdi, rsi, rbp, rbx, rdx, rcx, rax;
+	   uint64_t fs, gs;
 	   uint64_t interruptNumber, errorCode;
 	   uint64_t rip, cs, rflags, userRsp, userSs;
 	}__attribute__((packed));
 }
-
-
 
 #endif /* REGISTERS_H_ */

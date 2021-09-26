@@ -2,7 +2,7 @@ BINARY:= kernel.sys
 
 CPPFLAGS+= -mno-red-zone -mcmodel=large
 
-.PHONY:	all	makedirs clean dump dist
+.PHONY:	all	makedirs clean dump dist doc
 
 -include $(DEPFILES)
 
@@ -42,6 +42,9 @@ $(BINDIR)/%.asm.o: $(SRCDIR)/%.asm
 $(BINDIR)/%.psf.o: $(SRCDIR)/%.psf
 	@x86_64-elf-ld -r -b binary -o $@ $<
 	@x86_64-elf-objdump -xD $@ > $@.txt
+
+doc:
+	@doxygen kernel.doxyfile > /dev/null
 
 clean:
 	@rm -rf $(BINDIR)

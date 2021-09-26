@@ -6,7 +6,7 @@
  */
 
 #include <stdint.h>
-#include <idt.h>
+#include <tables/idt.h>
 #include <debug/debug.h>
 
 namespace arch
@@ -62,7 +62,7 @@ namespace arch
 
 	Registers* Idt::DefaultHandler(Registers* regs)
 	{
-		FATAL("Unhandled Exception.");
+		FATAL("Unhandled interrupt which has not been claimed by Exception, IRQ or System Interrupt handler.");
 		return regs;
 	}
 }

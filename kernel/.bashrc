@@ -1,0 +1,1 @@
+export DISPLAY=172.28.32.1:0.0

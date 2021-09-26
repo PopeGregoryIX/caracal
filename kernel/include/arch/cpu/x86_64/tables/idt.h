@@ -1,5 +1,5 @@
 /*
- * idt.h
+ * @file idt.h
  *
  *  Created on: 23 Sept 2021
  *      Author: Adam
@@ -61,7 +61,7 @@ namespace arch
 	public:
 		static Idt& GetInstance( void ) { return _instance; }
 
-		void Initialise( void );
+		Idt( void );
 
 		void Load( void );
 
@@ -75,8 +75,8 @@ namespace arch
 		   uint8_t	flags;
 		   uint16_t offsetHigh;
 		   uint32_t	offsetExtended;
-
 		   uint32_t	reserved64;
+
 		   IdtEntry() : offsetLow(0), cs(0), reserved(0), flags(0), offsetHigh(0), offsetExtended(0), reserved64(0){}
 		   IdtEntry(isr_t isr, uint16_t cs_, uint8_t flags_) : cs(cs_), reserved(0), flags(flags_), reserved64(0)
 		   {
@@ -89,18 +89,17 @@ namespace arch
 		struct IdtDescriptor
 		{
 			uint16_t size;
-			uintptr_t offset;
+			uint64_t offset;
 		} __attribute__((packed));
 	private:
 		static Idt _instance;
 
 		Registers* DefaultHandler(Registers* regs);
 
-		IdtEntry _idt[0x200];
 		IdtDescriptor _idtr;
 	};
 }
 
-extern "C" arch::Idt::IdtEntry __idt[256];
+extern "C" arch::Idt::IdtEntry __idt[0x200];
 
 #endif /* KERNEL_INCLUDE_ARCH_CPU_X86_64_IDT_H_ */

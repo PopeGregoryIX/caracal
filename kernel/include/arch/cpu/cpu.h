@@ -1,8 +1,12 @@
-/*
- * cpu.h
- *
- *  Created on: 28 Feb 2013
- *      Author: Adam
+/**
+ * @file cpu.h
+ * @author Adam Jones (mail@ajsoft.co.uk)
+ * @brief Generic pure virtual Cpu class.
+ * @version 0.1
+ * @date 2021-09-27
+ * 
+ * @copyright Copyright (c) 2021
+ * 
  */
 
 #ifndef CPU_H_

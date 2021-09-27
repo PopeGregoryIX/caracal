@@ -28,7 +28,6 @@ namespace arch
 	{
 		//	This is where we set up the machine. This is purely called
 		//	by the BSP.
-
 		INFO("Running boot routines for machine type: PC");
 
 		//	1. Initialise GDT - it's in an unknown state
@@ -42,7 +41,7 @@ namespace arch
 		//	3. Initialise the memory map - we need to be able to allocate physical pages
 		INFO("Initialise Page Frame Allocator");
 		PageFrameAllocator& pageFrameAllocator = ::PageFrameAllocator::GetInstance();
-		pageFrameAllocator.Initialise();
+		pageFrameAllocator.Initialise(0x1000);
 		
 		return true;
 	}

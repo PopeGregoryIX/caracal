@@ -18,7 +18,6 @@ namespace arch
 {
 	/**
 	 * @brief X86-64 general-purpose registers plus the ISR call stack.
-	 * 
 	 */
 	struct Registers
 	{

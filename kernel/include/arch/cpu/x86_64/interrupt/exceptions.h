@@ -17,14 +17,21 @@
 
 namespace arch
 {
-    
-
+    /**
+     * @brief Installs and handles CPU exceptions. Works closely with Idt.
+     */
     class Exceptions
     {
         private:
-        static const char* _ExceptionNames[32];
+            static const char* _ExceptionNames[32]; ///< Names of exceptions - used in the unhandled exception window.
 
-        static Registers* DefaultHandler(Registers* regs);
+            /**
+             * @brief A handler which is executed if no other handler is installed.
+             * 
+             * @param regs Saved machine state when the handler was invoked.
+             * @return Registers* Machine state to load following the exception.
+             */
+            static Registers* DefaultHandler(Registers* regs);
     };
 }
 

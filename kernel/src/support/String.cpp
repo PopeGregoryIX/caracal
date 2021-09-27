@@ -5,7 +5,7 @@
  *      Author: Adam
  */
 #include <runtime/cxx.h>
-#include "../include/string.h"
+#include <support/string.h>
 
 uint8_t String::numBase_ = 16;
 const char String::ltHexUpper_[16] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
@@ -60,7 +60,7 @@ char* String::itoa(uint64_t num, char* buffer, uint8_t base)
 			bitshift -= 1;
 			int digit = (num >> bitshift) & 0x01;
 			buffer[index] = ltHexUpper_[digit];
-			if(index > 0 || digit > 0) index++;
+			index++;
 		}
 		break;
 	case 10:
@@ -72,7 +72,7 @@ char* String::itoa(uint64_t num, char* buffer, uint8_t base)
 		{
 			int digit = (int)(num % 10);
 			newBuffer[index] = ltHexUpper_[digit];
-			if(index > 0 || digit > 0) index++;
+			index++;
 			num/=10;
 		}
 

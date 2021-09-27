@@ -49,7 +49,6 @@ namespace arch
 {
 	/**
 	 * @brief A manager for the Global Descriptor table.
-	 * 
 	 */
 	class Gdt
 	{

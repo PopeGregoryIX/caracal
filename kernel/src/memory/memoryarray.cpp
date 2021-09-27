@@ -1,7 +1,7 @@
 /**
- * @file memorymap.cpp
+ * @file memoryarray.cpp
  * @author Adam Jones (mail@ajsoft.co.uk)
- * @brief 
+ * @brief Implementation of the MemoryArray class.
  * @version 0.1
  * @date 2021-09-26
  * 

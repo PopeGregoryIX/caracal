@@ -58,11 +58,120 @@ void StaticBitmap::Clear(size_t base, size_t length)
     }
 }
 
+uint64_t StaticBitmap::FindFirstClear()
+{
+    for(size_t i = 0; i < (_bytes / sizeof(uint64_t)); ++i)
+    {
+        if(_bitmap[i] != UINT64_MAX)
+        {
+            for(size_t j = 0; j < BITS_PER_QUAD; ++j)
+            {
+                if(((_bitmap[i] ^ (1ULL << j)) & (1ULL << j)) == (1ULL << j))
+                    return (i * BITS_PER_QUAD) + j;
+            }
+        }
+    }
+
+    return -1;
+}
+
+uint64_t StaticBitmap::FindLastClear()
+{
+    for(size_t i = (_bytes / sizeof(uint64_t)) - 1; i != UINT64_MAX; --i)
+    {
+        if(_bitmap[i] != UINT64_MAX)
+        {
+            size_t bitPattern = (1ULL << (BITS_PER_QUAD - 1));
+
+            for(size_t j = 0; j <= (BITS_PER_QUAD - 1); ++j)
+            {
+                if(((_bitmap[i] ^ bitPattern) & bitPattern) == bitPattern)
+                    return (i * BITS_PER_QUAD) + (BITS_PER_QUAD - (j + 1));
+
+                bitPattern = bitPattern >> 1;
+            }
+        }
+    }
+
+    return -1;
+}
+
+uint64_t StaticBitmap::FindFirstClear(size_t length)
+{
+    size_t frames = length / BITS_PER_QUAD;
+    if((length % BITS_PER_QUAD) != 0) frames++;
+
+    for(size_t i = 0; i <= (_bytes / sizeof(uint64_t)) - frames; ++i)
+    {
+        if(frames > 1)
+        {
+            // for speed find by whole frames only.
+            bool found = true;
+            for(size_t j = 0; j < frames; ++j)
+                if(_bitmap[i + j] != 0) found = false;
+
+            //  we have found the start of enough consecutive frames for allocation!
+            if (found) return (i * BITS_PER_QUAD);
+        }
+        else
+        {
+            // everything we need can be found in a single frame
+            size_t bitPattern = 0;
+            for(size_t j = 0; j < length; ++j) bitPattern |= (1ULL << j);
+
+            for(size_t j = 0; j <= (BITS_PER_QUAD - length); ++j)
+            {
+                if(((_bitmap[i] ^ bitPattern) & bitPattern) == bitPattern)
+                    return (i * BITS_PER_QUAD) + j;
+
+                bitPattern = bitPattern << 1;
+            }
+        }
+    }
+
+    return -1;
+}
+
+uint64_t StaticBitmap::FindLastClear(size_t length)
+{
+    size_t frames = length / BITS_PER_QUAD;
+    if((length % BITS_PER_QUAD) != 0) frames++;
+
+    for(size_t i = (_bytes / sizeof(uint64_t)) - frames; i != UINT64_MAX; --i)
+    {
+        if(frames > 1)
+        {
+            // for speed find by whole frames only.
+            bool found = true;
+            for(size_t j = 0; j < frames; ++j)
+                if(_bitmap[i + j] != 0) found = false;
+
+            //  we have found the start of enough consecutive frames for allocation!
+            if (found) return (i * BITS_PER_QUAD);
+        }
+        else
+        {
+            // everything we need can be found in a single frame
+            size_t bitPattern = 0;
+            for(size_t j = BITS_PER_QUAD - length; j < BITS_PER_QUAD; ++j) bitPattern |= (1ULL << j);
+
+            for(size_t j = 0; j <= (BITS_PER_QUAD - length); ++j)
+            {
+                if(((_bitmap[i] ^ bitPattern) & bitPattern) == bitPattern)
+                    return (i * BITS_PER_QUAD) + (BITS_PER_QUAD - (j + length));
+
+                bitPattern = bitPattern >> 1;
+            }
+        }
+    }
+
+    return -1;
+}
+
 void StaticBitmap::Set(size_t base, size_t length)
 {
-    if(base > Max() || (base + length - 1) > Max()) 
-        FATAL("Overflow detected on StaticBitmap while setting bits");
-
+    if(base > Max() || (base + length - 1) > Max())         
+        FATAL("Overflow detected on StaticBitmap while setting bits.");
 
     size_t startQuad = base / BITS_PER_QUAD;
     size_t endQuad = (base + length - 1) / BITS_PER_QUAD;

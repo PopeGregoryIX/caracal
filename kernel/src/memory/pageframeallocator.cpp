@@ -19,13 +19,15 @@ void PageFrameAllocator::Initialise( void )
 
     _pages = StaticBitmap(bitmapBase, (size_t)bitmapSize, true);
 
-    uint64_t a[2];
+    uint64_t a[3];
 
-    StaticBitmap sbmp((uint64_t*)a, (size_t)16, true);
+    StaticBitmap sbmp((uint64_t*)a, (size_t)24, true);
 
-    INFO(sbmp._bitmap[0] << " : " << sbmp._bitmap[1]);
-    sbmp.Set(32,97);
-    INFO(sbmp._bitmap[0] << " : " << sbmp._bitmap[1]);
+    INFO(sbmp._bitmap[0] << " : " << sbmp._bitmap[1] << " : " << sbmp._bitmap[2]);
+    sbmp.Set(0,192);
+    INFO(sbmp._bitmap[0] << " : " << sbmp._bitmap[1] << " : " << sbmp._bitmap[2]);
+    sbmp.Clear(32, 128);
+    INFO(sbmp._bitmap[0] << " : " << sbmp._bitmap[1] << " : " << sbmp._bitmap[2]);
 
     //mmap.Print();
 }

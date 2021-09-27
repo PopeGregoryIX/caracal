@@ -10,6 +10,7 @@ class StaticBitmap
 
         StaticBitmap(uint64_t* bitmap, size_t bytes, bool zero);
 
+        void Clear(size_t base, size_t length);
         void Set(size_t base, size_t length);
 
         inline size_t Max(void){  return _bytes * sizeof(uint64_t); }

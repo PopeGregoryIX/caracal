@@ -43,16 +43,4 @@ void PageFrameAllocator::Initialise( size_t frameSize )
         if(i.Current().IsFree() && (i.Current().size > 0))
             _pages.Clear((i.Current().base / _frameSize), i.Current().size / _frameSize);
     } while (i.MoveNext());
-
-    mmap.Print();
-
-    INFO("Test memory allocations:");
-    for(int j = 0; j < 10; ++j) 
-    { 
-        size_t allocSize = 0x100000000ULL;
-        uintptr_t alloc = Allocate(allocSize); INFO("Alloc: " << alloc);
-        alloc = Allocate(allocSize); INFO("Alloc: " << alloc);
-        //NB: Deliberate test! First alloc of each loop is not freed!
-        Free(alloc, allocSize);
-    }
 }

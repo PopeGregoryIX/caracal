@@ -3,10 +3,16 @@
         {
             "name": "Linux",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "u:\\home\\adam\\projects\\caracal\\kernel\\include",
+                "u:\\home\\adam\\projects\\caracal\\kernel\\include\\arch",
+                "u:\\home\\adam\\projects\\caracal\\kernel\\include\\arch\\machine",
+                "u:\\home\\adam\\projects\\caracal\\kernel\\include\\arch\\cpu",
+                "u:\\home\\adam\\projects\\caracal\\kernel\\include\\arch\\machine\\pc",
+                "u:\\home\\adam\\projects\\caracal\\kernel\\include\\arch\\cpu\\x86_64"
             ],
             "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "compilerPath": "/home/adam/opt/cross/bin/",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "linux-gcc-x64",

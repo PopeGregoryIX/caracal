@@ -20,6 +20,8 @@ namespace arch
 		bool Boot( void );
 
 		void AddDefaultConsoleDevices( DebugConsole& console );
+
+		void HaltCurrentCore()	{	asm("cli\nhlt");	}
 	private:
 		static Pc _instance;
 	};

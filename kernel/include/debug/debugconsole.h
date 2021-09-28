@@ -26,6 +26,7 @@ public:
 	void PutChar(const char c);
 	void PutDecimal(uint64_t d);
 	void PutHex(uint64_t h);
+	void PutPaddedHex(uint64_t h);
 	void PutString(const char* s);
 
 	~DebugConsole(){}

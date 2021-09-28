@@ -13,53 +13,58 @@
 #define KERNEL_INCLUDE_ARCH_CPU_X86_64_IDT_H_
 
 #include <stdint.h>
+#include <stddef.h>
 #include <registers.h>
-
-typedef void (*isr_t)( void );
-extern "C" void __loadIdt(void* idtr);
-
-#define IDT_GATE_TASK		0x05
-#define IDT_GATE_INTERRUPT	0x0E
-#define IDT_GATE_TRAP		0x0F
-#define IDT_GATE_STORAGE	(0x01 << 4)
-#define IDT_GATE_USER		(0x03 << 5)
-#define IDT_GATE_PRESENT	(0x01 << 7)
-
-extern "C" void isr0( void );
-extern "C" void isr1( void );
-extern "C" void isr2( void );
-extern "C" void isr3( void );
-extern "C" void isr4( void );
-extern "C" void isr5( void );
-extern "C" void isr6( void );
-extern "C" void isr7( void );
-extern "C" void isr8( void );
-extern "C" void isr9( void );
-extern "C" void isr10( void );
-extern "C" void isr11( void );
-extern "C" void isr12( void );
-extern "C" void isr13( void );
-extern "C" void isr14( void );
-extern "C" void isr15( void );
-extern "C" void isr16( void );
-extern "C" void isr17( void );
-extern "C" void isr18( void );
-extern "C" void isr19( void );
-extern "C" void isr20( void );
-extern "C" void isr21( void );
-extern "C" void isr22( void );
-extern "C" void isr23( void );
-extern "C" void isr24( void );
-extern "C" void isr25( void );
-extern "C" void isr26( void );
-extern "C" void isr27( void );
-extern "C" void isr28( void );
-extern "C" void isr29( void );
-extern "C" void isr30( void );
-extern "C" void isr31( void );
+#include <debug/debug.h>
 
 namespace arch
 {
+	typedef void (*isr_t)( void );
+	typedef Registers* (*InterruptHandler_t)(Registers*);
+
+	#define IDT_GATE_TASK		0x05
+	#define IDT_GATE_INTERRUPT	0x0E
+	#define IDT_GATE_TRAP		0x0F
+	#define IDT_GATE_STORAGE	(0x01 << 4)
+	#define IDT_GATE_USER		(0x03 << 5)
+	#define IDT_GATE_PRESENT	(0x01 << 7)
+
+	extern "C" void isr0( void );
+	extern "C" void isr1( void );
+	extern "C" void isr2( void );
+	extern "C" void isr3( void );
+	extern "C" void isr4( void );
+	extern "C" void isr5( void );
+	extern "C" void isr6( void );
+	extern "C" void isr7( void );
+	extern "C" void isr8( void );
+	extern "C" void isr9( void );
+	extern "C" void isr10( void );
+	extern "C" void isr11( void );
+	extern "C" void isr12( void );
+	extern "C" void isr13( void );
+	extern "C" void isr14( void );
+	extern "C" void isr15( void );
+	extern "C" void isr16( void );
+	extern "C" void isr17( void );
+	extern "C" void isr18( void );
+	extern "C" void isr19( void );
+	extern "C" void isr20( void );
+	extern "C" void isr21( void );
+	extern "C" void isr22( void );
+	extern "C" void isr23( void );
+	extern "C" void isr24( void );
+	extern "C" void isr25( void );
+	extern "C" void isr26( void );
+	extern "C" void isr27( void );
+	extern "C" void isr28( void );
+	extern "C" void isr29( void );
+	extern "C" void isr30( void );
+	extern "C" void isr31( void );
+
+	extern "C" void __loadIdt(void* idtr);
+	extern "C" InterruptHandler_t __exception_call_table[0x20];
+
 	/**
 	 * @brief A singleton class which manages the interrupt descriptor table.
 	 */
@@ -98,6 +103,12 @@ namespace arch
 			   offsetExtended = (uint32_t)((((uintptr_t)isr) >> 32) & 0xFFFFFFFF);
 		   }
 		} __attribute__((packed));
+
+		inline void InstallExceptionHandler(size_t index, InterruptHandler_t handler)
+		{ 
+			if(index >= 0x20) FATAL("Cannot install exception handler > index 31.");
+			 __exception_call_table[index] = handler;	
+		}
 	private:
 		static Idt _instance;
 		static Registers* DefaultHandler(Registers* regs);

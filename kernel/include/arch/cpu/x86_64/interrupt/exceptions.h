@@ -17,6 +17,8 @@
 
 namespace arch
 {
+    #define EXCEPTION_PAGE_FAULT    0x0E
+
     /**
      * @brief Installs and handles CPU exceptions. Works closely with Idt.
      */
@@ -31,7 +33,11 @@ namespace arch
              * @param regs Saved machine state when the handler was invoked.
              * @return Registers* Machine state to load following the exception.
              */
-            static Registers* DefaultHandler(Registers* regs);
+            static Registers* DefaultHandler(Registers* registers);
+
+            static void DumpCore(Registers* registers);
+        public:
+            static Registers* PageFaultExceptionHandler(Registers* registers);
     };
 }
 

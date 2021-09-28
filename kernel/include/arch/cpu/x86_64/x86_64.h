@@ -18,7 +18,19 @@ namespace arch
 {
 	class X86_64 : public Cpu
 	{
+		public:
+			static inline uint8_t In8(uint16_t port)	{ uint8_t value; asm volatile ( "inb %1, %0" : "=a"(value) : "Nd"(port) ); return value; }
+			static inline uint16_t In16(uint16_t port)	{ uint16_t value; asm volatile ( "inw %1, %0" : "=a"(value) : "Nd"(port) ); return value; }
+			static inline uint32_t In32(uint16_t port)	{ uint32_t value; asm volatile ( "inl %1, %0" : "=a"(value) : "Nd"(port) ); return value; }
 
+			static inline void Out8(uint16_t port, uint8_t value)	{ asm volatile ( "outb %0, %1" : : "a"(value), "Nd"(port) );	}
+			static inline void Out16(uint16_t port, uint16_t value)	{ asm volatile ( "outw %0, %1" : : "a"(value), "Nd"(port) );	}
+			static inline void Out32(uint16_t port, uint32_t value)	{ asm volatile ( "outl %0, %1" : : "a"(value), "Nd"(port) );	}
+
+			static inline uint64_t ReadCr0(void) { unsigned long value; asm volatile ( "movq %%cr0, %0" : "=r"(value) ); return value; }
+			static inline uint64_t ReadCr2(void) { unsigned long value; asm volatile ( "movq %%cr2, %0" : "=r"(value) ); return value; }
+			static inline uint64_t ReadCr3(void) { unsigned long value; asm volatile ( "movq %%cr3, %0" : "=r"(value) ); return value; }
+			static inline uint64_t ReadCr4(void) { unsigned long value; asm volatile ( "movq %%cr4, %0" : "=r"(value) ); return value; }
 	};
 }
 

@@ -14,19 +14,22 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <debug/debug.h>
-
+#include "x86_64.h"
 /**
  * @brief Contains the architecture-dependent portions of the kernel.
  * 
  */
 namespace arch
 {
+
+#define CPU_CLASS X86_64
 #define CPU X86_64::GetInstance()
 
 typedef uint64_t uintptr_t;
 typedef int64_t intptr_t;
 
-#define PRINTREGS(n1, v1, n2, v2)   { INFO(ConsoleColour(0x00FF00, 0x000000) << n1 << ConsoleColour(0xFFFFFF, 0x000000) <<  ":\t" << (uint64_t)v1 << "\t\t" <<  ConsoleColour(0x00FF00, 0x000000) << n2 << ":\t" << ConsoleColour(0xFFFFFF, 0x000000) << (uint64_t)v2); }
+void PrintRegisters(const char* name1, uint64_t value1, const char* name2, uint64_t value2);
+
 }
 
 #endif

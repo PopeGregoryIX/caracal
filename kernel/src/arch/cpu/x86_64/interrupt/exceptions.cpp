@@ -14,6 +14,8 @@
 #include <interrupt/exceptions.h>
 #include <registers.h>
 #include <debug/debug.h>
+#include <cpu.h>
+
 namespace arch
 {
     const char* Exceptions::_ExceptionNames[32] = {	"Divide Error", "Debug", "Non-maskable Interrupt", "Breakpoint",
@@ -25,30 +27,40 @@ namespace arch
 												"Reserved", "Reserved", "Reserved", "Reserved"
 											};
 
-    Registers* Exceptions::DefaultHandler(Registers* regs)
+    Registers* Exceptions::DefaultHandler(Registers* registers)
     {
-        INFO("");
-        INFO(ConsoleColour(0xFF0000, 0x000000) << _ExceptionNames[regs->interruptNumber] << " Exception");
-
-        INFO("Registers stored at: " << (uint64_t)regs);
+        DebugConsole& debug = DebugConsole::GetInstance();
         
-        PRINTREGS("RAX", regs->rax, "RBX", regs->rbx);
-        PRINTREGS("RCX", regs->rcx, "RDX", regs->rdx);
-        PRINTREGS("RSI", regs->rsi, "RDI", regs->rdi);
-        PRINTREGS("R8", regs->r8, "R9", regs->r9);
-        PRINTREGS("R10", regs->r10, "R11", regs->r11);
-        PRINTREGS("R12", regs->r12, "R13", regs->r13);
-        PRINTREGS("R14", regs->r14, "R15", regs->r15);
+        debug << "\n" << ConsoleColour(0xFF0000, 0x000000) << "Unhandled " << _ExceptionNames[registers->interruptNumber] << " Exception\n\n";
+        DumpCore(registers);        
 
-        INFO("");
+        FATAL("Unhandled Exception");
+        return registers;
+    }
 
-        PRINTREGS("UserRSP", regs->userRsp, "RBP", regs->rbp);
-
-        PRINTREGS("CS", regs->cs, "EIP", regs->rip);
-        PRINTREGS("Code", regs->errorCode, "Number", regs->interruptNumber);
+    void Exceptions::DumpCore(Registers* registers)
+    {
+        DebugConsole& debug = DebugConsole::GetInstance();
         
+        PrintRegisters("RAX", registers->rax, "RBX", registers->rbx);
+        PrintRegisters("RCX", registers->rcx, "RDX", registers->rdx);
+        PrintRegisters("RSI", registers->rsi, "RDI", registers->rdi);
+        PrintRegisters("R8", registers->r8, "R9", registers->r9);
+        PrintRegisters("R10", registers->r10, "R11", registers->r11);
+        PrintRegisters("R12", registers->r12, "R13", registers->r13);
+        PrintRegisters("R14", registers->r14, "R15", registers->r15);
 
-        FATAL("Unhandled CPU Exception.");
-        return regs;
+        debug << "\n";
+
+        PrintRegisters("URSP", registers->userRsp, "RBP", registers->rbp);
+
+        PrintRegisters("CS", registers->cs, "EIP", registers->rip);
+        PrintRegisters("Code", registers->errorCode, "Num", registers->interruptNumber);
+        
+        debug << "\n";
+        PrintRegisters("CR0", CPU_CLASS::ReadCr0(), "CR2", CPU_CLASS::ReadCr2());
+        PrintRegisters("CR3", CPU_CLASS::ReadCr3(), "CR4", CPU_CLASS::ReadCr4());
+
+        debug << "\nStack frame stored at: " << (uint64_t)registers << "\n";
     }
 }

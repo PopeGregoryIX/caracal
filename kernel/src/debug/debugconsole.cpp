@@ -70,6 +70,18 @@ void DebugConsole::PutHex(uint64_t h)
 	PutString((const char*)String::itoa(h, buffer, 16));
 }
 
+void DebugConsole::PutPaddedHex(uint64_t h)
+{
+	char buffer[17];
+	PutString("0x");
+	String::itoa(h, buffer, 16);
+	size_t len = String::length(buffer);
+
+	for(size_t i = 0; i < 16-len; ++i) PutChar('0');
+
+	PutString((const char*)buffer);
+}
+
 void DebugConsole::PutString(const char* s)
 {
 	for(int i = 0; i < MAXOUTPUTDEVICES; ++i)

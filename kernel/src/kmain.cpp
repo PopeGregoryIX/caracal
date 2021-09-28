@@ -48,18 +48,22 @@ void kmain()
 		Machine::GetInstance().AddDefaultConsoleDevices(debug);
 
 		debug << ConsoleColour(0xFFFFFF, 0x000000);
-		INFO( "Caracal v1.0 Debug Console");
+		INFO( "Caracal v1.0 Debug Console" );
 		INFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
 
 		if(Machine::GetInstance().Boot())
 		{
-			INFO("Boot routine complete");
+			INFO("Architecture-specific boot routine complete");
 		}
 		else
+		{
 			FATAL("Boot routine failed");
+		}
 	}
+	else
+		Machine::GetInstance().HaltCurrentCore();
 
-	FATAL("Reached end of kmain routine. No further code to execute.");
+	FATAL("Reached end of kmain routine. No further code to execute");
 
 	_fini();
 }

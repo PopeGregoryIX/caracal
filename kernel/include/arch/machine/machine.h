@@ -26,7 +26,7 @@ public:
 
 	virtual bool Boot( void ) = 0;
 
-	virtual void Halt() { while(1); }
+	virtual void HaltCurrentCore() { while(1); }
 
 	virtual ~Machine( void ){}
 };

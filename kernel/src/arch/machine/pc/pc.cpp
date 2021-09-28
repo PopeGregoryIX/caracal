@@ -12,6 +12,7 @@
 #include <tables/gdt.h>
 #include <tables/idt.h>
 #include <memory/pageframeallocator.h>
+#include <interrupt/exceptions.h>
 
 Machine& Machine::GetInstance( void ) { return arch::Pc::GetPcInstance(); }
 
@@ -43,6 +44,11 @@ namespace arch
 		PageFrameAllocator& pageFrameAllocator = ::PageFrameAllocator::GetInstance();
 		pageFrameAllocator.Initialise(0x1000);
 		
+		//	4. Initialise the virtual memory allocation system
+		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
+		char* x = (char*)0x100000000000ULL;
+		x[1] = 'a';
+
 		return true;
 	}
 

@@ -14,21 +14,21 @@
 #include <machine.h>
 
 #ifdef DEBUG
-#define INFO(x)	{	DebugConsole::GetInstance() << ConsoleColour(0x00FF00, 0x000000) << "[INFO]    " << ConsoleColour(0xFFFFFF, 0x000000) << x << '\n';	}
+#define INFO(x) {	DebugConsole::GetInstance() << ConsoleColour(0x00FF00, 0x000000) << "[INFO]    " << ConsoleColour(0xFFFFFF, 0x000000) << x << '\n';	}
 #else
-#define INFO(x)	{}
+#define INFO(x) {}
 #endif
 
 #ifdef DEBUG
-#define WARNING(x)	{	DebugConsole::GetInstance() << ConsoleColour(0x0000FF, 0x000000) << DebugConsole::GetInstance() << "[WARN]    " << ConsoleColour(0xFFFFFF, 0x000000) << x << '\n';	}
+#define WARNING(x) {	DebugConsole::GetInstance() << ConsoleColour(0xFF6600, 0x000000) << "[WARN]    " << ConsoleColour(0xFFFFFF, 0x000000) << x << '\n';	}
 #else
-#define WARNING(x)	{}
+#define WARNING(x) {}
 #endif
 
 #ifdef DEBUG
-#define FATAL(x)	{	DebugConsole::GetInstance() << ConsoleColour(0xFF0000, 0x000000) << "\n[ERROR]   " << ConsoleColour(0xFFFFFF, 0x000000) << x; Machine::GetInstance().Halt();	}
+#define FATAL(x) {	DebugConsole::GetInstance() << ConsoleColour(0xFF0000, 0x000000) << "\n[ERROR]   " << ConsoleColour(0xFFFFFF, 0x000000) << x << " - System Halted."; Machine::GetInstance().HaltCurrentCore();	}
 #else
-#define FATAL(x)	{}
+#define FATAL(x) {}
 #endif
 
 

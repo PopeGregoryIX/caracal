@@ -43,6 +43,8 @@ class StaticBitmap
 
         inline uint64_t FindAndSet( size_t length ) { uint64_t returnValue = FindLastClear(length); if(returnValue != UINT64_MAX) Set(returnValue, length); return returnValue; }
 
+        inline uint64_t FindAndSet( size_t length, size_t alignment ) { uint64_t returnValue = FindLastClear(length, alignment); if(returnValue != UINT64_MAX) Set(returnValue, length); return returnValue; }
+
         uint64_t FindFirstClear( void );
         
         uint64_t FindFirstClear(size_t length);
@@ -50,6 +52,8 @@ class StaticBitmap
         uint64_t FindLastClear( void );
         
         uint64_t FindLastClear(size_t length);
+
+        uint64_t FindLastClear(size_t length, size_t alignment);
 
         void Set(size_t base, size_t length);
         

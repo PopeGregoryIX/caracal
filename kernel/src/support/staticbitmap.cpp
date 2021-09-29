@@ -180,6 +180,31 @@ uint64_t StaticBitmap::FindLastClear(size_t length)
     return -1;
 }
 
+uint64_t StaticBitmap::FindLastClear(size_t length, size_t alignment)
+{
+    size_t frames = length / BITS_PER_FRAME;
+    if((length % BITS_PER_FRAME) != 0) frames++;
+    
+    size_t alignFrames = alignment / BITS_PER_FRAME;
+    if(alignment % BITS_PER_FRAME) alignFrames++;
+
+    size_t topFrame = (_bytes / sizeof(uint64_t)) - frames;
+    topFrame-= topFrame % alignFrames;
+
+    for(size_t i = topFrame; i != UINT64_MAX; i-= topFrame)
+    {
+        // for speed find by whole frames only.
+        bool found = true;
+        for(size_t j = 0; j < frames; ++j)
+            if(_bitmap[i + j] != 0) found = false;
+
+        //  we have found the start of enough consecutive frames for allocation!
+        if (found) return (i * BITS_PER_FRAME);
+    }
+
+    return -1;
+}
+
 void StaticBitmap::Set(size_t base, size_t length)
 {
     if(base > Max() || (base + length - 1) > Max())         

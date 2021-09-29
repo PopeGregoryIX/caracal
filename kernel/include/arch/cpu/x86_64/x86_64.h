@@ -27,10 +27,12 @@ namespace arch
 			static inline void Out16(uint16_t port, uint16_t value)	{ asm volatile ( "outw %0, %1" : : "a"(value), "Nd"(port) );	}
 			static inline void Out32(uint16_t port, uint32_t value)	{ asm volatile ( "outl %0, %1" : : "a"(value), "Nd"(port) );	}
 
-			static inline uint64_t ReadCr0(void) { unsigned long value; asm volatile ( "movq %%cr0, %0" : "=r"(value) ); return value; }
-			static inline uint64_t ReadCr2(void) { unsigned long value; asm volatile ( "movq %%cr2, %0" : "=r"(value) ); return value; }
-			static inline uint64_t ReadCr3(void) { unsigned long value; asm volatile ( "movq %%cr3, %0" : "=r"(value) ); return value; }
-			static inline uint64_t ReadCr4(void) { unsigned long value; asm volatile ( "movq %%cr4, %0" : "=r"(value) ); return value; }
+			static inline uint64_t ReadCr0(void) { uint64_t value; asm volatile ( "movq %%cr0, %0" : "=r"(value) ); return value; }
+			static inline uint64_t ReadCr2(void) { uint64_t value; asm volatile ( "movq %%cr2, %0" : "=r"(value) ); return value; }
+			static inline uint64_t ReadCr3(void) { uint64_t value; asm volatile ( "movq %%cr3, %0" : "=r"(value) ); return value; }
+			static inline uint64_t ReadCr4(void) { uint64_t value; asm volatile ( "movq %%cr4, %0" : "=r"(value) ); return value; }
+
+			static inline void WriteCr3(uint64_t value) { asm volatile ( "movq %0, %%cr3" : : "a"(value) ); }
 	};
 }
 

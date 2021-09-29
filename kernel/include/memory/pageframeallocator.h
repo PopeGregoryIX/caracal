@@ -48,6 +48,12 @@ class PageFrameAllocator
             return (returnValue == UINT64_MAX) ? UINT64_MAX : returnValue * 0x1000;
         }
 
+        inline uintptr_t Allocate(size_t bytes, size_t alignment) 
+        {
+            uintptr_t returnValue = _pages.FindAndSet(GetWholePages(bytes), GetWholePages(alignment));
+            return (returnValue == UINT64_MAX) ? UINT64_MAX : returnValue * 0x1000;
+        }
+
         inline void Free( uintptr_t page ) { _pages.Clear(page / _frameSize); }
 
         inline void Free( uintptr_t page, size_t bytes ) { _pages.Clear(page / _frameSize, GetWholePages(bytes)); }

@@ -15,6 +15,8 @@
 
 namespace arch
 {
+	extern "C" uint8_t fb;		//	bootboot linear framebuffer
+
 	class LfbConsoleOutput : public ConsoleOutput
 	{
 	public:
@@ -32,8 +34,6 @@ namespace arch
 		uint32_t _widthChars, _heightChars;
 		uint32_t _currentX, _currentY, _tabStop;
 		uint32_t _bytesPerPixel;
-
-
 
 		const psf2_t *font = (const psf2_t*)&_binary_src_data_font_psf_start;
 

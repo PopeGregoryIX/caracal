@@ -9,6 +9,8 @@
 #define KERNEL_SRC_ARCH_MACHINE_PC_PC_H_
 
 #include <machine.h>
+#include <process/process.h>
+#include <process/thread.h>
 
 namespace arch
 {
@@ -21,9 +23,14 @@ namespace arch
 
 		void AddDefaultConsoleDevices( DebugConsole& console );
 
+		void CreateInitialProcessSpace( void );
+
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}
 	private:
 		static Pc _instance;
+
+		static Process _initialProcess;
+		static Thread _initialThread;
 	};
 }
 

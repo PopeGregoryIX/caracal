@@ -11,8 +11,6 @@
 #include <runtime/cxx.h>
 #include <support/string.h>
 
-extern uint8_t linearFrameBuffer;
-
 namespace arch
 {
 	LfbConsoleOutput LfbConsoleOutput::_instance;
@@ -28,7 +26,7 @@ namespace arch
 
 	void LfbConsoleOutput::Cls( void )
 	{
-		uint32_t* lfb = (uint32_t*)&linearFrameBuffer;
+		uint32_t* lfb = (uint32_t*)&fb;
 
 		for(size_t i = 0; i <  bootboot.fb_width * bootboot.fb_height; ++i)
 			lfb[i] = _colour.Background;
@@ -62,7 +60,7 @@ namespace arch
 					glyphMask=1<<(font->width-1);
 					/* display a row */
 					for(glyphX=0;glyphX<=font->width;glyphX++){
-						*((uint32_t*)((uint64_t)&linearFrameBuffer+glyphLine)) =
+						*((uint32_t*)((uint64_t)&fb+glyphLine)) =
 								*((unsigned int*)glyph) & glyphMask ? _colour.Foreground : _colour.Background;
 						/* adjust to the next pixel */
 						glyphMask >>= 1;
@@ -92,7 +90,7 @@ namespace arch
 
 	void LfbConsoleOutput::Scroll( void )
 	{
-		uint32_t* dest = (uint32_t*)&linearFrameBuffer;
+		uint32_t* dest = (uint32_t*)&fb;
 		uint32_t* src = &dest[bootboot.fb_width * font->height];
 
 		::memorycopy<uint32_t>(dest, src, bootboot.fb_width * ((bootboot.fb_height * font->height) -1));

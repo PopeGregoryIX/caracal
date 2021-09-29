@@ -19,7 +19,7 @@ push    %fs
 pushaq
 
 mov		%rsp,	%rdi
-mov		__exception_call_table + (\num * 8),	%rax
+mov 	__exception_call_table + (\num * 8),	%rax
 call	*%rax
 mov		%rdi,	%rsp
 
@@ -44,7 +44,7 @@ push    %fs
 pushaq
 
 mov		%rsp,	%rdi
-mov		__exception_call_table + (\num * 8),	%rax
+mov    __exception_call_table + (\num * 8),	%rax
 call	*%rax
 mov		%rdi,	%rsp
 
@@ -69,7 +69,7 @@ push    %fs
 pushaq
 
 mov		%rsp,	%rdi
-mov		__irq_call_table + (\num * 8),	%rax
+mov	__irq_call_table + (\num * 8),	%rax
 call	*%rax
 mov		%rdi,	%rsp
 

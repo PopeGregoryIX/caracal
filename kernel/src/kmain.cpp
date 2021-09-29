@@ -14,6 +14,7 @@
 #include <runtime/cxx.h>
 #include <machine.h>
 #include <cpu.h>
+#include <process/process.h>
 
 extern "C" void kmain();
 extern "C" void _init( void );
@@ -50,7 +51,7 @@ void kmain()
 		debug << ConsoleColour(0xFFFFFF, 0x000000);
 		INFO( "Caracal v1.0 Debug Console" );
 		INFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
-
+	
 		if(Machine::GetInstance().Boot())
 		{
 			INFO("Architecture-specific boot routine complete");

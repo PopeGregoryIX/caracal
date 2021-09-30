@@ -35,7 +35,18 @@ namespace arch
     #define PML4E_RANGE 0x8000000000ULL
     #define PML4_RANGE  0x10000000000000ULL
 
-    #define PML4_Entry(Address) 
+    #define PML4_Entry(Address) ((Address) / PML4E_RANGE)
+    #define PD_INDEX(Address) (((Address) >> 21) & 0x1FFULL)
+
+    #define PAGE_PRESENT        (1ULL)
+    #define PAGE_WRITE          (1ULL << 1)
+    #define PAGE_USER           (1ULL << 2)
+    #define PAGE_WRITETHROUGH   (1ULL << 3)
+    #define PAGE_CACHEDISABLE   (1ULL << 4)
+    #define PAGE_ACCESSED       (1ULL << 5)
+    #define PAGE_DIRTY          (1ULL << 6)
+    #define PAGE_LARGE          (1ULL << 7)
+    #define PAGE_GLOBAL         (1ULL << 8)
 }
 
 #endif

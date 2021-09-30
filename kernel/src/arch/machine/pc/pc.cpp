@@ -6,7 +6,10 @@
  */
 #include <machine.h>
 #include <pc.h>
+#include <runtime/cxx.h>
 #include <x86_64.h>
+#include <stdint.h>
+#include <stddef.h>
 #include <debug/debug.h>
 #include <debug/lfbconsoleoutput.h>
 #include <tables/gdt.h>
@@ -20,6 +23,9 @@
 #include <memorylayout.h>
 
 Machine& Machine::GetInstance( void ) { return arch::Pc::GetPcInstance(); }
+extern "C" uint8_t mmio;
+extern "C" uint8_t kernelStart;
+extern "C" uint8_t kernelEnd;
 
 namespace arch
 {
@@ -68,24 +74,53 @@ namespace arch
 		INFO("Creating paging structures");
 
 		pageDirectoryEntry_t* pml4 = (pageDirectoryEntry_t*)CPU_CLASS::ReadCr3();
-		INFO("PML4: " << (uint64_t)pml4);
 
 		//	First, identity map the entire physical page space
 		uint64_t maxPhysical = MemoryArray::GetInstance().GetHighestAddress();
 		uint64_t pageDirectoryCount = maxPhysical / PD_RANGE;
+		if(maxPhysical % PD_RANGE) pageDirectoryCount++;
 
-		INFO("Page directories required = " << pageDirectoryCount);
+		pageDirectoryEntry_t* tmpPdpt = (pageDirectoryEntry_t*)(pml4[0].Address());
+		pageDirectoryEntry_t* tmpPd;
+
+		//	BootBoot maps the lower 16GiB. Remap with large pages
+		if(maxPhysical > (16ULL * 1024ULL * 1024ULL * 1024ULL)) 
+		{
+			FATAL("Physical memory size > 16GiB. CreateInitialProcessSpace needs to be amended.");
+			maxPhysical = (16ULL * 1024ULL * 1024ULL * 1024ULL);
+		}
+
+		for(size_t i = 0; i <= maxPhysical; i += PDE_RANGE)
+		{ 
+			if((i % PDPT_RANGE) == 0)
+				tmpPd = (pageDirectoryEntry_t*)tmpPdpt[i / PD_RANGE].Address();
+
+			((uint64_t*)tmpPd)[(i % PD_RANGE) / PDE_RANGE] = i | PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL;
+		}
 
 		/**
-		 * We can use a 2MiB window at 0x200000 - 0x400000 to prepare paging structures
-		 * to create all the various paging structures we need.
-		 * To aid this, we allocate all page directories on a 2MiB boundary.
-		 */
-		pageDirectoryEntry_t* lowPdpt = (pageDirectoryEntry_t*)(pml4[0].Address());
-		pageDirectoryEntry_t* lowPd = (pageDirectoryEntry_t*)(lowPdpt[0].Address());
+		 * Based on the bootboot specification, we have MMIO then the LFB,
+		 * then the BOOTBOOT sructure.
+		 * The LFB should only need 2MiB max (this even covers 4k @ 32 bit).
+		 *
+		 * Now map the higher half.
+		 */		
 
-		//	BootBoot maps the lower 16GiB. Remap with large tables
-		for(size_t i = 0; i < PD_RANGE; i += PDE_RANGE) ((uint64_t*)lowPd)[i / PDE_RANGE] = i | 0x103ULL;
+		//	1 - Copy the entire kernel in to a new space aligned at 2MiB (the additional 0x2000 is for BootBoot structures)
+		uintptr_t kernelSize = ((uint64_t)&kernelEnd - (uint64_t)&kernelStart) + 0x2000;
+		uintptr_t kernelPages = kernelSize / 0x200000;
+		if(kernelSize % 0x200000) kernelPages++;
+		uintptr_t newKernel = PageFrameAllocator::GetInstance().Allocate(kernelPages * 0x200000, 0x200000);
+		if(newKernel == 0xFFFFFFFFFFFFFFFFULL) FATAL("Unable to allocate physical memory for Kernel.");
+		::memorycopy((void*)newKernel, (void*)((uint64_t)&kernelStart - 0x2000), kernelSize);
+
+		tmpPdpt = (pageDirectoryEntry_t*)pml4[0x1FF].Address();
+		tmpPd = (pageDirectoryEntry_t*)tmpPdpt[0x1FF].Address();
+
+		for(size_t i = 0; i < kernelPages; ++i)
+			((uint64_t*)tmpPd)[PD_INDEX((uintptr_t)&kernelStart) + i] = (newKernel + (i * 0x200000)) | PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL;		
+		
+		//	next, blank all memory between the end of the kernel and the stack, leaving just the single 2MiB page at the top of RAM for the stack
 		CPU_CLASS::WriteCr3((uint64_t)pml4);
 	}
 

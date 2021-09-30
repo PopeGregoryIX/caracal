@@ -20,6 +20,7 @@ PHDRS
 SECTIONS
 {
     . = 0xfffffffff8002000;
+    kernelStart = .;
     .text : {
         KEEP(*(.text.boot)) *(.text .text.*)
         *(.rodata .rodata.*)
@@ -33,6 +34,8 @@ SECTIONS
         *(.bss .bss.*)
         *(COMMON)
     } :boot
+
+    kernelEnd = .;
 
     /DISCARD/ : { *(.comment) }
 }

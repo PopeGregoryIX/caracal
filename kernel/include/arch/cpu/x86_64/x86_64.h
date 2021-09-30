@@ -33,6 +33,7 @@ namespace arch
 			static inline uint64_t ReadCr4(void) { uint64_t value; asm volatile ( "movq %%cr4, %0" : "=r"(value) ); return value; }
 
 			static inline void WriteCr3(uint64_t value) { asm volatile ( "movq %0, %%cr3" : : "a"(value) ); }
+			static inline void WriteCr4(uint64_t value) { asm volatile ( "movq %0, %%cr4" : : "a"(value) ); }
 	};
 }
 

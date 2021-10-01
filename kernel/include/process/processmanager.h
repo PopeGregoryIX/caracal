@@ -13,6 +13,13 @@ class ProcessManager
         static ProcessManager& GetInstance( void ) { return _instance;  }
 
         void Initialise( Process& initProcess );
+
+        /**
+         * @brief Get the current Process object executing on the current core.
+         * 
+         * @return A reference to the current process.
+         */
+        Process& GetCurrentProcess( void );
 };
 
 #endif

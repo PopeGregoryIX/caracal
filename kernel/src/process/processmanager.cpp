@@ -4,6 +4,8 @@
 #include <process/process.h>
 #include <process/thread.h>
 
+ProcessManager ProcessManager::_instance;
+
 void ProcessManager::Initialise( Process& initProcess )
 {
     (void)initProcess;

@@ -110,7 +110,14 @@ template <class T> T* memorycopy(const T* dest, const T* src, size_t count)
 
 inline void* memorycopy(const void* dest, const void* src, size_t count)
 {
-    return (void*)memorycopy<char>((const char*)dest, (const char*)src, count);
+    if((count % 8) == 0)
+        return (void*)memorycopy<uint64_t>((uint64_t*)dest, (uint64_t*)src, count / 8);
+    else if ((count % 4) == 0)
+        return (void*)memorycopy<uint32_t>((uint32_t*)dest, (uint32_t*)src, count / 4);
+    else if ((count % 2) == 0)
+        return (void*)memorycopy<uint16_t>((uint16_t*)dest, (uint16_t*)src, count / 2);
+    else
+        return (void*)memorycopy<char>((const char*)dest, (const char*)src, count);
 }
 ///////////////////////////////////////////////////////////////////////
 

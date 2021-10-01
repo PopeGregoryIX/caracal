@@ -47,6 +47,10 @@ namespace arch
     #define PAGE_DIRTY          (1ULL << 6)
     #define PAGE_LARGE          (1ULL << 7)
     #define PAGE_GLOBAL         (1ULL << 8)
+
+    #define KERNEL_HEAP ((uint64_t)((0xFFFFFFFFFFFFFFFFULL - (PDPT_RANGE * 2)) + 1))
+
+    #define KERNEL_HEAP_SIZE (PDPT_RANGE)
 }
 
 #endif

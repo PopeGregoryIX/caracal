@@ -20,9 +20,12 @@
 #include <process/processmanager.h>
 #include <process/thread.h>
 #include <memory/memoryarray.h>
-#include <memorylayout.h>
+#include <memory/memorylayout.h>
+#include <memory/virtualmemorymanager.h>
+#include <memory/heapmanager.h>
 
 Machine& Machine::GetInstance( void ) { return arch::Pc::GetPcInstance(); }
+
 extern "C" uint8_t mmio;
 extern "C" uint8_t kernelStart;
 extern "C" uint8_t kernelEnd;
@@ -30,8 +33,8 @@ extern "C" uint8_t kernelEnd;
 namespace arch
 {
 	Pc Pc::_instance;
-	Process Pc::_initialProcess(0, nullptr);
-	Thread Pc::_initialThread(0, nullptr);
+	Process Pc::_initialProcess(0, 0, Pc::_initialThread);
+	Thread Pc::_initialThread(0, 0);
 
 	void Pc::AddDefaultConsoleDevices(DebugConsole& console)
 	{
@@ -61,11 +64,15 @@ namespace arch
 		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
 		INFO("Initialise Virtual Memory Manager");
 		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
+		VirtualMemoryManager::GetInstance().GetKernelAllocator().SetHeapManager(HeapManager::RequestKernelHeapBytes);
 
 		//	5. Set up an inital task and process block so that the arch-independent kernel
 		//	can initialise ProcessManager.
-		INFO("Creating initial Process and Thread");
 		this->CreateInitialProcessSpace();
+		INFO("Creating initial Process and Thread");
+		_initialProcess = Process(0, CPU_CLASS::ReadCr3(), _initialThread);
+		ProcessManager::GetInstance().Initialise(_initialProcess);
+
 		return true;
 	}
 
@@ -97,13 +104,14 @@ namespace arch
 
 			((uint64_t*)tmpPd)[(i % PD_RANGE) / PDE_RANGE] = i | PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL;
 		}
+		
+		tmpPd = (pageDirectoryEntry_t*)(tmpPdpt[0]).Address();
+		((uint64_t*)tmpPd)[0] = 0; // < To catch null references
 
 		/**
 		 * Based on the bootboot specification, we have MMIO then the LFB,
 		 * then the BOOTBOOT sructure.
-		 * The LFB should only need 2MiB max (this even covers 4k @ 32 bit).
 		 *
-		 * Now map the higher half.
 		 */		
 
 		//	1 - Copy the entire kernel in to a new space aligned at 2MiB (the additional 0x2000 is for BootBoot structures)
@@ -116,11 +124,37 @@ namespace arch
 
 		tmpPdpt = (pageDirectoryEntry_t*)pml4[0x1FF].Address();
 		tmpPd = (pageDirectoryEntry_t*)tmpPdpt[0x1FF].Address();
+				
+		/**
+		 * Iterate over the kernel PD, unmapping all unused pages
+		 * TODO: We need to map out the MMIO
+		 * 
+		 * The LFB should only need 2MiB max (this even covers 4k @ 32 bit).
+		 */
+		uintptr_t pdBase = (0xFFFFFFFFFFFFFFFF - PD_RANGE) + 1;
+		uintptr_t lfbLoc = tmpPd[PD_INDEX((size_t)&fb)].Address();
 
-		for(size_t i = 0; i < kernelPages; ++i)
-			((uint64_t*)tmpPd)[PD_INDEX((uintptr_t)&kernelStart) + i] = (newKernel + (i * 0x200000)) | PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL;		
-		
-		//	next, blank all memory between the end of the kernel and the stack, leaving just the single 2MiB page at the top of RAM for the stack
+		for(size_t i = pdBase; i < UINT64_MAX - 0x200000; i+= 0x200000)
+		{
+			if(i >= (uint64_t)&fb && i <= ((uint64_t)&fb + 0x200000))
+				((uint64_t*)tmpPd)[PD_INDEX(i)] = (lfbLoc + (i - (uint64_t)&fb)) 
+										| PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL;
+			else if((i >= ((uint64_t)&kernelStart - 0x2000)) && i <= (uint64_t)&kernelEnd)
+				((uint64_t*)tmpPd)[PD_INDEX(i)] = (newKernel + (i - (uint64_t)(&kernelStart - 0x2000))) 
+										| PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL;
+			else
+				((uint64_t*)tmpPd)[PD_INDEX(i)] = 0;
+		}
+
+		/**
+		 * 	Next, clear all PML4 entries except 0 (identity mapping of physical RAM,
+		 *  0x1FE (page structures) and 0x1FF (kernel space)
+		 */		
+		for(size_t i = 1; i < 0x1FF; ++i) ((uint64_t*)pml4)[i] = 0;
+
+		//	Create a PDPT for the kernel heap
+		((uint64_t*)pml4)[0x1FE] = PageFrameAllocator::GetInstance().Allocate() | PAGE_PRESENT | PAGE_WRITE | PAGE_GLOBAL;
+
 		CPU_CLASS::WriteCr3((uint64_t)pml4);
 	}
 

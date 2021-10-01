@@ -16,6 +16,7 @@
 #include <debug/debug.h>
 #include "x86_64.h"
 #include <registers.h>
+#include "memory/memorylayout.h"
 
 /**
  * @brief Contains the architecture-dependent portions of the kernel.
@@ -32,8 +33,8 @@ typedef int64_t intptr_t;
 typedef uint64_t processId_t;
 typedef uint64_t threadId_t;
 
-typedef uint64_t* processState_t;
-typedef Registers* threadState_t;
+typedef uint64_t processState_t;        //< This will be a value of CR3 for the current process
+typedef Registers* threadState_t;       //< This will be a pointer to the top of a stack for the current process.
 
 typedef struct pageTableEntry
 {

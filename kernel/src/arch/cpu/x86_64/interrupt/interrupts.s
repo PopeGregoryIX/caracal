@@ -21,14 +21,14 @@ pushaq
 mov		%rsp,	%rdi
 mov 	__exception_call_table + (\num * 8),	%rax
 call	*%rax
-mov		%rdi,	%rsp
+mov		%rax,	%rsp
 
 popaq
 
 pop     %fs
 pop     %gs
 
-add		$0x16,	%esp
+add		$0x16,	%rsp
 iretq
 .endm
 
@@ -36,6 +36,7 @@ iretq
 .macro ISR_EC num
 .globl isr\num
 isr\num:
+
 pushq	$\num
 
 push    %gs
@@ -46,13 +47,14 @@ pushaq
 mov		%rsp,	%rdi
 mov    __exception_call_table + (\num * 8),	%rax
 call	*%rax
-mov		%rdi,	%rsp
+mov		%rax,	%rsp
 
 popaq
 
 pop     %fs
 pop     %gs
-add		$0x16,	%esp
+
+add		$0x16,	%rsp
 iretq
 .endm
 
@@ -71,14 +73,14 @@ pushaq
 mov		%rsp,	%rdi
 mov	__irq_call_table + (\num * 8),	%rax
 call	*%rax
-mov		%rdi,	%rsp
+mov		%rax,	%rsp
 
 popaq
 
 pop     %fs
 pop     %gs
 
-add		$0x16,	%esp
+add		$0x16,	%rsp
 iretq
 .endm
 

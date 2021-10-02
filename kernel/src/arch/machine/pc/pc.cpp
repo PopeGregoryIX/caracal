@@ -64,7 +64,7 @@ namespace arch
 		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
 		INFO("Initialise Virtual Memory Manager");
 		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
-		VirtualMemoryManager::GetInstance().GetKernelAllocator().SetHeapManager(HeapManager::RequestKernelHeapBytes);
+		VirtualMemoryManager::GetInstance().GetKernelAllocator().Initialise(HeapManager::RequestKernelHeapBytes);
 
 		//	5. Set up an inital task and process block so that the arch-independent kernel
 		//	can initialise ProcessManager.

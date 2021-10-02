@@ -60,6 +60,9 @@ void kmain()
 		{
 			FATAL("Boot routine failed");
 		}
+
+		char* x = new char[0x200];
+		x[0] = 0;
 	}
 	else
 		Machine::GetInstance().HaltCurrentCore();

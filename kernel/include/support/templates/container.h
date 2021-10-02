@@ -12,9 +12,11 @@ protected:
     size_t _count;
 
 public:
-    inline size_t Bytes( void ) { return _count * sizeof(T); }
+    inline Container() : _count(0){}
 
-    inline size_t Count( void ) { return _count; }
+    inline virtual size_t Bytes( void ) { return _count * sizeof(T); }
+
+    inline virtual  size_t Count( void ) { return _count; }
 
     virtual T* GetFirst( void ) = 0;
 

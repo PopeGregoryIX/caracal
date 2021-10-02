@@ -18,13 +18,15 @@ class VirtualMemoryManager
 
         VirtualMemoryManager( void );
 
+        void Intialise( void );
+
         inline MemoryAllocator& GetKernelAllocator( void ) { return _kernelAllocator; }
 
         //  Goes through all memory ranges to check whether we've allocated or not.
-        inline bool IsAllocated(uintptr_t address)
+        inline MemoryAllocator* IsAllocated(uintptr_t address)
         {
-            if(_kernelAllocator.IsAllocated(address)) return true;
-            return false;
+            if(_kernelAllocator.IsAllocated(address)) return &(this->_kernelAllocator);
+            return nullptr;
         }
 };
 

@@ -7,5 +7,10 @@
 VirtualMemoryManager VirtualMemoryManager::_instance;
 
 VirtualMemoryManager::VirtualMemoryManager( void )
-: _kernelAllocator(KERNEL_HEAP, KERNEL_HEAP_SIZE)
+: _kernelAllocator(KERNEL_HEAP_INCREMENT)
 {}
+
+void VirtualMemoryManager::Intialise( void )
+{
+    
+}

@@ -22,22 +22,25 @@ namespace arch
     //  PT Covers 2 MiB
     #define PTE_RANGE   0x1000ULL
     #define PT_RANGE    0x200000ULL
+    #define PT_INDEX(Address) (((Address) >> 12) & 0x1FFULL)
     
     //  PD Covers 1GiB
     #define PDE_RANGE   0x200000ULL
     #define PD_RANGE    0x40000000ULL
+    #define PD_INDEX(Address) (((Address) >> 21) & 0x1FFULL)
 
     //  PDPT Covers 512GiB
     #define PDPTE_RANGE 0x40000000ULL
     #define PDPT_RANGE  0x8000000000ULL
+    #define PDPT_INDEX(Address) (((Address) >> 30) & 0x1FFULL)
 
     //  Entire PML4 covers 256TiB
     #define PML4E_RANGE 0x8000000000ULL
     #define PML4_RANGE  0x10000000000000ULL
+    #define PML4_INDEX(Address) (((Address) >> 39) & 0x1FFULL)
 
     #define PML4_Entry(Address) ((Address) / PML4E_RANGE)
-    #define PD_INDEX(Address) (((Address) >> 21) & 0x1FFULL)
-
+    
     #define PAGE_PRESENT        (1ULL)
     #define PAGE_WRITE          (1ULL << 1)
     #define PAGE_USER           (1ULL << 2)
@@ -48,9 +51,11 @@ namespace arch
     #define PAGE_LARGE          (1ULL << 7)
     #define PAGE_GLOBAL         (1ULL << 8)
 
-    #define KERNEL_HEAP ((uint64_t)((0xFFFFFFFFFFFFFFFFULL - (PDPT_RANGE * 2)) + 1))
-
+    #define KERNEL_HEAP ((uint64_t)((UINT64_MAX - (PDPT_RANGE * 2)) + 1))
     #define KERNEL_HEAP_SIZE (PDPT_RANGE)
+    #define KERNEL_HEAP_MAX ((KERNEL_HEAP + KERNEL_HEAP_SIZE) - 1)
+
+    #define KERNEL_HEAP_INCREMENT 0x200000
 }
 
 #endif

@@ -191,7 +191,7 @@ uint64_t StaticBitmap::FindLastClear(size_t length, size_t alignment)
     size_t topFrame = (_bytes / sizeof(uint64_t)) - frames;
     topFrame-= topFrame % alignFrames;
 
-    for(size_t i = topFrame; i != UINT64_MAX; i-= topFrame)
+    for(size_t i = topFrame; i != UINT64_MAX; i-= alignFrames)
     {
         // for speed find by whole frames only.
         bool found = true;
@@ -208,8 +208,11 @@ uint64_t StaticBitmap::FindLastClear(size_t length, size_t alignment)
 void StaticBitmap::Set(size_t base, size_t length)
 {
     if(base > Max() || (base + length - 1) > Max())         
+    {
+        INFO("Base: " << base << "\tLength: " << length);
+        
         FATAL("Overflow detected on StaticBitmap while setting bits.");
-
+    }
     size_t startQuad = base / BITS_PER_FRAME;
     size_t endQuad = (base + length - 1) / BITS_PER_FRAME;
 

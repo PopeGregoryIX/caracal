@@ -5,18 +5,18 @@
  * \brief Defines the delete operator override for the kernel.
  */
 
-//#include <HeapManager.h>
+#include <memory/virtualmemorymanager.h>
+#include <cpu.h>
+#include <stddef.h>
 
 void operator delete(void *p)
 {
-	(void)p;
-    //if(p != NULL) HeapManager::getInstance().free(p);
+	VirtualMemoryManager::GetInstance().GetKernelAllocator().Free(p);
 }
 
 void operator delete[](void *p)
 {
-	(void)p;
-	//if(p != NULL) HeapManager::getInstance().free(p);
+	VirtualMemoryManager::GetInstance().GetKernelAllocator().Free(p);
 }
 
 

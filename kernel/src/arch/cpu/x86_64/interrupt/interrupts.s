@@ -13,9 +13,6 @@ isr\num:
 pushq	$0
 pushq	$\num
 
-push    %gs
-push    %fs
-
 pushaq
 
 mov		%rsp,	%rdi
@@ -25,10 +22,7 @@ mov		%rax,	%rsp
 
 popaq
 
-pop     %fs
-pop     %gs
-
-add		$0x16,	%rsp
+add		$0x10,	%rsp
 iretq
 .endm
 
@@ -36,11 +30,7 @@ iretq
 .macro ISR_EC num
 .globl isr\num
 isr\num:
-
 pushq	$\num
-
-push    %gs
-push    %fs
 
 pushaq
 
@@ -51,10 +41,7 @@ mov		%rax,	%rsp
 
 popaq
 
-pop     %fs
-pop     %gs
-
-add		$0x16,	%rsp
+add		$0x10,	%rsp
 iretq
 .endm
 
@@ -65,9 +52,6 @@ irq\num:
 pushq	$0
 pushq	$\num
 
-push    %gs
-push    %fs
-
 pushaq
 
 mov		%rsp,	%rdi
@@ -77,10 +61,7 @@ mov		%rax,	%rsp
 
 popaq
 
-pop     %fs
-pop     %gs
-
-add		$0x16,	%rsp
+add		$0x10,	%rsp
 iretq
 .endm
 

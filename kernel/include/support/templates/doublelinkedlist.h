@@ -75,9 +75,10 @@ class DoubleLinkedList : public Container<T>
             item.prev = item.next = nullptr;
             this->_count--;
         }
-    protected:
-        typedef Iterator<DoubleLinkedList, DoubleLinkedList<T>::doubleLinkedListItem> iterator_t;
 
+        typedef Iterator<DoubleLinkedList, DoubleLinkedList<T>::doubleLinkedListItem> iterator_t;
+        inline iterator_t GetIterator( void ) { return iterator_t(*this);   }
+    protected:
         DoubleLinkedList<T>::doubleLinkedListItem* Find(T value)
         {
             if(this->Count() > 0)
@@ -90,8 +91,6 @@ class DoubleLinkedList : public Container<T>
             }
             return nullptr;
         }
-
-        inline iterator_t GetIterator( void ) { return iterator_t(*this);   }
 
         DoubleLinkedList<T>::doubleLinkedListItem* _first;
         DoubleLinkedList<T>::doubleLinkedListItem* _last;

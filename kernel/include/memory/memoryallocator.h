@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <archdef.h>
-#include <support/templates/ordereddoublelinkedlist.h>
 
 typedef uintptr_t (*requestHeapBytes)(intptr_t bytes);
 
@@ -19,19 +18,29 @@ class MemoryAllocator
 
         inline uintptr_t HeapSize( void ) { return _heapTop - _heapStart; } 
 
-        struct MemoryAllocatorArea
+        typedef struct MemoryAllocatorArea
         {
             uintptr_t base;
             size_t bytes;
-        };
 
-        typedef OrderedDoubleLinkedList<MemoryAllocator::MemoryAllocatorArea>::doubleLinkedListItem listItem_t;
+            MemoryAllocatorArea* next;
+        } item_t;
 
-        OrderedDoubleLinkedList<MemoryAllocator::MemoryAllocatorArea> _free;
+        item_t* _free;
+        size_t _freeCount;
+
+        void ExtendHeap(size_t bytes);
+    public:
+        // linked list management
+        void AddFree( item_t* item);
+        void RemoveFree( item_t* item);
+
     public:
         MemoryAllocator( uintptr_t heapIncrement );
 
         void* Allocate(size_t bytes);
+
+        void Free(void* ptr);
 
         void Initialise( requestHeapBytes heapManager );
 

@@ -43,7 +43,12 @@ class StaticBitmap
 
         inline uint64_t FindAndSet( size_t length ) { uint64_t returnValue = FindLastClear(length); if(returnValue != UINT64_MAX) Set(returnValue, length); return returnValue; }
 
-        inline uint64_t FindAndSet( size_t length, size_t alignment ) { uint64_t returnValue = FindLastClear(length, alignment); if(returnValue != UINT64_MAX) Set(returnValue, length); return returnValue; }
+        inline uint64_t FindAndSet( size_t length, size_t alignment ) 
+        { 
+            uint64_t returnValue = FindLastClear(length, alignment); 
+            if(returnValue != UINT64_MAX) Set(returnValue, length); 
+            return returnValue; 
+        }
 
         uint64_t FindFirstClear( void );
         
@@ -60,7 +65,6 @@ class StaticBitmap
         inline void Set(size_t bit) 
         { 
             if(bit > Max()) FATAL("Overflow detected on StaticBitmap while setting bits.");
-            
             _bitmap[bit / BITS_PER_FRAME] |= (1ULL << (bit % BITS_PER_FRAME));    
         }
         

@@ -62,7 +62,9 @@ void kmain()
 		}
 
 		char* x = new char[0x200];
+		INFO("Test Memory Allocation at " << (uintptr_t)x);
 		x[0] = 0;
+		delete x;
 	}
 	else
 		Machine::GetInstance().HaltCurrentCore();

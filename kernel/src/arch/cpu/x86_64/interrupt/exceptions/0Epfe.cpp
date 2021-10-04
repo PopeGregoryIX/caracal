@@ -36,17 +36,14 @@ namespace arch
                     pd = 
                         (pageDirectoryEntry_t*)((((uint64_t*)pdpt)[PDPT_INDEX(faultAddress)] = (uint64_t)HeapManager::GetNewPagingStructure() | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE) & ~0xFFFULL);
 
-                INFO("PDPT: " << (uint64_t)pdpt);
-                INFO("PD: " << (uint64_t)pd);
-                INFO("INDEX: " << (uint64_t)PD_INDEX(faultAddress));
-                INFO("Address:" << pd[PD_INDEX(faultAddress)].Address());
-
                 if(pd[PD_INDEX(faultAddress)].Address() == 0)
-                    ((uint64_t*)pd)[PD_INDEX(faultAddress)] = PageFrameAllocator::GetInstance().Allocate(0x200000) | 
+                {
+                    ((uint64_t*)pd)[PD_INDEX(faultAddress)] = PageFrameAllocator::GetInstance().Allocate(0x200000, 0x200000) | 
                         PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL;
-            }
 
-            handled = true;
+                    handled = true;
+                }
+            }
         }
         
         if(!handled)

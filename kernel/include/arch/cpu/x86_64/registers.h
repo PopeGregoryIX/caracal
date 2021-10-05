@@ -26,7 +26,7 @@ namespace arch
 	   uint64_t interruptNumber, errorCode;
 	   uint64_t rip, cs, rflags, userRsp, userSs;
 
-	   uint64_t* Stack(){ return (uint64_t*)(((uint64_t)this) + sizeof(Registers)); }
+	   uint64_t* Stack(){ return (uint64_t*)(((uint64_t)this) + sizeof(struct Registers)); }
 	}__attribute__((packed));
 }
 

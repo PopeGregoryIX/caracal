@@ -13,6 +13,7 @@ namespace arch
     Registers* Exceptions::PageFaultExceptionHandler(Registers* registers)
     {
         uintptr_t faultAddress = CPU_CLASS::ReadCr2();
+        INFO("Registers at " << (uintptr_t)registers);
         VirtualMemoryManager& virtualMemoryManager = VirtualMemoryManager::GetInstance();
         bool handled = false;
         INFO("Page Fault Exception at: " << faultAddress << " with error code " << registers->errorCode);
@@ -21,34 +22,17 @@ namespace arch
         if(allocator != nullptr)
         {
             //  This memory is known to be allocated - we can safely page in.
-            pageDirectoryEntry_t* pml4 = (pageDirectoryEntry_t*)CPU_CLASS::ReadCr3();
             if((faultAddress % 0x200000) != 0) faultAddress = faultAddress - (faultAddress % 0x200000);
-
+            
             if(allocator == &VirtualMemoryManager::GetInstance().GetKernelAllocator())
             {
-                pageDirectoryEntry_t* pdpt = (pageDirectoryEntry_t*)(pml4[PML4_INDEX(faultAddress)].Address());
-                if(pdpt == nullptr)
-                    pdpt = 
-                    (pageDirectoryEntry_t*)((((uint64_t*)pml4)[PML4_INDEX(faultAddress)] = (uint64_t)HeapManager::GetNewPagingStructure() | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE) & ~0xFFFULL);
-
-                pageDirectoryEntry_t* pd = (pageDirectoryEntry_t*)(pdpt[PDPT_INDEX(faultAddress)].Address());
-                if(pd == nullptr) 
-                    pd = 
-                        (pageDirectoryEntry_t*)((((uint64_t*)pdpt)[PDPT_INDEX(faultAddress)] = (uint64_t)HeapManager::GetNewPagingStructure() | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE) & ~0xFFFULL);
-
-                if(pd[PD_INDEX(faultAddress)].Address() == 0)
-                {
-                    ((uint64_t*)pd)[PD_INDEX(faultAddress)] = PageFrameAllocator::GetInstance().Allocate(0x200000, 0x200000) | 
-                        PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL;
-
-                    handled = true;
-                }
+                CPU_CLASS::PageInLarge(PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL, faultAddress);
+                //handled = true;
             }
         }
         
         if(!handled)
         {
-            INFO(" ");
             WARNING("PFE unhandled. Dumping core:");
 
             if(faultAddress < 0x200000ULL)
@@ -57,7 +41,7 @@ namespace arch
             {   WARNING("This seems to be in physical memory space\n\n");  }
             else if (faultAddress < (PDPTE_RANGE * 2))
             {   WARNING("This seems to be in user space\n\n");  }
-            else if(faultAddress > (UINT64_MAX - PDPTE_RANGE))
+            else if(faultAddress > (UINT64_MAX - (PDPT_RANGE * 2)))
             {   WARNING("This seems to be in kernel space\n\n");    }
             else
             {   WARNING("No Suggestions as to what caused this\n\n");   }
@@ -67,6 +51,7 @@ namespace arch
             
             FATAL("Unhandled PFE");
         }
+        FATAL("Registers at " << (uintptr_t)registers);
 
         return registers;
     }

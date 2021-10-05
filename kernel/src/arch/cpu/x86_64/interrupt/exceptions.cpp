@@ -74,8 +74,8 @@ namespace arch
         uint64_t* stack = registers->Stack();
         for(size_t i = 0; i < 10; ++i)
         {
-            if((uint64_t)&stack[i] > KERNEL_HEAP)
-                debug << stack[i] << '\n';
+            debug << (uint64_t)stack << ":" << *stack << '\n';
+            stack++;
         }
     }
 }

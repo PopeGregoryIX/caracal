@@ -27,7 +27,6 @@ class MemoryAllocator
         } item_t;
 
         item_t* _free;
-        size_t _freeCount;
 
         void ExtendHeap(size_t bytes);
     public:

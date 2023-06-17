@@ -1,6 +1,7 @@
 BINARY:= kernel.sys
 
 CPPFLAGS+= -mno-red-zone -mcmodel=large
+LDFLAGS+= --no-warn-rwx-segments
 
 .PHONY:	all	makedirs clean dump dist doc
 
@@ -15,7 +16,7 @@ dist:
 	@cp $(BINDIR)/$(BINARY) $(FILESYSBOOTDIR)/$(FILESYSBINARY)
 	mkdir -p $(ISODIR)
 	rm -f $(ISODIR)/$(ISOFILE)
-	xorriso -as mkisofs -R -f -no-emul-boot -o $(ISODIR)/$(ISOFILE) $(FILESYSDIR)
+	xorriso -as mkisofs -R -f -no-emul-boot -boot-info-table -boot-load-size 4 -e /EFI/BOOT/BOOTX64.EFI  -o $(ISODIR)/$(ISOFILE) $(FILESYSDIR)
 
 dump:
 	@$(CPU)-$(BINFORMAT)-objdump -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(BINARY).txt

@@ -22,16 +22,19 @@ SECTIONS
     . = 0xfffffffff8002000;
     kernelStart = .;
     .text : {
-        KEEP(*(.text.boot)) *(.text .text.*)
-        *(.rodata .rodata.*)
+        KEEP(*(.text.boot*)) 
+        *(.fini*)
+        *(.init*)
 		*(.ctor*)
 		*(.dtor*)
-		*(.ehframe*)
-        *(.data .data.*)
-    } :boot
+		*(.ehframe* .eh_frame*)
+        *(.text* .text.*)
+        *(.rodata* .rodata.*)
+        *(.data* .data.*)
+    } :boot 
     .bss (NOLOAD) : {
         . = ALIGN(16);
-        *(.bss .bss.*)
+        *(.bss* .bss.*)
         *(COMMON)
     } :boot
 

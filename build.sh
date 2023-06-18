@@ -12,4 +12,5 @@ cd ..
 cp ./kernel/bin/pc/x86_64-elf/kernel.sys ./filesystem/sys/core
 
 ./tools/bootboot/mkbootimg caracal.json ./images/caracal64.img
+#vboxmanage convertfromraw --format VDI ./images/caracal64.img ./images/caracal64.vdi
 #genisoimage -iso-level 1 -b "bootboot.bin" -boot-info-table -no-emul-boot -boot-load-size 4 -input-charset utf-8 -o ./images/caracal.iso ./filesystem

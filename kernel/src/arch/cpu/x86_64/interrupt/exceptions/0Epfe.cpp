@@ -13,12 +13,11 @@ namespace arch
     Registers* Exceptions::PageFaultExceptionHandler(Registers* registers)
     {
         uintptr_t faultAddress = CPU_CLASS::ReadCr2();
-        INFO("Registers at " << (uintptr_t)registers);
         VirtualMemoryManager& virtualMemoryManager = VirtualMemoryManager::GetInstance();
         bool handled = false;
         INFO("Page Fault Exception at: " << faultAddress << " with error code " << registers->errorCode);
 
-        MemoryAllocator* allocator = virtualMemoryManager.IsAllocated(faultAddress);                
+        MemoryAllocator* allocator = virtualMemoryManager.IsAllocated(faultAddress);    
         if(allocator != nullptr)
         {
             //  This memory is known to be allocated - we can safely page in.
@@ -27,9 +26,10 @@ namespace arch
             if(allocator == &VirtualMemoryManager::GetInstance().GetKernelAllocator())
             {
                 CPU_CLASS::PageInLarge(PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE | PAGE_GLOBAL, faultAddress);
-                //handled = true;
+                handled = true;
             }
         }
+
         
         if(!handled)
         {
@@ -45,13 +45,10 @@ namespace arch
             {   WARNING("This seems to be in kernel space\n\n");    }
             else
             {   WARNING("No Suggestions as to what caused this\n\n");   }
-            
 
             Exceptions::DumpCore(registers);
-            
-            FATAL("Unhandled PFE");
+            FATAL("Unhandled PFE");            
         }
-        FATAL("Registers at " << (uintptr_t)registers);
 
         return registers;
     }

@@ -61,12 +61,10 @@ void kmain()
 			FATAL("Boot routine failed");
 		}
 
-		for(;;);
-
 		char* x = new char[0x200];
 		INFO("Test Memory Allocation at " << (uintptr_t)x);
 		x[0] = 0;
-		//delete x;
+		delete x;
 	}
 	else
 		Machine::GetInstance().HaltCurrentCore();

@@ -17,6 +17,7 @@
 
 namespace arch
 {
+    #define EXCEPTION_DOUBLE_FAULT  0x08
     #define EXCEPTION_PAGE_FAULT    0x0E
 
     /**
@@ -37,6 +38,7 @@ namespace arch
 
             static void DumpCore(Registers* registers);
         public:
+            static Registers* DoubleFaultExceptionHandler(Registers* registers);
             static Registers* PageFaultExceptionHandler(Registers* registers);
     };
 }

@@ -53,29 +53,30 @@ namespace arch
         debug << "\n";
 
         PrintRegisters("RSP", registers->userRsp, "SS", registers->userSs);
-
         PrintRegisters("RBP", registers->rbp, "DS", 0);
 
         debug << "\n";
 
         PrintRegisters("CS", registers->cs, "EIP", registers->rip);
         PrintRegisters("Code", registers->errorCode, "Num", registers->interruptNumber);
-        
-        debug << "\n";
 
+        debug << "\n";
+        
         PrintRegisters("CR0", CPU_CLASS::ReadCr0(), "CR2", CPU_CLASS::ReadCr2());
         PrintRegisters("CR3", CPU_CLASS::ReadCr3(), "CR4", CPU_CLASS::ReadCr4());
 
         debug << "\nError Code: " << (uint64_t)registers->errorCode;
 
         debug << "\nStack stored at: " << (uint64_t)registers << "\n";
-        debug << "First 10 stack frames:\n";
+        
+        /*debug << "First 10 stack frames:\n";
 
+        
         uint64_t* stack = registers->Stack();
         for(size_t i = 0; i < 10; ++i)
         {
             debug << (uint64_t)stack << ":" << *stack << '\n';
             stack++;
-        }
+        }*/
     }
 }

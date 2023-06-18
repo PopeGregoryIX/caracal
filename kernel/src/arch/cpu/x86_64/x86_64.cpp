@@ -35,7 +35,7 @@ namespace arch
 	{
 		INFO("Page In Virtual: " << virtualAddress << " physical " << physicalAddress << " flags " << flags);
 		uint64_t* pml4 = (uint64_t*)CPU_CLASS::ReadCr3();
-
+		
 		if(virtualAddress == UINT64_MAX) FATAL("Unable to page in - no physical memory allocated.");
 		if((virtualAddress % 0x200000ULL) != 0) FATAL("Please align virtual address before paging in! At:" << virtualAddress);
 		if((physicalAddress % 0x200000ULL) != 0) FATAL("Please align physical address before paging in! At:" << physicalAddress);
@@ -44,7 +44,7 @@ namespace arch
 		if(pdpt == nullptr)
 		{
 			pml4[PML4_INDEX(virtualAddress)] = ((uint64_t)HeapManager::GetNewPagingStructure()) | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
-			pdpt = (uint64_t*)(pml4[PML4_INDEX(virtualAddress)] & ~0x103);
+			pdpt = (uint64_t*)(pml4[PML4_INDEX(virtualAddress)] & ~0xFFFULL);
 		}
 
 		uint64_t* pd = (uint64_t*)(pdpt[PDPT_INDEX(virtualAddress)] & ~0xFFFULL);

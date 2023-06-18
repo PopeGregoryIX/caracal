@@ -20,7 +20,9 @@
  */
 void *operator new(size_t size)
 {
-	return VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(size);
+	void* kalloc = VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(size);
+	if(kalloc == nullptr) FATAL("Null Pointer Allocated in Kernel Space");
+	return kalloc;
 }
 
 /**
@@ -31,5 +33,7 @@ void *operator new(size_t size)
  */
 void *operator new[](size_t size)
 {
-	return VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(size);
+	void* kalloc = VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(size);
+	if(kalloc == nullptr) FATAL("Null Pointer Allocated in Kernel Space");
+	return kalloc;
 }

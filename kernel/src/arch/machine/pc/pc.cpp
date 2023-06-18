@@ -52,27 +52,31 @@ namespace arch
 		Gdt::GetInstance().Load();
 
 		//	2. Initialise IDT - we need to be able to handle interrupts
+		//	   Installing the Double Fault handler makes the code a little more robust (preventing triple-faults?)
 		INFO("Initialise IDT on BSP");
 		Idt::GetInstance().Load();
+		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_DOUBLE_FAULT, Exceptions::DoubleFaultExceptionHandler);
 
 		//	3. Initialise the memory map - we need to be able to allocate physical pages
 		INFO("Initialise Page Frame Allocator");
 		PageFrameAllocator& pageFrameAllocator = ::PageFrameAllocator::GetInstance();
 		pageFrameAllocator.Initialise(0x1000);
 		
-		//	4. Initialise the virtual memory allocation system.
-		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
-		INFO("Initialise Virtual Memory Manager");
-		for(;;);
-		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
-		VirtualMemoryManager::GetInstance().GetKernelAllocator().Initialise(HeapManager::RequestKernelHeapBytes);
-
-		//	5. Set up an inital task and process block so that the arch-independent kernel
-		//	can initialise ProcessManager.
+		//	4. Set up an inital task and process block so that the arch-independent kernel
+		//	can initialise ProcessManager. This is done *before* initialising the
+		//	VMM as this will destroy mapping in the lower part of the heap manager.
 		this->CreateInitialProcessSpace();
 		INFO("Creating initial Process and Thread");
 		_initialProcess = Process(0, CPU_CLASS::ReadCr3(), _initialThread);
 		ProcessManager::GetInstance().Initialise(_initialProcess);
+
+		//	5. Initialise the virtual memory allocation system.
+		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
+		INFO("Initialise Virtual Memory Manager");
+		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
+		VirtualMemoryManager::GetInstance().GetKernelAllocator().Initialise(HeapManager::RequestKernelHeapBytes);
+
+		
 
 		return true;
 	}

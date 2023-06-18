@@ -53,23 +53,22 @@ void kmain()
 		INFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
 
 		if(Machine::GetInstance().Boot())
-		{
-			INFO("Architecture-specific boot routine complete");
-		}
+			INFO("Architecture-specific boot routine complete")
 		else
-		{
 			FATAL("Boot routine failed");
-		}
 
 		char* x = new char[0x200];
 		INFO("Test Memory Allocation at " << (uintptr_t)x);
 		x[0] = 0;
-		delete x;
+		delete[] x;
+
+        char* y = new char [2];
+        INFO("Test Memory Allocation at " << (uintptr_t)y);
 	}
 	else
 		Machine::GetInstance().HaltCurrentCore();
 
-	FATAL("Reached end of kmain routine. No further code to execute");
+	FATAL("Reached end of main routine. No further code to execute");
 
 	_fini();
 }

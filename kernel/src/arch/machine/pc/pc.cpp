@@ -63,6 +63,7 @@ namespace arch
 		//	4. Initialise the virtual memory allocation system.
 		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
 		INFO("Initialise Virtual Memory Manager");
+		for(;;);
 		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
 		VirtualMemoryManager::GetInstance().GetKernelAllocator().Initialise(HeapManager::RequestKernelHeapBytes);
 

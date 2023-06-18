@@ -51,7 +51,7 @@ void kmain()
 		debug << ConsoleColour(0xFFFFFF, 0x000000);
 		INFO( "Caracal v1.0 Debug Console" );
 		INFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
-	
+
 		if(Machine::GetInstance().Boot())
 		{
 			INFO("Architecture-specific boot routine complete");
@@ -60,6 +60,8 @@ void kmain()
 		{
 			FATAL("Boot routine failed");
 		}
+
+		for(;;);
 
 		char* x = new char[0x200];
 		INFO("Test Memory Allocation at " << (uintptr_t)x);

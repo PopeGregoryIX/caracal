@@ -56,6 +56,7 @@ namespace arch
     #define KERNEL_HEAP_MAX ((KERNEL_HEAP + KERNEL_HEAP_SIZE) - 1)
 
     #define KERNEL_HEAP_INCREMENT 0x200000
+    #define KERNEL_HEAP_MINSPLIT  0x1000
 }
 
 #endif

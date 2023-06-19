@@ -63,12 +63,27 @@ void MemoryAllocator::AddUsed(MemoryAllocator::item_t *item)
 
 void* MemoryAllocator::Allocate(size_t bytes)
 {
+    //  align the allocation
+    if((bytes % sizeof(uintptr_t)) != 0) bytes+= (sizeof(uintptr_t) - (bytes % sizeof(uintptr_t)));
+
     item_t* item = _free;
     while(item != nullptr)
     {
         if(item->bytes >= bytes)
         {
             RemoveFree(item);
+
+            //  See if this region is large enough to split
+            if((item->bytes - bytes) > KERNEL_HEAP_MINSPLIT)
+            {
+                item_t* newItem = (item_t*)(item->base + bytes);
+                newItem->base = ((uintptr_t)newItem) + sizeof(item_t);
+                newItem->bytes = ((item->bytes - bytes)) - sizeof(item_t);
+
+                item->bytes = bytes;
+                AddFree(newItem);
+            }
+
             AddUsed(item);
             return (void*)(item->base);
         }
@@ -103,6 +118,9 @@ void MemoryAllocator::Free(void* ptr)
 
 void MemoryAllocator::Initialise( requestHeapBytes allocator )
 {
+    if(KERNEL_HEAP_MINSPLIT < (sizeof(item_t) * 2))
+        FATAL("KERNEL_HEAP_MINSPLIT must be at least " << (sizeof(item_t) * 2) <<" bytes to enable sensible heap management.");
+
     //  set up the free pages linked list and get some initial allocation
     //  space from the kernel.
     _requestHeapBytes = allocator;

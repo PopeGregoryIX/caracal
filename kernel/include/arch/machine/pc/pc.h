@@ -23,7 +23,7 @@ namespace arch
 
 		void AddDefaultConsoleDevices( DebugConsole& console );
 
-		void CreateInitialProcessSpace( void );
+		void CreateKernelMemorySpace( void );
 
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}
 	private:

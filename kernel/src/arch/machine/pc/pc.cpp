@@ -61,25 +61,26 @@ namespace arch
 		INFO("Initialise Page Frame Allocator");
 		PageFrameAllocator& pageFrameAllocator = ::PageFrameAllocator::GetInstance();
 		pageFrameAllocator.Initialise(0x1000);
-		
-		//	4. Set up an inital task and process block so that the arch-independent kernel
+	
+
+		//	4. Initialise the virtual memory allocation system.
+		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
+		INFO("Initialise Virtual Memory Manager");
+		this->CreateKernelMemorySpace();
+		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
+		VirtualMemoryManager::GetInstance().GetKernelAllocator().Initialise(HeapManager::RequestKernelHeapBytes);
+
+		//	5. Set up an inital task and process block so that the arch-independent kernel
 		//	can initialise ProcessManager. This is done *before* initialising the
 		//	VMM as this will destroy mapping in the lower part of the heap manager.
-		this->CreateInitialProcessSpace();
 		INFO("Creating initial Process and Thread");
 		_initialProcess = Process(0, CPU_CLASS::ReadCr3(), _initialThread);
 		ProcessManager::GetInstance().Initialise(_initialProcess);
 
-		//	5. Initialise the virtual memory allocation system.
-		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
-		INFO("Initialise Virtual Memory Manager");
-		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
-		VirtualMemoryManager::GetInstance().GetKernelAllocator().Initialise(HeapManager::RequestKernelHeapBytes);
-
 		return true;
 	}
 
-	void Pc::CreateInitialProcessSpace( void )
+	void Pc::CreateKernelMemorySpace( void )
 	{
 		INFO("Creating paging structures");
 

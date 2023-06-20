@@ -49,21 +49,13 @@ void kmain()
 		Machine::GetInstance().AddDefaultConsoleDevices(debug);
 
 		debug << ConsoleColour(0xFFFFFF, 0x000000);
-		INFO( "Caracal v1.0 Debug Console" );
-		INFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
+		INFO( "Initialising Caracal v1.0" );
+		//INFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
 
 		if(Machine::GetInstance().Boot())
 			INFO("Architecture-specific boot routine complete")
 		else
 			FATAL("Boot routine failed");
-
-		char* x = new char[0x200];
-		INFO("Test Memory Allocation at " << (uintptr_t)x);
-		x[0] = 0;
-		delete[] x;
-
-        char* y = new char [2];
-        INFO("Test Memory Allocation at " << (uintptr_t)y);
 	}
 	else
 		Machine::GetInstance().HaltCurrentCore();

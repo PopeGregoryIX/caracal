@@ -15,7 +15,7 @@ namespace arch
         uintptr_t faultAddress = CPU_CLASS::ReadCr2();
         VirtualMemoryManager& virtualMemoryManager = VirtualMemoryManager::GetInstance();
         bool handled = false;
-        INFO("Page Fault Exception at: " << faultAddress << " with error code " << registers->errorCode);
+        //INFO("Page Fault Exception at: " << faultAddress << " with error code " << registers->errorCode);
 
         MemoryAllocator* allocator = virtualMemoryManager.IsAllocated(faultAddress);    
         if(allocator != nullptr)

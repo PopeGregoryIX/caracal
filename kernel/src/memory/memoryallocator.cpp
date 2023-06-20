@@ -129,7 +129,7 @@ void MemoryAllocator::Initialise( requestHeapBytes allocator )
     if(_heapIncrement % 0x1000) _heapIncrement+= (0x1000 - (_heapIncrement % 0x1000));
 
     _heapStart = _requestHeapBytes(0);  //  DO NOT USE EXTENDHEAP!
-    INFO("New heap will start at" << _heapStart);
+    //INFO("New heap will start at" << _heapStart);
     if(_heapStart == 0) FATAL("Unable to set start of kernel heap.");
 
     _heapTop = _requestHeapBytes(KERNEL_HEAP_INCREMENT);

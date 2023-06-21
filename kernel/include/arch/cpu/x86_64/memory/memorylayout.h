@@ -4,8 +4,15 @@
 /**
  *  X86-64 Long-Mode Memory Map
  * 
- *  * 0xFFFF FF80 0000 0000 - 0xFFFF FFFF FFFF FFFF
- *      * 0xFFFF FFFF F000 0000 : Memory Mapped IO
+ * USER SPACE
+ *      * 0x0000 0000 0000 0000 : NULL trap
+ *      * 0x0000 0000 0020 0000 : Code and data (different per TASK)
+ *      * 0x0000 0008 0000 0000 : User-mode stack (different per THREAD)
+ *      * 0x0000 0800 0000 0000 : Kernel-mode stack (different per THREAD)
+ *
+ * KERNEL SPACE
+ *      * 0xFFFF FE00 0000 0000 : Physical RAM mirror
+ *      * 0xFFFF FFFF 0000 0000 : Memory Mapped IO
  *      * 0xFFFF FFFF F400 0000 : Linear Frame Buffer (up to x F5FA 4000 for 4k resolution, so plenty of space!)
  *      * 0xFFFF FFFF F800 0000 : BootBoot Structure
  *      * 0xFFFF FFFF F800 1000 : BootBoot Environment Variables

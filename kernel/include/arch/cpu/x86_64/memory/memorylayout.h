@@ -13,6 +13,8 @@
  * KERNEL SPACE
  *      * 0xFFFF FE00 0000 0000 : Physical RAM mirror
  *      * 0xFFFF FFFF 0000 0000 : Memory Mapped IO
+ *      * 0xFFFF FFFF 8000 0000 : Kernel Heap (Memory top - 2xPDPT entries)
+ *      * 0xFFFF FFFF E000 0000 : unallocated
  *      * 0xFFFF FFFF F400 0000 : Linear Frame Buffer (up to x F5FA 4000 for 4k resolution, so plenty of space!)
  *      * 0xFFFF FFFF F800 0000 : BootBoot Structure
  *      * 0xFFFF FFFF F800 1000 : BootBoot Environment Variables

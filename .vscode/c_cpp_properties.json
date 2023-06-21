@@ -12,7 +12,7 @@
                 "u:\\home\\adam\\projects\\caracal\\kernel\\include\\arch\\cpu\\x86_64"
             ],
             "defines": [],
-            "compilerPath": "/home/adam/opt/cross/bin/",
+            "compilerPath": "u:\\home\\adam\\opt\\cross\\bin\\x86-64-elf-cpp",
             "cStandard": "gnu17",
             "cppStandard": "gnu++14",
             "intelliSenseMode": "linux-gcc-x64",

@@ -7,6 +7,9 @@
 
 typedef uintptr_t (*requestHeapBytes)(intptr_t bytes);
 
+/**
+ * @brief Allocate memory in a given area. Equivalent to malloc.
+*/
 class MemoryAllocator
 {
     private:

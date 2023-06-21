@@ -1,0 +1,3 @@
+/home/adam/caracal/build/CMakeFiles/caracal.dir
+/home/adam/caracal/build/CMakeFiles/edit_cache.dir
+/home/adam/caracal/build/CMakeFiles/rebuild_cache.dir

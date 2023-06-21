@@ -15,6 +15,7 @@ endif
 BINDIR:= ./bin/$(ARCH)/$(CPU)-$(BINFORMAT)
 SRCDIR:= ./src
 DEBUG:= DEBUG
+VERBOSE:= NOTVERBOSE
 FILESYSDIR:= ../filesystem
 FILESYSBOOTDIR:= $(FILESYSDIR)/BOOTBOOT
 FILESYSBINARY:= INITRD
@@ -73,7 +74,7 @@ INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fi
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -pedantic -pedantic-errors -fpic
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
 CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer
-CPPFLAGS+= -D $(DEBUG) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
+CPPFLAGS+= -D $(DEBUG) -D $(VERBOSE) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
 
 #	Flags for LD start here
 LDFLAGS:= -T $(SRCDIR)/arch/cpu/$(CPU)/link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)

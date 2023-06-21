@@ -62,6 +62,9 @@ namespace arch
 	extern "C" void isr30( void );
 	extern "C" void isr31( void );
 
+	//	software interrupt
+	extern "C" void isr240( void );
+
 	extern "C" void __loadIdt(void* idtr);
 	extern "C" InterruptHandler_t __exception_call_table[0x20];
 

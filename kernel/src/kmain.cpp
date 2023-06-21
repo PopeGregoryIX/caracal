@@ -50,7 +50,7 @@ void kmain()
 
 		debug << ConsoleColour(0xFFFFFF, 0x000000);
 		INFO( "Initialising Caracal v1.0" );
-		//INFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
+		VINFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
 
 		if(Machine::GetInstance().Boot())
 			INFO("Architecture-specific boot routine complete")

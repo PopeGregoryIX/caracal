@@ -13,6 +13,13 @@
 #include "consolecolour.h"
 #include <machine.h>
 
+
+#ifdef VERBOSE
+#define VINFO(x) INFO(x)
+#else
+#define VINFO(x) {}
+#endif
+
 #ifdef DEBUG
 #define INFO(x) {	DebugConsole::GetInstance() << ConsoleColour(0x00FF00, 0x000000) << "[INFO]    " << ConsoleColour(0xFFFFFF, 0x000000) << x << '\n';	}
 #else
@@ -30,6 +37,5 @@
 #else
 #define FATAL(x) {}
 #endif
-
 
 #endif /* KERNEL_INCLUDE_DEBUG_DEBUG_H_ */

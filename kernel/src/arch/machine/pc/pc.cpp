@@ -77,6 +77,8 @@ namespace arch
 		_initialProcess = Process(0, CPU_CLASS::ReadCr3(), _initialThread);
 		ProcessManager::GetInstance().Initialise(_initialProcess);
 
+		X86_64::SystemCall<240>();
+
 		return true;
 	}
 

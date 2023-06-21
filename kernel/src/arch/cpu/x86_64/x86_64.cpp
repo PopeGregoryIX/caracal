@@ -1,15 +1,15 @@
-/*
- * x86_64.cpp
+/**
+ * @file x86_64.cpp
  *
  *  Created on: 22 Sept 2021
  *      Author: Adam
  */
 #include <stdint.h>
 #include <stddef.h>
-#include<cpu.h>
-#include<x86_64.h>
+#include <cpu.h>
+#include <x86_64.h>
 #include <archdef.h>
-#include<bootboot.h>
+#include <bootboot.h>
 #include <cpuid.h>
 #include <debug/debug.h>
 #include <memory/memorylayout.h>

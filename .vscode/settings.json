@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "Makefile": "makefile",
-        "type_traits": "cpp",
-        "typeinfo": "cpp"
-    }
-}

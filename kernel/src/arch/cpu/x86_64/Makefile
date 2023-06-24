@@ -10,7 +10,8 @@ LDFLAGS+= --no-warn-rwx-segments
 all: makedirs $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(CRTEND_OBJ) $(CRTN_OBJ) $(OBJFILES) Makefile
 	@$(CPU)-$(BINFORMAT)-ld $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
 	@$(CPU)-$(BINFORMAT)-objdump -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(BINARY).txt
-
+	@$(CPU)-$(BINFORMAT)-objcopy --only-keep-debug $(BINDIR)/$(BINARY) $(BINDIR)/$(BINARY).sym
+    
 dist:
 	@rm -f $(FILESYSDIR)/$(FILESYSBINARY)
 	@cp $(BINDIR)/$(BINARY) $(FILESYSBOOTDIR)/$(FILESYSBINARY)

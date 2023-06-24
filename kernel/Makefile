@@ -73,7 +73,7 @@ INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fi
 
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -pedantic -pedantic-errors -fpic
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
-CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer
+CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -g
 CPPFLAGS+= -D $(DEBUG) -D $(VERBOSE) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
 
 #	Flags for LD start here

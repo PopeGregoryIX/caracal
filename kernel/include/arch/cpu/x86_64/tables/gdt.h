@@ -88,15 +88,47 @@ namespace arch
 			}
 		} __attribute__((packed));
 
+		struct GdtSystemEntry : public GdtEntry
+		{
+			uint16_t	limitLow;		///< @brief Low 16 bits of the segment limit.
+			uint16_t	baseLow;		///< @brief Low 16 bits of the segment base.
+			uint8_t		baseMid;		///< @brief Middle 8 bits of the segment base.
+			uint8_t		access;			///< @brief Access Flags
+			uint8_t		limitHigh:4;	///< @brief High 4 bits of the segment limit.
+			uint8_t		flags:4;		///< @brief GDT flags.
+			uint8_t		baseHigh;		///< @brief High 8 bits of the segment limit.
+			uint32_t	baseUpper;
+			uint32_t	reserved;
+
+			GdtSystemEntry()
+			: limitLow(0), baseLow(0), baseMid(0), access(0),
+			  limitHigh(0), flags(0), baseHigh(0), baseUpper(0), reserved(0){}
+
+			void setBase(uint64_t base)
+			{
+				baseLow = (uint16_t)(base & 0xFFFF);
+				baseMid = (uint8_t)((base >> 16)& 0xFF);
+				baseHigh = (uint8_t)((base >> 24)& 0xFF);
+				baseUpper = (uint32_t)((base >> 32) & 0xFFFFFFFF);
+			}
+
+			void setLimit(uint32_t limit)
+			{
+				limitLow = (uint16_t)(limit & 0xFFFF);
+				limitHigh = (uint8_t)((limit >> 16) & 0x0F);
+			}
+		} __attribute__((packed));
+
 		struct GdtDescriptor
 		{
 			uint16_t size;
 			uintptr_t offset;
 		} __attribute__((packed));
 
+		void SetEntry(int index, GdtSystemEntry entry);
 	private:
-		GdtEntry gdt_[0x2000] __attribute__((aligned(32)));
-		GdtDescriptor gdtr_ __attribute__((aligned(32)));
+		GdtEntry gdt_[0x2000] __attribute__((aligned(64)));
+		GdtDescriptor gdtr_ __attribute__((aligned(64)));
 		uint16_t entries_;
 
 		static Gdt instance_;

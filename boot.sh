@@ -11,3 +11,4 @@ qemu-system-x86_64 \
 -drive file=$HOME/caracal/images/caracal64.img,if=ide,index=1,format=raw
 
 #-d int,cpu_reset \
+#-s -S \

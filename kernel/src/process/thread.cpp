@@ -1,10 +1,15 @@
-#include <stdint.h>
-#include <stddef.h>
-#include <archdef.h>
+/*
+ * thread.cpp
+ *
+ *  Created on: 24 Jun 2023
+ *      Author: mail
+ */
+
 #include <process/thread.h>
 
-Thread::Thread(arch::threadId_t id, arch::threadState_t state)
-: _id(id), _state(state)
+Thread::Thread(arch::threadId_t id, Process& process, arch::threadState_t* state)
+: id_(id), process_(process), state_(state)
 {
-
 }
+
+

@@ -1,36 +1,31 @@
-#ifndef __PROCESS__H__
-#define __PROCESS__H__
+/*
+ * process.h
+ *
+ *  Created on: 24 Jun 2023
+ *      Author: mail
+ */
 
-#include <stdint.h>
-#include <stddef.h>
+#ifndef KERNEL_INCLUDE_PROCESS_PROCESS_H_
+#define KERNEL_INCLUDE_PROCESS_PROCESS_H_
+
 #include <archdef.h>
+#include <support/templates/list.h>
 #include <process/thread.h>
 
 class Process
 {
-    private:
-        arch::processId_t _id;
-        arch::processState_t _state;
-        Thread& _mainThread;
+	private:
+		arch::processId_t id_;
+		arch::processState_t* state_;
+		List<Thread*> threads;
 
-    public:
-        Process(arch::processId_t id, arch::processState_t state);
+	public:
+		Process(arch::processId_t id, arch::processState_t* state);
 
-        Process(arch::processId_t id, arch::processState_t state, Thread& mainThread);
+		Thread* AddThread(arch::threadId_t threadId, arch::threadState_t* state);
 
-        inline arch::processId_t GetId( void ) { return _id; }
-
-        inline arch::processState_t GetState( void ) { return _state; }
-        inline void SetState(arch::processState_t state) { _state = state; }
-
-        inline Process& operator=(const Process& process)
-        {
-            _id = process._id;
-            _state = process._state;
-            _mainThread = process._mainThread;
-
-            return *this;
-        }
+		inline arch::processId_t GetId( void ) { return id_; }
 };
 
-#endif
+
+#endif /* KERNEL_INCLUDE_PROCESS_PROCESS_H_ */

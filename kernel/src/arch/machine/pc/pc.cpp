@@ -13,12 +13,12 @@
 #include <debug/debug.h>
 #include <debug/lfbconsoleoutput.h>
 #include <tables/gdt.h>
+#include <tables/tss.h>
 #include <tables/idt.h>
 #include <memory/pageframeallocator.h>
-#include <interrupt/exceptions.h>
-#include <process/process.h>
 #include <process/processmanager.h>
-#include <process/thread.h>
+#include <interrupt/exceptions.h>
+#include <interrupt/interrupts.h>
 #include <memory/memoryarray.h>
 #include <memory/memorylayout.h>
 #include <memory/virtualmemorymanager.h>
@@ -33,8 +33,6 @@ extern "C" uint8_t kernelEnd;
 namespace arch
 {
 	Pc Pc::_instance;
-	Process Pc::_initialProcess(0, 0, Pc::_initialThread);
-	Thread Pc::_initialThread(0, 0);
 
 	void Pc::AddDefaultConsoleDevices(DebugConsole& console)
 	{
@@ -48,24 +46,29 @@ namespace arch
 		INFO("Running boot routines for machine type: PC");
 
 		//	1. Initialise GDT - it's in an unknown state
-		//INFO("Initialise GDT on BSP");
+		VINFO("Initialise GDT on BSP");
 		Gdt::GetInstance().Load();
+
+		//	THESE NUMBERS ARE WRONG! WHY IS THE TSS INSTALLED IN THE WRONG PLACE?
+		Tss::GetInstance().InstallToGdt(0, 5);
+		Tss::GetInstance().Load(6);
 
 		//	2. Initialise IDT - we need to be able to handle interrupts
 		//	   Installing the Double Fault handler makes the code a little more robust (preventing triple-faults?)
-		//INFO("Initialise IDT on BSP");
+		VINFO("Initialise IDT on BSP");
 		Idt::GetInstance().Load();
 		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_DOUBLE_FAULT, Exceptions::DoubleFaultExceptionHandler);
+		Idt::GetInstance().InstallInterruptHandler(INTERRUPT_USER, Interrupts::SoftwareInterrupt);
 
 		//	3. Initialise the memory map - we need to be able to allocate physical pages
-		//INFO("Initialise Page Frame Allocator");
+		VINFO("Initialise Page Frame Allocator");
 		PageFrameAllocator& pageFrameAllocator = ::PageFrameAllocator::GetInstance();
 		pageFrameAllocator.Initialise(0x1000);
 	
 
 		//	4. Initialise the virtual memory allocation system.
 		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
-		//INFO("Initialise Virtual Memory Manager");
+		VINFO("Initialise Virtual Memory Manager");
 		this->CreateKernelMemorySpace();
 		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
 		VirtualMemoryManager::GetInstance().GetKernelAllocator().Initialise(HeapManager::RequestKernelHeapBytes);
@@ -73,10 +76,13 @@ namespace arch
 		//	5. Set up an inital task and process block so that the arch-independent kernel
 		//	can initialise ProcessManager. This is done *before* initialising the
 		//	VMM as this will destroy mapping in the lower part of the heap manager.
-		//INFO("Creating initial Process and Thread");
-		_initialProcess = Process(0, CPU_CLASS::ReadCr3(), _initialThread);
-		ProcessManager::GetInstance().Initialise(_initialProcess);
+		VINFO("Creating initial Process and Thread");
+		//	In x86, the process state is simply CR3. All other information is held by the thread.
+		processState_t* processInfo = new processState_t;
+		threadState_t* threadState = nullptr;
+		*processInfo = X86_64::ReadCr3();
 
+		ProcessManager::GetInstance().Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
 		X86_64::SystemCall<240>();
 
 		return true;

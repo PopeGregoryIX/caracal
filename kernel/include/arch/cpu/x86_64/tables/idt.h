@@ -112,6 +112,12 @@ namespace arch
 			if(index >= 0x20) FATAL("Cannot install exception handler > index 31.");
 			 __exception_call_table[index] = handler;	
 		}
+
+		inline void InstallInterruptHandler(size_t index, InterruptHandler_t handler)
+		{
+			if(index < 0x80) FATAL("Cannot install a user interrupt handler < index 128.");
+			__exception_call_table[index] = handler;
+		}
 	private:
 		static Idt _instance;
 		static Registers* DefaultHandler(Registers* regs);

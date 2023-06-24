@@ -6,6 +6,8 @@
  */
 #include <stdint.h>
 #include <tables/gdt.h>
+#include <runtime/cxx.h>
+#include <debug/debug.h>
 
 namespace arch
 {
@@ -17,7 +19,7 @@ namespace arch
 		//	NULL segment
 		gdt_[0] = GdtEntry();
 
-		//ring 0 segments
+		//ring 0 segments 0x08
 		gdt_[1].setBase(0);
 		gdt_[1].setLimit(0xFFFFFFFF);
 		gdt_[1].flags = GDT_GRAN_4K | GDT_SIZE64;
@@ -28,7 +30,7 @@ namespace arch
 		gdt_[2].flags = GDT_GRAN_4K | GDT_SIZE64;
 		gdt_[2].access = GDT_PRESENT | GDT_SYSTEM | GDT_RW;
 
-		//ring 3 segments
+		//ring 3 segments 0x18
 		gdt_[3].setBase(0);
 		gdt_[3].setLimit(0xFFFFFFFF);
 		gdt_[3].flags = GDT_GRAN_4K | GDT_SIZE64;
@@ -40,12 +42,22 @@ namespace arch
 		gdt_[4].access = GDT_PRESENT | GDT_SYSTEM | GDT_RW | GDT_USER;
 	}
 
+
+
 	void Gdt::Load( void )
 	{
 		gdtr_.size = (uint16_t)((entries_ * sizeof(GdtEntry)) - 1);
 		gdtr_.offset = (uintptr_t)gdt_;
 
 		__loadGdt((void*)&gdtr_, 0x08, 0x10);
+	}
+
+	void Gdt::SetEntry(int index, GdtSystemEntry entry)
+	{
+		if(index < 5) FATAL("Attempt to set a core GDT descriptor after initialisation.");
+
+		GdtSystemEntry* gdtSys = (GdtSystemEntry*)&gdt_[index];
+		memorycopy<GdtSystemEntry>(gdtSys, &entry, 1);
 	}
 }
 

@@ -1,17 +1,24 @@
-#include <stdint.h>
-#include <stddef.h>
+/*
+ * process.cpp
+ *
+ *  Created on: 24 Jun 2023
+ *      Author: mail
+ */
 #include <archdef.h>
 #include <process/process.h>
-#include <process/processmanager.h>
 
-Process::Process(arch::processId_t id, arch::processState_t state)
-: _id(id), _state(state), _mainThread((Thread&)(*(Thread*)0))
+Process::Process(arch::processId_t id, arch::processState_t* state)
+: id_(id), state_(state)
 {
-    //  TODO: Create a new thread via arch;
+
 }
 
-Process::Process(arch::processId_t id, arch::processState_t state, Thread& mainThread)
-: _id(id), _state(state), _mainThread(mainThread)
+Thread* Process::AddThread(arch::threadId_t threadId, arch::threadState_t* threadState)
 {
-    
+	Thread* thread = new Thread(threadId, *this, threadState);
+	threads.Add(thread);
+	return thread;
 }
+
+
+

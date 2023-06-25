@@ -6,6 +6,7 @@
  */
 #include <interrupt/interrupts.h>
 #include <process/processmanager.h>
+#include <debug/debug.h>
 
 namespace arch
 {
@@ -13,8 +14,9 @@ namespace arch
 	{
 		auto thread = ProcessManager::GetInstance().GetRunningThread();
 
-		INFO("Software interrupt function " << registers->rax);
-		INFO("Outgoing Thread: " << thread->GetId() << " process " << thread->GetProcess().GetId());
+		INFO("Software interrupt function " << registers->rax)
+		INFO("Outgoing Thread: " << thread->GetId() << " process " << thread->GetProcess().GetId())
+		
 		thread->SaveThreadState(registers);
 
 

@@ -32,6 +32,10 @@
 *.app
 *.sys
 
+# Symbols
+*.sym
+*kernel.txt
+
 # Disk Images
 *.iso
 *.img
@@ -45,3 +49,4 @@
 *build/*
 *.vscode/*
 *.idea/*
+*sys/core

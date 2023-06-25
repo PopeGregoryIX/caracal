@@ -32,6 +32,7 @@ typedef uint64_t uintptr_t;
 typedef int64_t intptr_t;
 typedef uint64_t processId_t;
 typedef uint64_t threadId_t;
+typedef uint32_t cpuId_t;
 
 typedef uint64_t processState_t;        //< This will be a value of CR3 for the current process
 typedef Registers threadState_t;       //< This will be a pointer to the top of a stack for the current process.

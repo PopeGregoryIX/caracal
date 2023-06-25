@@ -21,6 +21,14 @@ namespace arch
 	class X86_64 : public Cpu
 	{
 		public:
+			X86_64(uintptr_t id, int tssId) : id_((size_t)id), tssId_(tssId){}
+
+			inline uintptr_t GetId( void ) { return id_; }
+			inline int GetTssId( void ) { return tssId_; }
+
+			static inline void EnableInterrupts( void ) { asm volatile("sti"); }
+			static inline void DisableInterrupts( void ) { asm volatile("cli"); }
+
 			static inline uint8_t In8(uint16_t port)	{ uint8_t value; asm volatile ( "inb %1, %0" : "=a"(value) : "Nd"(port) ); return value; }
 			static inline uint16_t In16(uint16_t port)	{ uint16_t value; asm volatile ( "inw %1, %0" : "=a"(value) : "Nd"(port) ); return value; }
 			static inline uint32_t In32(uint16_t port)	{ uint32_t value; asm volatile ( "inl %1, %0" : "=a"(value) : "Nd"(port) ); return value; }
@@ -44,6 +52,10 @@ namespace arch
 
 			static inline void PageInLarge(uintptr_t flags, uintptr_t virtualAddress) { X86_64::PageInLarge(flags, virtualAddress, PageFrameAllocator::GetInstance().Allocate(0x200000ULL, 0x200000ULL)); }
 			static void PageInLarge(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress);
+
+		private:
+			uintptr_t id_;
+			int tssId_;
 	};
 }
 

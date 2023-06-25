@@ -17,10 +17,10 @@
 
 bool Cpu::IsBsp( void )
 {
-	return ProcessorId() == bootboot.bspid;
+	return CurrentProcessorId() == bootboot.bspid;
 }
 
-unsigned int Cpu::ProcessorId()
+unsigned int Cpu::CurrentProcessorId()
 {
 	volatile uint32_t discard, ebx;
 	__cpuid(1, discard, ebx, discard, discard);

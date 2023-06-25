@@ -19,7 +19,9 @@ class Cpu
 {
 	public:
 		static bool IsBsp( void );
-		static unsigned int ProcessorId( void );
+		static unsigned int CurrentProcessorId( void );
+
+		virtual uintptr_t GetId( void ) = 0;
 };
 
 #endif /* CPU_H_ */

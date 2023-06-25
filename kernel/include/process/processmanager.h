@@ -23,7 +23,7 @@ class ProcessManager
 		void Initialise( arch::processState_t* initialProcessState, arch::threadState_t* initialThreadState,
 				arch::threadId_t initialThreadId);
 
-		inline Thread* GetRunningThread(){ return GetRunningThread(Cpu::ProcessorId()); }
+		inline Thread* GetRunningThread(){ return GetRunningThread(Cpu::CurrentProcessorId()); }
 
 		inline Thread* GetRunningThread(size_t processorId)
 		{

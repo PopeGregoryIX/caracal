@@ -15,12 +15,21 @@
 #ifndef KERNEL_SRC_ARCH_MACHINE_MACHINE_H_
 #define KERNEL_SRC_ARCH_MACHINE_MACHINE_H_
 
+#include <stddef.h>
 #include <debug/debugconsole.h>
+
+class Cpu;
 
 class Machine
 {
 public:
 	static Machine& GetInstance( void );
+
+	virtual Cpu& GetCpu( void ) = 0;
+
+	virtual Cpu& GetCpu(uintptr_t id) = 0;
+
+	virtual size_t GetCpuCount( void ) = 0;
 
 	virtual void AddDefaultConsoleDevices( DebugConsole& ) = 0;
 

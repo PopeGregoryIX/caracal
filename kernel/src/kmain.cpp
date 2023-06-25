@@ -43,11 +43,12 @@ void kmain()
 		//	space. This means AP's will also take part in system
 		//	initialisation.
 		DebugConsole& debug = DebugConsole::GetInstance();
-		Machine::GetInstance().AddDefaultConsoleDevices(debug);
+		Machine& machine = Machine::GetInstance();
+		machine.AddDefaultConsoleDevices(debug);
 
 		debug << ConsoleColour(0xFFFFFF, 0x000000);
 		INFO( "Initialising Caracal v1.0" );
-		VINFO( "BSP ID: " << (uint64_t)Cpu::ProcessorId());
+		VINFO( "BSP ID: " << (uint64_t)Cpu::CurrentProcessorId());
 
 		if(Machine::GetInstance().Boot())
 			INFO("Architecture-specific boot routine complete")
@@ -55,7 +56,7 @@ void kmain()
 			FATAL("Boot routine failed");
 	}
 	else
-		Machine::GetInstance().HaltCurrentCore();
+		for(;;);
 
 	IdleLoop();
 

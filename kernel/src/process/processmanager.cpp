@@ -24,7 +24,7 @@ void ProcessManager::Initialise( arch::processState_t* initialProcessState, arch
 	processes_.Add(initProcess);
 
 	this->runningThreads_ = new(runningthread_t);
-	runningThreads_[0].processorId = Cpu::ProcessorId();
+	runningThreads_[0].processorId = Cpu::CurrentProcessorId();
 	runningThreads_[0].thread = initThread;
 
 	runningThreadCount_++;
@@ -51,7 +51,7 @@ Thread* ProcessManager::TaskSwitch(Thread* outgoing)
 	{
 		for(size_t i = 0; i < runningThreadCount_; ++i)
 		{
-			if(runningThreads_[i].processorId == Cpu::ProcessorId())
+			if(runningThreads_[i].processorId == Cpu::CurrentProcessorId())
 			{
 				runningThreads_[i].thread = incoming;
 				break;

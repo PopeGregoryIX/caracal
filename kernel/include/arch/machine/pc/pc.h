@@ -9,11 +9,22 @@
 #define KERNEL_SRC_ARCH_MACHINE_PC_PC_H_
 
 #include <machine.h>
+#include <cpu.h>
+#include <x86_64.h>
+
 namespace arch
 {
 	class Pc : public Machine
 	{
 	public:
+		inline Pc() : cpuCount_(0) {}
+
+		inline Cpu& GetCpu( void ) { return GetCpu(Cpu::CurrentProcessorId());}
+
+		Cpu& GetCpu(uintptr_t id);
+
+		inline size_t GetCpuCount( void ) { return cpuCount_; }
+
 		static Pc& GetPcInstance( void ) { return _instance; }
 
 		bool Boot( void );
@@ -25,6 +36,8 @@ namespace arch
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}
 	private:
 		static Pc _instance;
+		size_t cpuCount_;
+		Cpu* cpus_;
 	};
 }
 

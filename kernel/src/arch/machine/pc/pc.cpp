@@ -46,14 +46,16 @@ namespace arch
 		//	This is where we set up the machine. This is purely called
 		//	by the BSP.
 		INFO("Running boot routines for machine type: PC");
-
+		
 		//	1. Initialise GDT - it's in an unknown state
 		VINFO("Initialise GDT on BSP");
 		Gdt::GetInstance().Load();
 
+		X86_64 cpu = X86_64(Cpu::CurrentProcessorId(), 5);
+
 		//	THESE NUMBERS ARE WRONG! WHY IS THE TSS INSTALLED IN THE WRONG PLACE?
-		Tss::GetInstance().InstallToGdt(0, 5);
-		Tss::GetInstance().Load(6);
+		Tss::GetInstance().InstallToGdt(0, cpu.GetTssId());
+		Tss::GetInstance().Load(cpu.GetTssId());
 
 		//	2. Initialise IDT - we need to be able to handle interrupts
 		//	   Installing the Double Fault handler makes the code a little more robust (preventing triple-faults?)
@@ -90,13 +92,15 @@ namespace arch
 		processManager.Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
 		processManager.GetRunningThread()->GetProcess().CreateThread((uintptr_t)&IdleLoop);
 		UserFunctions::GetInstance().DoSyscall(CALL_YIELD);
+		
+		X86_64::EnableInterrupts();
 
 		return true;
 	}
 
 	void Pc::CreateKernelMemorySpace( void )
 	{
-		//INFO("Creating paging structures");
+		INFO("Creating paging structures");
 
 		pageDirectoryEntry_t* pml4 = (pageDirectoryEntry_t*)CPU_CLASS::ReadCr3();
 
@@ -176,4 +180,14 @@ namespace arch
 		CPU_CLASS::WriteCr3((uint64_t)pml4);
 	}
 
+	Cpu& Pc::GetCpu(uintptr_t id)
+	{
+		for (size_t i = 0; i < cpuCount_; ++i)
+		{
+			if(cpus_[i].GetId() == id) return cpus_[i];
+		}
+		
+		FATAL("Cpu not found with id " << id);
+		return (Cpu&)*((Cpu*)nullptr);
+	}
 }

@@ -15,7 +15,7 @@ namespace arch
 	{
 		Thread* outgoing = ProcessManager::GetInstance().GetRunningThread();
 		Thread* incoming = nullptr;
-		INFO("Outgoing Thread: " << outgoing->GetId() << " process " << outgoing->GetProcess().GetId())
+		VINFO("Outgoing Thread: " << outgoing->GetId() << " stack " << (uintptr_t)registers)
 
 		switch (registers->rax)
 		{
@@ -23,7 +23,7 @@ namespace arch
 				incoming = UserFunctions::Halt(outgoing);
 				break;
 			case CALL_YIELD:
-				incoming = UserFunctions::Yield(outgoing);
+				incoming = UserFunctions::GetInstance().Yield(outgoing);
 				break;
 			default:
 				FATAL("Unknown software interrupt " << registers->rax);
@@ -35,9 +35,11 @@ namespace arch
 			outgoing->SaveThreadState(registers);
 			registers = incoming->LoadThreadState();
 		}
+		else
+			FATAL("incoming == outgoing");
 
 		
-		INFO("Incoming Thread: " << incoming->GetId() << " process " << incoming->GetProcess().GetId());
+		VINFO("Incoming Thread: " << incoming->GetId() << " stack " << (uintptr_t)registers)
 		return registers;
 	}
 }

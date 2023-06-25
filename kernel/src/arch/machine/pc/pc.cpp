@@ -79,6 +79,8 @@ namespace arch
 		//	can initialise ProcessManager. This is done *before* initialising the
 		//	VMM as this will destroy mapping in the lower part of the heap manager.
 		INFO("Creating initial Process and Thread");
+		UserFunctions::GetInstance().Initialise(X86_64::SystemCall);
+
 		//	In x86, the process state is simply CR3. All other information is held by the thread.
 		processState_t* processInfo = new processState_t;
 		threadState_t* threadState = nullptr;
@@ -87,7 +89,7 @@ namespace arch
 		ProcessManager& processManager = ProcessManager::GetInstance();
 		processManager.Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
 		processManager.GetRunningThread()->GetProcess().CreateThread((uintptr_t)&IdleLoop);
-		X86_64::SystemCall<240>(CALL_HALT);
+		UserFunctions::GetInstance().DoSyscall(CALL_YIELD);
 
 		return true;
 	}

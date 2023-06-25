@@ -81,9 +81,15 @@ iretq
     push %r13
     push %r14
     push %r15
+
+    push %r15       #   placeholder for ds
+    push %r15       #   placeholder for es
 .endm # pushaq
 
 .macro popaq
+    pop %r15
+    pop %r15
+
 	pop %r15
 	pop %r14
 	pop %r13

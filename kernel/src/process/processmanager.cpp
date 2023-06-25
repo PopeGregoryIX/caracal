@@ -30,5 +30,37 @@ void ProcessManager::Initialise( arch::processState_t* initialProcessState, arch
 	runningThreadCount_++;
 }
 
+Thread* ProcessManager::TaskSwitch(Thread* outgoing)
+{
+	auto process = GetRunningThread()->GetProcess();
+
+    Thread** currentThread = process.GetThreads().GetFirst();
+    Thread* incoming = outgoing;
+
+    while(currentThread != nullptr)
+    {
+        if(*currentThread != outgoing)
+        {
+            incoming = *currentThread;
+            break;
+        }
+        currentThread = process.GetThreads().GetNext(currentThread);
+    }
+
+	if(incoming != outgoing)
+	{
+		for(size_t i = 0; i < runningThreadCount_; ++i)
+		{
+			if(runningThreads_[i].processorId == Cpu::ProcessorId())
+			{
+				runningThreads_[i].thread = incoming;
+				break;
+			}
+		}
+	}
+
+    return incoming;    
+}
+
 
 

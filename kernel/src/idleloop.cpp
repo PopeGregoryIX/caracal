@@ -1,6 +1,9 @@
 #include <caracal.h>
+#include <debug/debug.h>
+#include <process/userfunctions.h>
 
 void IdleLoop( void )
 {
-    for(;;) ;
+    INFO("Idle loop entered for current thread.");
+    for(;;) { UserFunctions::GetInstance().DoSyscall(CALL_YIELD); }
 }

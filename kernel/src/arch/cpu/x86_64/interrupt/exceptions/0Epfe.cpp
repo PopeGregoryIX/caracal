@@ -7,6 +7,7 @@
 #include <memory/virtualmemorymanager.h>
 #include <memory/memoryallocator.h>
 #include <memory/heapmanager.h>
+#include <process/processmanager.h>
 
 namespace arch
 {
@@ -41,6 +42,8 @@ namespace arch
             {   WARNING("This seems to be in physical memory space\n\n");  }
             else if (faultAddress < (PDPTE_RANGE * 2))
             {   WARNING("This seems to be in user space\n\n");  }
+            else if(faultAddress < SUPERVISOR_THREAD_STACK && faultAddress > (SUPERVISOR_THREAD_STACK - PML4E_RANGE))
+            { WARNING("This seems to be in supervisor stack space\n\n"); }
             else if(faultAddress > (UINT64_MAX - (PDPT_RANGE * 2)))
             {   WARNING("This seems to be in kernel space\n\n");    }
             else

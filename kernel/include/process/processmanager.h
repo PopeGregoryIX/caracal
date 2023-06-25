@@ -25,10 +25,10 @@ class ProcessManager
 
 		inline Thread* GetRunningThread(){ return GetRunningThread(Cpu::ProcessorId()); }
 
-		inline Thread* GetRunningThread(int processorId)
+		inline Thread* GetRunningThread(size_t processorId)
 		{
-			INFO("Processor ID " << (uintptr_t)processorId);
-			for(int i = 0; i < this->runningThreadCount_; ++i)
+			//INFO("Processor ID " << (uintptr_t)processorId);
+			for(size_t i = 0; i < this->runningThreadCount_; ++i)
 			{
 				if( runningThreads_[i].processorId == processorId)
 					return runningThreads_[i].thread;
@@ -36,10 +36,12 @@ class ProcessManager
 
 			return nullptr;
 		}
+
+		Thread* TaskSwitch(Thread* outgoing);
 	private:
 		typedef struct runningThread
 		{
-			int processorId;
+			size_t processorId;
 			Thread* thread;
 		} runningthread_t;
 
@@ -47,7 +49,7 @@ class ProcessManager
 		static ProcessManager instance_;
 		List<Process*> processes_;
 
-		int runningThreadCount_;
+		size_t runningThreadCount_;
 		runningthread_t* runningThreads_;
 };
 

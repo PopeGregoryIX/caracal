@@ -14,6 +14,7 @@
 
 #include <cpu.h>
 #include <memory/pageframeallocator.h>
+#include <interrupt/interrupts.h>
 
 namespace arch
 {
@@ -39,6 +40,7 @@ namespace arch
 			static inline void WriteCr4(uint64_t value) { asm volatile ( "movq %0, %%cr4" : : "a"(value) ); }
 
 			template <int N> static inline void SystemCall(uintptr_t function){ asm ( "int %0\n" : : "N"(N), "a"(function) ); }
+			static inline void SystemCall(uintptr_t function) { SystemCall<INTERRUPT_USER>(function); }
 
 			static inline void PageInLarge(uintptr_t flags, uintptr_t virtualAddress) { X86_64::PageInLarge(flags, virtualAddress, PageFrameAllocator::GetInstance().Allocate(0x200000ULL, 0x200000ULL)); }
 			static void PageInLarge(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress);

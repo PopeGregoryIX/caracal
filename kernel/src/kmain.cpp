@@ -57,6 +57,8 @@ void kmain()
 	else
 		Machine::GetInstance().HaltCurrentCore();
 
+	IdleLoop();
+
 	FATAL("Reached end of main routine. No further code to execute");
 
 	_fini();

@@ -7,21 +7,37 @@
 #include <interrupt/interrupts.h>
 #include <process/processmanager.h>
 #include <debug/debug.h>
+#include <process/userfunctions.h>
 
 namespace arch
 {
 	Registers* Interrupts::SoftwareInterrupt(Registers* registers)
 	{
-		auto thread = ProcessManager::GetInstance().GetRunningThread();
+		Thread* outgoing = ProcessManager::GetInstance().GetRunningThread();
+		Thread* incoming = nullptr;
+		INFO("Outgoing Thread: " << outgoing->GetId() << " process " << outgoing->GetProcess().GetId())
 
-		INFO("Software interrupt function " << registers->rax)
-		INFO("Outgoing Thread: " << thread->GetId() << " process " << thread->GetProcess().GetId())
+		switch (registers->rax)
+		{
+			case CALL_HALT:
+				incoming = UserFunctions::Halt(outgoing);
+				break;
+			case CALL_YIELD:
+				incoming = UserFunctions::Yield(outgoing);
+				break;
+			default:
+				FATAL("Unknown software interrupt " << registers->rax);
+				break;
+		}
+
+		if(incoming != outgoing)
+		{
+			outgoing->SaveThreadState(registers);
+			registers = incoming->LoadThreadState();
+		}
+
 		
-		thread->SaveThreadState(registers);
-
-
-		registers = thread->LoadThreadState();
-		INFO("Incoming Thread: " << thread->GetId() << " process " << thread->GetProcess().GetId());
+		INFO("Incoming Thread: " << incoming->GetId() << " process " << incoming->GetProcess().GetId());
 		return registers;
 	}
 }

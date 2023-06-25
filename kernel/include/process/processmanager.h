@@ -27,6 +27,7 @@ class ProcessManager
 
 		inline Thread* GetRunningThread(int processorId)
 		{
+			INFO("Processor ID " << (uintptr_t)processorId);
 			for(int i = 0; i < this->runningThreadCount_; ++i)
 			{
 				if( runningThreads_[i].processorId == processorId)

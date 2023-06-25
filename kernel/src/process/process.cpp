@@ -6,6 +6,7 @@
  */
 #include <archdef.h>
 #include <process/process.h>
+#include <processservices.h>
 
 Process::Process(arch::processId_t id, arch::processState_t* state)
 : id_(id), state_(state)
@@ -20,5 +21,10 @@ Thread* Process::AddThread(arch::threadId_t threadId, arch::threadState_t* threa
 	return thread;
 }
 
-
+Thread* Process::CreateThread(uintptr_t entry)
+{
+	// Create a new thread on this process with the given entry point
+	Thread* thread = arch::ProcessServices::CreateThread(this, entry);
+	return thread;
+}
 

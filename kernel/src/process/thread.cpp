@@ -11,5 +11,3 @@ Thread::Thread(arch::threadId_t id, Process& process, arch::threadState_t* state
 : id_(id), process_(process), state_(state)
 {
 }
-
-

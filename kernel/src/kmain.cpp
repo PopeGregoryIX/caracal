@@ -15,10 +15,7 @@
 #include <machine.h>
 #include <cpu.h>
 #include <process/process.h>
-
-extern "C" void kmain();
-extern "C" void _init( void );
-extern "C" void _fini( void );
+#include <caracal.h>
 
 /**
  * @brief Kernel entry point.

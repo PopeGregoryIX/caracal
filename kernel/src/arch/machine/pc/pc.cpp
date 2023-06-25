@@ -5,6 +5,7 @@
  *      Author: Adam
  */
 #include <machine.h>
+#include <caracal.h>
 #include <pc.h>
 #include <runtime/cxx.h>
 #include <x86_64.h>
@@ -17,6 +18,7 @@
 #include <tables/idt.h>
 #include <memory/pageframeallocator.h>
 #include <process/processmanager.h>
+#include <process/userfunctions.h>
 #include <interrupt/exceptions.h>
 #include <interrupt/interrupts.h>
 #include <memory/memoryarray.h>
@@ -68,7 +70,7 @@ namespace arch
 
 		//	4. Initialise the virtual memory allocation system.
 		//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
-		VINFO("Initialise Virtual Memory Manager");
+		INFO("Initialise Virtual Memory Manager");
 		this->CreateKernelMemorySpace();
 		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
 		VirtualMemoryManager::GetInstance().GetKernelAllocator().Initialise(HeapManager::RequestKernelHeapBytes);
@@ -76,14 +78,16 @@ namespace arch
 		//	5. Set up an inital task and process block so that the arch-independent kernel
 		//	can initialise ProcessManager. This is done *before* initialising the
 		//	VMM as this will destroy mapping in the lower part of the heap manager.
-		VINFO("Creating initial Process and Thread");
+		INFO("Creating initial Process and Thread");
 		//	In x86, the process state is simply CR3. All other information is held by the thread.
 		processState_t* processInfo = new processState_t;
 		threadState_t* threadState = nullptr;
 		*processInfo = X86_64::ReadCr3();
 
-		ProcessManager::GetInstance().Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
-		X86_64::SystemCall<240>();
+		ProcessManager& processManager = ProcessManager::GetInstance();
+		processManager.Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
+		processManager.GetRunningThread()->GetProcess().CreateThread((uintptr_t)&IdleLoop);
+		X86_64::SystemCall<240>(CALL_HALT);
 
 		return true;
 	}

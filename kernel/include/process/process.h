@@ -23,8 +23,10 @@ class Process
 		Process(arch::processId_t id, arch::processState_t* state);
 
 		Thread* AddThread(arch::threadId_t threadId, arch::threadState_t* state);
+		Thread* CreateThread(uintptr_t entry);
 
 		inline arch::processId_t GetId( void ) { return id_; }
+		inline List<Thread*>& GetThreads() { return threads; }
 };
 
 

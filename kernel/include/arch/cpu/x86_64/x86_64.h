@@ -21,10 +21,12 @@ namespace arch
 	class X86_64 : public Cpu
 	{
 		public:
-			X86_64(uintptr_t id, int tssId) : id_((size_t)id), tssId_(tssId){}
+			X86_64(uintptr_t id, int tssId, int tssGdEntry) : id_((size_t)id), tssId_(tssId), tssGdtEntry_(tssGdEntry) {}
+			inline virtual ~X86_64(){}
 
 			inline uintptr_t GetId( void ) { return id_; }
 			inline int GetTssId( void ) { return tssId_; }
+			inline int GetTssGdtEntry( void ) { return tssGdtEntry_; }
 
 			static inline void EnableInterrupts( void ) { asm volatile("sti"); }
 			static inline void DisableInterrupts( void ) { asm volatile("cli"); }
@@ -56,6 +58,7 @@ namespace arch
 		private:
 			uintptr_t id_;
 			int tssId_;
+			int tssGdtEntry_;
 	};
 }
 

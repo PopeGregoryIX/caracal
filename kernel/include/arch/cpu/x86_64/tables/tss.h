@@ -21,9 +21,16 @@ namespace arch
 
 			void InstallToGdt(int tssEntryNumber, int gdtEntry);
 
+			inline void SetIst1(int tssEntryNum, uintptr_t value) 
+			{ 
+				__tss[tssEntryNum].ist1_low = (uint32_t)(0xFFFFFFFF & value);
+				__tss[tssEntryNum].ist1_high = (uint32_t)((value >> 32) & 0xFFFFFFFF);
+			}
+
 			void Load( int gdtEntryNumber );
 		private:
 			static Tss instance_;
+			
 			struct tssEntry
 			{
 				uint32_t reserved0;

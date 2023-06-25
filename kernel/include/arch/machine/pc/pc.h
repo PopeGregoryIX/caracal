@@ -35,9 +35,11 @@ namespace arch
 
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}
 	private:
+		void AddCpu(X86_64 cpu);
+
 		static Pc _instance;
 		size_t cpuCount_;
-		Cpu* cpus_;
+		X86_64* cpus_;
 	};
 }
 

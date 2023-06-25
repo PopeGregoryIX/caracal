@@ -8,6 +8,8 @@
 #include <process/processmanager.h>
 #include <debug/debug.h>
 #include <process/userfunctions.h>
+#include <tables/tss.h>
+#include <pc.h>
 
 namespace arch
 {
@@ -16,6 +18,7 @@ namespace arch
 		Thread* outgoing = ProcessManager::GetInstance().GetRunningThread();
 		Thread* incoming = nullptr;
 		VINFO("Outgoing Thread: " << outgoing->GetId() << " stack " << (uintptr_t)registers)
+		X86_64& cpu = (X86_64&)(Pc::GetInstance().GetCpu());
 
 		switch (registers->rax)
 		{
@@ -37,8 +40,9 @@ namespace arch
 		}
 		else
 			FATAL("incoming == outgoing");
-
 		
+		INFO("TSS ID is " << (uintptr_t)cpu.GetTssId());
+		//Tss::GetInstance().SetIst1(cpu.GetTssId(), 0);
 		VINFO("Incoming Thread: " << incoming->GetId() << " stack " << (uintptr_t)registers)
 		return registers;
 	}

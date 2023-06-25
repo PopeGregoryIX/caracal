@@ -51,11 +51,11 @@ namespace arch
 		VINFO("Initialise GDT on BSP");
 		Gdt::GetInstance().Load();
 
-		X86_64 cpu = X86_64(Cpu::CurrentProcessorId(), 5);
+		X86_64 cpu = X86_64(Cpu::CurrentProcessorId(), 0, 5);
 
 		//	THESE NUMBERS ARE WRONG! WHY IS THE TSS INSTALLED IN THE WRONG PLACE?
-		Tss::GetInstance().InstallToGdt(0, cpu.GetTssId());
-		Tss::GetInstance().Load(cpu.GetTssId());
+		Tss::GetInstance().InstallToGdt(cpu.GetTssId(), cpu.GetTssGdtEntry());
+		Tss::GetInstance().Load(cpu.GetTssGdtEntry());
 
 		//	2. Initialise IDT - we need to be able to handle interrupts
 		//	   Installing the Double Fault handler makes the code a little more robust (preventing triple-faults?)
@@ -84,6 +84,7 @@ namespace arch
 		UserFunctions::GetInstance().Initialise(X86_64::SystemCall);
 
 		//	In x86, the process state is simply CR3. All other information is held by the thread.
+		AddCpu(cpu);
 		processState_t* processInfo = new processState_t;
 		threadState_t* threadState = nullptr;
 		*processInfo = X86_64::ReadCr3();
@@ -182,12 +183,30 @@ namespace arch
 
 	Cpu& Pc::GetCpu(uintptr_t id)
 	{
+		INFO("CPUS is " << (uintptr_t)cpus_);
 		for (size_t i = 0; i < cpuCount_; ++i)
 		{
+			INFO("Requested ID: " << (uintptr_t)id << ", actual ID: " << (uintptr_t)cpus_[i].GetId());
 			if(cpus_[i].GetId() == id) return cpus_[i];
 		}
 		
 		FATAL("Cpu not found with id " << id);
 		return (Cpu&)*((Cpu*)nullptr);
+	}
+
+	void Pc::AddCpu(X86_64 cpu)
+	{
+		X86_64* newCpus = (X86_64*)VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(sizeof(X86_64) * (cpuCount_ + 1));
+		if(newCpus == nullptr) FATAL("Unable to allocate memory for CPU structures.");
+
+		if(cpus_ != nullptr)
+		{
+			 memorycopy<X86_64>(newCpus, cpus_, cpuCount_);
+			 delete cpus_;
+		}
+
+		memorycopy<X86_64>(&(newCpus[cpuCount_++]), &cpu, 1);
+
+		cpus_ = newCpus;
 	}
 }

@@ -17,29 +17,29 @@ namespace arch
 	: entries_(0x2000)
 	{
 		//	NULL segment
-		gdt_[0] = GdtEntry();
+		gdt_[GDTI_NULL] = GdtEntry();
 
 		//ring 0 segments 0x08
-		gdt_[1].setBase(0);
-		gdt_[1].setLimit(0xFFFFFFFF);
-		gdt_[1].flags = GDT_GRAN_4K | GDT_SIZE64;
-		gdt_[1].access = GDT_PRESENT | GDT_SYSTEM | GDT_EXECUTABLE | GDT_RW;
+		gdt_[GDTI_RING0_CODE].setBase(0);
+		gdt_[GDTI_RING0_CODE].setLimit(0xFFFFFFFF);
+		gdt_[GDTI_RING0_CODE].flags = GDT_GRAN_4K | GDT_SIZE64;
+		gdt_[GDTI_RING0_CODE].access = GDT_PRESENT | GDT_SYSTEM | GDT_EXECUTABLE | GDT_RW;
 
-		gdt_[2].setBase(0);
-		gdt_[2].setLimit(0xFFFFFFFF);
-		gdt_[2].flags = GDT_GRAN_4K | GDT_SIZE64;
-		gdt_[2].access = GDT_PRESENT | GDT_SYSTEM | GDT_RW;
+		gdt_[GDTI_RING0_DATA].setBase(0);
+		gdt_[GDTI_RING0_DATA].setLimit(0xFFFFFFFF);
+		gdt_[GDTI_RING0_DATA].flags = GDT_GRAN_4K | GDT_SIZE64;
+		gdt_[GDTI_RING0_DATA].access = GDT_PRESENT | GDT_SYSTEM | GDT_RW;
 
 		//ring 3 segments 0x18
-		gdt_[3].setBase(0);
-		gdt_[3].setLimit(0xFFFFFFFF);
-		gdt_[3].flags = GDT_GRAN_4K | GDT_SIZE64;
-		gdt_[3].access = GDT_PRESENT | GDT_SYSTEM | GDT_EXECUTABLE | GDT_RW | GDT_USER;
+		gdt_[GDTI_RING3_CODE].setBase(0);
+		gdt_[GDTI_RING3_CODE].setLimit(0xFFFFFFFF);
+		gdt_[GDTI_RING3_CODE].flags = GDT_GRAN_4K | GDT_SIZE64;
+		gdt_[GDTI_RING3_CODE].access = GDT_PRESENT | GDT_SYSTEM | GDT_EXECUTABLE | GDT_RW | GDT_USER;
 
-		gdt_[4].setBase(0);
-		gdt_[4].setLimit(0xFFFFFFFF);
-		gdt_[4].flags = GDT_GRAN_4K | GDT_SIZE64;
-		gdt_[4].access = GDT_PRESENT | GDT_SYSTEM | GDT_RW | GDT_USER;
+		gdt_[GDTI_RING3_DATA].setBase(0);
+		gdt_[GDTI_RING3_DATA].setLimit(0xFFFFFFFF);
+		gdt_[GDTI_RING3_DATA].flags = GDT_GRAN_4K | GDT_SIZE64;
+		gdt_[GDTI_RING3_DATA].access = GDT_PRESENT | GDT_SYSTEM | GDT_RW | GDT_USER;
 	}
 
 

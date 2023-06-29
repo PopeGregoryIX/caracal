@@ -37,7 +37,27 @@
 /// @brief Set for a 64 bit segment (long mode only).
 #define GDT_SIZE64		(1 << 1)
 
+#define GDTE_INDEX(x)	(0x08 * x)
+
+#define GDTE_NULL		(GDTE_INDEX(0))
+#define GDTE_RING0_CODE	GDTE_INDEX(1)
+#define GDTE_RING0_DATA	GDTE_INDEX(2)
+//	For SYSENTER in Long Mode, Ring 3 Code is CS + 32
+#define GDTE_RING3_CODE	(GDTE_INDEX(1) + 0x20)
+//	For SYSENTER in Long Mode, Ring 3 Data is CS + 40
+#define GDTE_RING3_DATA	(GDTE_INDEX(1) + 0x28)
+#define GDTE_TSS		(GDTE_RING3_DATA + 0x08)
+
+#define GDTI_NULL		(GDTE_NULL / 0x08)
+#define GDTI_RING0_CODE	(GDTE_RING0_CODE / 0x08)
+#define GDTI_RING0_DATA	(GDTE_RING0_DATA / 0x08)
+#define GDTI_RING3_CODE	(GDTE_RING3_CODE / 0x08)
+#define GDTI_RING3_DATA	(GDTE_RING3_DATA / 0x08)
+#define GDTI_TSS		(GDTE_TSS / 0x08)
+
 /**
+ * 
+ * 
  * @brief Reloads GDTR with its current values.
  * @param gdtr A pointer to the GDTR structure.
  * @param cs Code segment to jump to following loading GDTR.

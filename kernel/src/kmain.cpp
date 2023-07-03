@@ -32,6 +32,8 @@ void kmain()
 {
 	volatile int cpus = 0;
 
+	Machine& machine = Machine::GetInstance();
+
 	//	At this point we are limited to statics (no heap allocation)
 	//	kmain is called by *all* SMP cores and therefore needs to
 	//	distinguish between BSP's and AP's early on in code
@@ -45,14 +47,13 @@ void kmain()
 		//	space. This means AP's will also take part in system
 		//	initialisation.
 		DebugConsole& debug = DebugConsole::GetInstance();
-		Machine& machine = Machine::GetInstance();
 		machine.AddDefaultConsoleDevices(debug);
 
 		debug << ConsoleColour(0xFFFFFF, 0x000000);
 		INFO( "Initialising Caracal v1.0" );
 		VINFO( "BSP ID: " << (uint64_t)Cpu::CurrentProcessorId());
 
-		if(Machine::GetInstance().Boot())
+		if(machine.Boot())
 			INFO("Architecture-specific boot routine complete")
 		else
 			FATAL("Boot routine failed");
@@ -62,7 +63,6 @@ void kmain()
 	else
 	{
 		while(cpus == 0)	{};
-
 		for(;;) {}
 	}
 

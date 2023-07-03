@@ -29,6 +29,8 @@ namespace arch
 
 		bool Boot( void );
 
+		bool ApBoot( void );
+
 		void AddDefaultConsoleDevices( DebugConsole& console );
 
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}

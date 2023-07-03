@@ -35,6 +35,8 @@ public:
 
 	virtual bool Boot( void ) = 0;
 
+	virtual bool ApBoot( void ) = 0;
+
 	virtual void HaltCurrentCore() { while(1); }
 
 	virtual ~Machine( void ){}

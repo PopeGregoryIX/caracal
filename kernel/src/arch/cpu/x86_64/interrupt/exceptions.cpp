@@ -31,7 +31,7 @@ namespace arch
     {
         DebugConsole& debug = DebugConsole::GetInstance();
         
-        debug << "\n" << ConsoleColour(0xFF0000, 0x000000) << "Unhandled " << _ExceptionNames[registers->interruptNumber] << " Exception\n\n";
+        debug << "\n" << ConsoleColour(0xFF0000, 0x000000) << "Unhandled " << _ExceptionNames[registers->interruptNumber] << " Exception (core " << (uintptr_t)Cpu::CurrentProcessorId() << ")\n\n";
         DumpCore(registers);        
 
         FATAL("Unhandled Exception");

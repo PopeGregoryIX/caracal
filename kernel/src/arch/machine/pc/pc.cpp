@@ -53,7 +53,7 @@ namespace arch
 
 		//	2. Initialise CPU structures, such as GDT / IDT / TSS etc...
 		INFO("Initialise BSP");
-		X86_64 bspCpu = X86_64();	
+		X86_64 bspCpu = X86_64();
 		AddCpu(bspCpu);
 
 		//	Create process for idle loop.
@@ -69,7 +69,11 @@ namespace arch
 		return true;
 	}
 
-	
+	bool Pc::ApBoot( void )
+	{
+		return true;
+	}
+
 
 	Cpu& Pc::GetCpu(uintptr_t id)
 	{

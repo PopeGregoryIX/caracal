@@ -177,11 +177,11 @@ namespace arch
 
 	Cpu& Pc::GetCpu(uintptr_t id)
 	{
-		INFO("CPUS is " << (uintptr_t)cpus_);
-		for (size_t i = 0; i < cpuCount_; ++i)
+		INFO("CPUS is " << (uintptr_t)_cpus);
+		for (size_t i = 0; i < _cpuCount; ++i)
 		{
-			INFO("Requested ID: " << (uintptr_t)id << ", actual ID: " << (uintptr_t)cpus_[i].GetId());
-			if(cpus_[i].GetId() == id) return cpus_[i];
+			INFO("Requested ID: " << (uintptr_t)id << ", actual ID: " << (uintptr_t)_cpus[i].GetId());
+			if(_cpus[i].GetId() == id) return _cpus[i];
 		}
 		
 		FATAL("Cpu not found with id " << id);
@@ -190,17 +190,17 @@ namespace arch
 
 	void Pc::AddCpu(X86_64 cpu)
 	{
-		X86_64* newCpus = (X86_64*)VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(sizeof(X86_64) * (cpuCount_ + 1));
+		X86_64* newCpus = (X86_64*)VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(sizeof(X86_64) * (_cpuCount + 1));
 		if(newCpus == nullptr) FATAL("Unable to allocate memory for CPU structures.");
 
-		if(cpus_ != nullptr)
+		if(_cpus != nullptr)
 		{
-			 memorycopy<X86_64>(newCpus, cpus_, cpuCount_);
-			 delete cpus_;
+			 memorycopy<X86_64>(newCpus, _cpus, _cpuCount);
+			 delete _cpus;
 		}
 
-		memorycopy<X86_64>(&(newCpus[cpuCount_++]), &cpu, 1);
+		memorycopy<X86_64>(&(newCpus[_cpuCount++]), &cpu, 1);
 
-		cpus_ = newCpus;
+		_cpus = newCpus;
 	}
 }

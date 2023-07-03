@@ -17,13 +17,13 @@ namespace arch
 	class Pc : public Machine
 	{
 	public:
-		inline Pc() : cpuCount_(0) {}
+		inline Pc() : _cpuCount(0) {}
 
 		inline Cpu& GetCpu( void ) { return GetCpu(Cpu::CurrentProcessorId());}
 
 		Cpu& GetCpu(uintptr_t id);
 
-		inline size_t GetCpuCount( void ) { return cpuCount_; }
+		inline size_t GetCpuCount( void ) { return _cpuCount; }
 
 		static Pc& GetPcInstance( void ) { return _instance; }
 
@@ -38,8 +38,8 @@ namespace arch
 		void AddCpu(X86_64 cpu);
 
 		static Pc _instance;
-		size_t cpuCount_;
-		X86_64* cpus_;
+		size_t _cpuCount;
+		X86_64* _cpus;
 	};
 }
 

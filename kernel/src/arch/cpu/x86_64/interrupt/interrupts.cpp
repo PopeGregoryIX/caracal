@@ -17,8 +17,7 @@ namespace arch
 	{
 		Thread* outgoing = ProcessManager::GetInstance().GetRunningThread();
 		Thread* incoming = nullptr;
-		VINFO("Outgoing Thread: " << outgoing->GetId() << " stack " << (uintptr_t)registers)
-		X86_64& cpu = (X86_64&)(Pc::GetInstance().GetCpu());
+		VINFO("Outgoing Thread: " << outgoing->GetId() << " stack " << (uintptr_t)registers);
 
 		switch (registers->rax)
 		{
@@ -41,8 +40,6 @@ namespace arch
 		else
 			FATAL("incoming == outgoing");
 		
-		INFO("TSS ID is " << (uintptr_t)cpu.GetTssId());
-		//Tss::GetInstance().SetIst1(cpu.GetTssId(), 0);
 		VINFO("Incoming Thread: " << incoming->GetId() << " stack " << (uintptr_t)registers)
 		return registers;
 	}

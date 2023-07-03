@@ -7,7 +7,7 @@
 
 namespace arch
 {
-    ProcessServices ProcessServices::instance_;
+    ProcessServices ProcessServices::_instance;
 
     Thread* ProcessServices::CreateThread(Process* process, uintptr_t entryPoint)
     {
@@ -20,7 +20,7 @@ namespace arch
         if(newStackLocation % 0x200000) newStackLocation-= newStackLocation % 0x200000;
 
         INFO("New thread stack will be set up at " << newStackLocation);
-        threadStacks_.Add(newStackLocation);
+        _threadStacks.Add(newStackLocation);
         X86_64::PageInLarge(PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE, newStackLocation - 0x200000);
 
         threadState_t* newThreadState = (threadState_t*)(newStackLocation - sizeof(threadState_t));

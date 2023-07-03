@@ -21,12 +21,10 @@ namespace arch
 	class X86_64 : public Cpu
 	{
 		public:
-			X86_64(uintptr_t id, int tssId, int tssGdEntry) : id_((size_t)id), tssId_(tssId), tssGdtEntry_(tssGdEntry) {}
+			X86_64(uintptr_t id) : _id((size_t)id) {}
 			inline virtual ~X86_64(){}
 
-			inline uintptr_t GetId( void ) { return id_; }
-			inline int GetTssId( void ) { return tssId_; }
-			inline int GetTssGdtEntry( void ) { return tssGdtEntry_; }
+			inline uintptr_t GetId( void ) { return _id; }
 
 			static inline void EnableInterrupts( void ) { asm volatile("sti"); }
 			static inline void DisableInterrupts( void ) { asm volatile("cli"); }
@@ -56,9 +54,7 @@ namespace arch
 			static void PageInLarge(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress);
 
 		private:
-			uintptr_t id_;
-			int tssId_;
-			int tssGdtEntry_;
+			uintptr_t _id;
 	};
 }
 

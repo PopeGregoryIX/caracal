@@ -12,13 +12,13 @@ namespace arch
     class ProcessServices
     {
         public:
-            inline static ProcessServices& GetInstance(){ return instance_; }
+            inline static ProcessServices& GetInstance(){ return _instance; }
 
             Thread* CreateThread(Process* process, uintptr_t entryPoint);
         private:
-            static ProcessServices instance_;
+            static ProcessServices _instance;
 
-            List<uintptr_t> threadStacks_;
+            List<uintptr_t> _threadStacks;
     };
 }
 

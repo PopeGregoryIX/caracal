@@ -20,7 +20,10 @@ namespace arch
 	{
 		public:
 			/**
-			 * The sof
+			 * The software interrupt service - used when SYSCALL / SYSENTER not available.
+			 * @param registers CPU state as saved by the interrupt handler.
+			 * @return New register state following the interrupt.
+			 * 
 			*/
 			static Registers* SoftwareInterrupt(Registers* registers);
 	};

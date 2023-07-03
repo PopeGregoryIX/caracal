@@ -12,6 +12,7 @@
 #define GDT_H_
 
 #include <stdint.h>
+#include <tables/tss.h>
 
 ///	@brief Set if GDT entry is present
 #define GDT_PRESENT		(1 << 7)
@@ -46,7 +47,7 @@
 #define GDTE_RING3_CODE	(GDTE_INDEX(1) + 0x20)
 //	For SYSENTER in Long Mode, Ring 3 Data is CS + 40
 #define GDTE_RING3_DATA	(GDTE_INDEX(1) + 0x28)
-#define GDTE_TSS		(GDTE_RING3_DATA + 0x08)
+#define GDTE_TSS		(GDTE_RING3_DATA + 0x10)
 
 #define GDTI_NULL		(GDTE_NULL / 0x08)
 #define GDTI_RING0_CODE	(GDTE_RING0_CODE / 0x08)
@@ -78,7 +79,8 @@ namespace arch
 		Gdt( void );
 
 		void Load( void );
-
+		void LoadTss( void );
+		
 		/// @brief An entry in the Global Descriptor Table
 		struct GdtEntry
 		{
@@ -108,7 +110,7 @@ namespace arch
 			}
 		} __attribute__((packed));
 
-		struct GdtSystemEntry : public GdtEntry
+		struct GdtSystemEntry
 		{
 			uint16_t	limitLow;		///< @brief Low 16 bits of the segment limit.
 			uint16_t	baseLow;		///< @brief Low 16 bits of the segment base.
@@ -144,14 +146,14 @@ namespace arch
 			uint16_t size;
 			uintptr_t offset;
 		} __attribute__((packed));
-
-		void SetEntry(int index, GdtSystemEntry entry);
 	private:
 		GdtEntry gdt_[0x2000] __attribute__((aligned(64)));
 		GdtDescriptor gdtr_ __attribute__((aligned(64)));
 		uint16_t entries_;
+		tss tss_ __attribute__((aligned(64)));
 
 		static Gdt instance_;
+		
 	};
 }
 

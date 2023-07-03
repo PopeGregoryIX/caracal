@@ -1,7 +1,4 @@
 #!/bin/bash
-set -e
-./build.sh
-
 qemu-system-x86_64 \
 -s -S \
 -m 8G \

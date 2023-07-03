@@ -50,12 +50,7 @@ namespace arch
 		//	1. Initialise GDT - it's in an unknown state
 		VINFO("Initialise GDT on BSP");
 		Gdt::GetInstance().Load();
-
-		X86_64 cpu = X86_64(Cpu::CurrentProcessorId(), 0, 5);
-
-		//	THESE NUMBERS ARE WRONG! WHY IS THE TSS INSTALLED IN THE WRONG PLACE?
-		Tss::GetInstance().InstallToGdt(cpu.GetTssId(), cpu.GetTssGdtEntry());
-		Tss::GetInstance().Load(cpu.GetTssGdtEntry());
+		Gdt::GetInstance().LoadTss();
 
 		//	2. Initialise IDT - we need to be able to handle interrupts
 		//	   Installing the Double Fault handler makes the code a little more robust (preventing triple-faults?)
@@ -84,7 +79,6 @@ namespace arch
 		UserFunctions::GetInstance().Initialise(X86_64::SystemCall);
 
 		//	In x86, the process state is simply CR3. All other information is held by the thread.
-		AddCpu(cpu);
 		processState_t* processInfo = new processState_t;
 		threadState_t* threadState = nullptr;
 		*processInfo = X86_64::ReadCr3();

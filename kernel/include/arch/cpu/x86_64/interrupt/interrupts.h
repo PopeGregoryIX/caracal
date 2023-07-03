@@ -19,6 +19,9 @@ namespace arch
 	class Interrupts
 	{
 		public:
+			/**
+			 * The sof
+			*/
 			static Registers* SoftwareInterrupt(Registers* registers);
 	};
 }

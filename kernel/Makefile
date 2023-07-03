@@ -12,6 +12,7 @@ BINFORMAT:= elf
 endif
 
 #	Global Definitions
+CCDIR:= ~/opt/cross/bin/
 BINDIR:= ./bin/$(ARCH)/$(CPU)-$(BINFORMAT)
 SRCDIR:= ./src
 DEBUG:= DEBUG

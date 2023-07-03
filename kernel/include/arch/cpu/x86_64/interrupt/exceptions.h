@@ -36,9 +36,21 @@ namespace arch
              */
             static Registers* DefaultHandler(Registers* registers);
 
+            /**
+             * @brief Dump the registers saved by the exception handlers.
+             * 
+             * @param regs Saved Machine state when the handler was invoked.
+            */
             static void DumpCore(Registers* registers);
         public:
+            /**
+             * Handles a double-fault (0x08). Use static memory only in case this was caused by a memory allocation.
+            */
             static Registers* DoubleFaultExceptionHandler(Registers* registers);
+
+            /**
+             * Handles a page fault (0x0E). This may result in a Fatal exception, or may simply allocate more memory.
+            */
             static Registers* PageFaultExceptionHandler(Registers* registers);
     };
 }

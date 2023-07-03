@@ -62,7 +62,6 @@ namespace arch
 		Idt::GetInstance().Load();
 		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_DOUBLE_FAULT, Exceptions::DoubleFaultExceptionHandler);
 		Idt::GetInstance().InstallInterruptHandler(INTERRUPT_USER, Interrupts::SoftwareInterrupt);
-
 		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
 
 		if(Cpu::IsBsp())

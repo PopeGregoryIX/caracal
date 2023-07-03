@@ -30,6 +30,8 @@
  */
 void kmain()
 {
+	volatile int cpus = 0;
+
 	//	At this point we are limited to statics (no heap allocation)
 	//	kmain is called by *all* SMP cores and therefore needs to
 	//	distinguish between BSP's and AP's early on in code
@@ -54,9 +56,15 @@ void kmain()
 			INFO("Architecture-specific boot routine complete")
 		else
 			FATAL("Boot routine failed");
+
+		cpus++;
 	}
 	else
-		for(;;);
+	{
+		while(cpus == 0)	{};
+
+		for(;;) {}
+	}
 
 	IdleLoop();
 

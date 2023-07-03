@@ -54,6 +54,7 @@ namespace arch
 		//	2. Initialise CPU structures, such as GDT / IDT / TSS etc...
 		INFO("Initialise BSP");
 		X86_64 bspCpu = X86_64();	
+		AddCpu(bspCpu);
 
 		//	Create process for idle loop.
 		processState_t* processInfo = new processState_t;
@@ -64,7 +65,7 @@ namespace arch
 		processManager.Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
 		processManager.GetRunningThread()->GetProcess().CreateThread((uintptr_t)&IdleLoop);
 		UserFunctions::GetInstance().DoSyscall(CALL_YIELD);
-		
+
 		return true;
 	}
 

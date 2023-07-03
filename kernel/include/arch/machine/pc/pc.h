@@ -31,8 +31,6 @@ namespace arch
 
 		void AddDefaultConsoleDevices( DebugConsole& console );
 
-		void CreateKernelMemorySpace( void );
-
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}
 	private:
 		void AddCpu(X86_64 cpu);

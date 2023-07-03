@@ -21,11 +21,15 @@ namespace arch
 	class X86_64 : public Cpu
 	{
 		public:
-			X86_64(uintptr_t id) : _id((size_t)id) {}
+			X86_64();
+
 			inline virtual ~X86_64(){}
 
 			inline uintptr_t GetId( void ) { return _id; }
 
+			void CreateKernelMemorySpace( void );
+			
+		public:
 			static inline void EnableInterrupts( void ) { asm volatile("sti"); }
 			static inline void DisableInterrupts( void ) { asm volatile("cli"); }
 

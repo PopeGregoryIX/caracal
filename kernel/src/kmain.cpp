@@ -70,8 +70,10 @@ void kmain()
 		{
 			INFO("AP boot routine complete");
 		}
-
-		for(;;) {}
+		else
+		{
+			FATAL("AP boot failed");
+		}
 	}
 
 	IdleLoop();

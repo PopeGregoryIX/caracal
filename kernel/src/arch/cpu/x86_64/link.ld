@@ -1,4 +1,4 @@
-ENTRY(kmain)
+ENTRY(_entry)
 
 /*  Used by BOOTBOOT.   */
 /* overridden default bootboot values
@@ -11,6 +11,7 @@ mmio                = 0xfffffffff0000000;
 fb                  = 0xfffffffff4000000;
 bootboot            = 0xfffffffff8000000;
 environment         = 0xfffffffff8001000;
+initstack = 0x4000;
 
 /*  Bootboot - puts everything in a single segment  */
 PHDRS

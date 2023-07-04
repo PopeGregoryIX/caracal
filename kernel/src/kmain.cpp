@@ -19,7 +19,6 @@
 
 DebugConsole& debug = DebugConsole::GetInstance();
 Machine& machine = Machine::GetInstance();
-extern "C" uint64_t _bsp_init_done;
 
 /**
  * @brief Kernel entry point.
@@ -53,9 +52,7 @@ void kmain()
 
 		if(machine.Boot())
 		{
-			_bsp_init_done = 0xFFFF;
 			INFO("Architecture-specific boot routine complete");
-			
 		}
 		else
 		{

@@ -30,6 +30,7 @@ Machine& Machine::GetInstance( void ) { return arch::Pc::GetPcInstance(); }
 extern "C" uint8_t mmio;
 extern "C" uint8_t kernelStart;
 extern "C" uint8_t kernelEnd;
+extern "C" void _setBspDone( void );
 
 namespace arch
 {
@@ -64,8 +65,8 @@ namespace arch
 		ProcessManager& processManager = ProcessManager::GetInstance();
 		processManager.Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
 		processManager.GetRunningThread()->GetProcess().CreateThread((uintptr_t)&IdleLoop);
-		UserFunctions::GetInstance().DoSyscall(CALL_YIELD);
 
+		_setBspDone();
 		return true;
 	}
 

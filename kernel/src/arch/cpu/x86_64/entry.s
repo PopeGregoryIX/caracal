@@ -15,8 +15,20 @@ _entry:
     jmp .ap
 
 
+.globl _setBspDone
+_setBspDone:
+    push %rax
+    push %rcx
+
+    mov $_bsp_init_done, %rax
+    mov $0xFFFFFFFF, %rcx
+    mov %rcx, (%rax)
+
+    pop %rcx
+    pop %rax
+    ret
+
 .align 4
 .data
-.globl _bsp_init_done
 _bsp_init_done:
 .8byte 0x0000000000000000

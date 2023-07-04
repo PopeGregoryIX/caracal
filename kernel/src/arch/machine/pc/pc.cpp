@@ -66,6 +66,7 @@ namespace arch
 		processManager.Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
 		processManager.GetRunningThread()->GetProcess().CreateThread((uintptr_t)&IdleLoop);
 
+		//	Signal AP's to boot
 		_setBspDone();
 		return true;
 	}

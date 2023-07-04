@@ -10,6 +10,9 @@ _entry:
     jmp kmain
 
 .ap:
+    mov %cr3, %rax              //   keep BSP and AP memory maps consistent (otherwise _bsp_init_done is out of sync)
+    mov %rax, %cr3
+
     mov $_bsp_init_done, %rax
     mov (%rax), %rcx
     jmp .ap
@@ -21,7 +24,7 @@ _setBspDone:
     push %rcx
 
     mov $_bsp_init_done, %rax
-    mov $0xFFFFFFFF, %rcx
+    mov $0xFFFFFFFFFFFFFFFF, %rcx
     mov %rcx, (%rax)
 
     pop %rcx

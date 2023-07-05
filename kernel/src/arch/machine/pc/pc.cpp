@@ -67,6 +67,7 @@ namespace arch
 		processManager.GetRunningThread()->GetProcess().CreateThread((uintptr_t)&IdleLoop);
 
 		//	Signal AP's to boot
+		INFO("Signal AP's");
 		_setBspDone();
 		return true;
 	}

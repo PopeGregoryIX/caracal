@@ -14,8 +14,11 @@ _entry:
     mov %rax, %cr3
 
     mov $_bsp_init_done, %rax
-    mov (%rax), %rcx
-    jmp .ap
+    mov (%rax), %r14
+    cmp $0, %r14
+    je .ap
+
+    jmp kmain
 
 
 .globl _setBspDone

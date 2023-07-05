@@ -162,7 +162,6 @@ namespace arch
 
 		//	Create a PDPT for the kernel heap
 		((uint64_t*)pml4)[0x1FE] = PageFrameAllocator::GetInstance().Allocate() | PAGE_PRESENT | PAGE_WRITE | PAGE_GLOBAL;
-
 		CPU_CLASS::WriteCr3((uint64_t)pml4);
 	}
 

@@ -25,19 +25,23 @@ class Machine
 public:
 	static Machine& GetInstance( void );
 
+	virtual void AddDefaultConsoleDevices( DebugConsole& ) = 0;
+
+	virtual bool ApBoot( void ) = 0;
+
+	virtual void AcquireLock(uintptr_t* lock) = 0;
+
+	virtual bool Boot( void ) = 0;
+
 	virtual Cpu& GetCpu( void ) = 0;
 
 	virtual Cpu& GetCpu(uintptr_t id) = 0;
 
 	virtual size_t GetCpuCount( void ) = 0;
 
-	virtual void AddDefaultConsoleDevices( DebugConsole& ) = 0;
-
-	virtual bool Boot( void ) = 0;
-
-	virtual bool ApBoot( void ) = 0;
-
 	virtual void HaltCurrentCore() { while(1); }
+
+	virtual void ReleaseLock( uintptr_t* lock ) = 0;
 
 	virtual ~Machine( void ){}
 };

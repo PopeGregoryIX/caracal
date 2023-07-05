@@ -19,21 +19,31 @@ namespace arch
 	public:
 		inline Pc() : _cpuCount(0) {}
 
+		static Pc& GetPcInstance( void ) { return _instance; }
+
+		inline void AcquireLock(uintptr_t* lock)
+		{
+			
+		}
+		
+		bool ApBoot( void );
+
+		bool Boot( void );
+
+		void AddDefaultConsoleDevices( DebugConsole& console );
+
 		inline Cpu& GetCpu( void ) { return GetCpu(Cpu::CurrentProcessorId());}
 
 		Cpu& GetCpu(uintptr_t id);
 
 		inline size_t GetCpuCount( void ) { return _cpuCount; }
 
-		static Pc& GetPcInstance( void ) { return _instance; }
-
-		bool Boot( void );
-
-		bool ApBoot( void );
-
-		void AddDefaultConsoleDevices( DebugConsole& console );
-
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}
+
+		inline void ReleaseLock(uintptr_t* lock) 
+		{ 
+
+		}
 	private:
 		void AddCpu(X86_64 cpu);
 

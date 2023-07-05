@@ -61,15 +61,15 @@ void kmain()
 	}
 	else
 	{
-		INFO("Booting AP");
 		if(machine.ApBoot())
 		{
 			INFO("AP boot routine complete");
 		}
 		else
 		{
-			FATAL("AP boot failed");
+			FATAL("AP boot failed.");
 		}
+		for(;;){}
 	}
 
 	IdleLoop();

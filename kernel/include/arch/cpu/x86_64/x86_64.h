@@ -59,6 +59,7 @@ namespace arch
 
 		private:
 			uintptr_t _id;
+			static Spinlock _pageLock;
 	};
 }
 

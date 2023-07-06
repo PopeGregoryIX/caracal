@@ -45,6 +45,8 @@ unsigned int Cpu::CurrentProcessorId()
 
 namespace arch
 {
+	Spinlock X86_64::_pageLock;
+
 	X86_64::X86_64()
 	{
 		_id = X86_64::CurrentProcessorId();
@@ -174,6 +176,8 @@ namespace arch
 		if((virtualAddress % 0x200000ULL) != 0) FATAL("Please align virtual address before paging in! At:" << virtualAddress);
 		if((physicalAddress % 0x200000ULL) != 0) FATAL("Please align physical address before paging in! At:" << physicalAddress);
 
+		_pageLock.Acquire();
+
 		uint64_t* pdpt = (uint64_t*)(pml4[PML4_INDEX(virtualAddress)] & ~0xFFFULL);
 		if(pdpt == nullptr)
 		{
@@ -193,6 +197,8 @@ namespace arch
 			pd[PD_INDEX(virtualAddress)] = physicalAddress | flags;
 
 		InvalidatePage(virtualAddress);
+
+		_pageLock.Release();
 	}
 }
 

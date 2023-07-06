@@ -9,8 +9,6 @@
 #define KERNEL_INCLUDE_ARCH_CPU_X86_64_TABLES_TSS_H_
 
 #include <stdint.h>
-#include <stddef.h>
-#include <archdef.h>
 
 namespace arch
 {

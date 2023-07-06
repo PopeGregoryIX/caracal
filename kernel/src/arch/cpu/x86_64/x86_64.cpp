@@ -47,27 +47,29 @@ namespace arch
 {
 	Spinlock X86_64::_pageLock;
 
+	Gdt X86_64::_bspGdt;
+
 	X86_64::X86_64()
 	{
 		_id = X86_64::CurrentProcessorId();
 
 		VINFO("CPU ID is " << (uintptr_t)_id);
 
-		//	1. Initialise GDT - it's in an unknown state
-		VINFO("Initialise GDT");
-		Gdt::GetInstance().Load();
-		Gdt::GetInstance().LoadTss();
-
-		//	2. Initialise IDT - we need to be able to handle interrupts
-		//	   Installing the Double Fault handler makes the code a little more robust (preventing triple-faults?)
-		VINFO("Initialise IDT");
-		Idt::GetInstance().Load();
-		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_DOUBLE_FAULT, Exceptions::DoubleFaultExceptionHandler);
-		Idt::GetInstance().InstallInterruptHandler(INTERRUPT_USER, Interrupts::SoftwareInterrupt);
-		Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
-
 		if(Cpu::IsBsp())
 		{
+			//	1. Initialise GDT - it's in an unknown state
+			VINFO("Initialise GDT");
+			_bspGdt.Load();
+			_bspGdt.LoadTss();
+
+			//	2. Initialise IDT - we need to be able to handle interrupts
+			//	   Installing the Double Fault handler makes the code a little more robust (preventing triple-faults?)
+			VINFO("Initialise IDT");
+			Idt::GetInstance().Load();
+			Idt::GetInstance().InstallExceptionHandler(EXCEPTION_DOUBLE_FAULT, Exceptions::DoubleFaultExceptionHandler);
+			Idt::GetInstance().InstallInterruptHandler(INTERRUPT_USER, Interrupts::SoftwareInterrupt);
+			Idt::GetInstance().InstallExceptionHandler(EXCEPTION_PAGE_FAULT, Exceptions::PageFaultExceptionHandler);
+
 			//	3. Initialise the virtual memory allocation system (BSP only).
 			//	NOTE: Not complete until Tasking is also set up, due to load of new CR3
 			INFO("Initialise Virtual Memory Manager");

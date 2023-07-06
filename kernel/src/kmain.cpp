@@ -63,7 +63,7 @@ void kmain()
 	{
 		if(machine.ApBoot())
 		{
-			INFO("AP boot routine complete");
+			INFO("AP " << (uint64_t)Cpu::CurrentProcessorId() << " boot routine complete");
 		}
 		else
 		{

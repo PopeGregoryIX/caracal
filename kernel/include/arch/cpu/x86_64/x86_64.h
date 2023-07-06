@@ -15,6 +15,7 @@
 #include <cpu.h>
 #include <memory/pageframeallocator.h>
 #include <interrupt/interrupts.h>
+#include <tables/gdt.h>
 
 namespace arch
 {
@@ -60,6 +61,8 @@ namespace arch
 		private:
 			uintptr_t _id;
 			static Spinlock _pageLock;
+
+			static Gdt _bspGdt;
 	};
 }
 

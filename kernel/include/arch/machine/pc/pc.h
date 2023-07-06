@@ -11,6 +11,7 @@
 #include <machine.h>
 #include <cpu.h>
 #include <x86_64.h>
+#include <memory/spinlock.h>
 
 extern "C" void __acquireLock(uintptr_t* lock);
 extern "C" void __releaseLock(uintptr_t* lock);
@@ -47,6 +48,7 @@ namespace arch
 		static Pc _instance;
 		size_t _cpuCount;
 		X86_64* _cpus;
+		Spinlock _bootLock;
 	};
 }
 

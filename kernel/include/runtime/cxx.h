@@ -25,6 +25,7 @@ int idle(int, char**);
 
 //	Library functions (until replaced by kernel-level stdlib)
 extern "C" void* memset( void* ptr, int value, size_t num);
+extern "C" void* memcpy( void* dest, void* src, size_t numBytes);
 
 //	Support for Global / Static Objects////////////////////////////////
 #define ATEXIT_FUNCTION_MAX	0x200 ///< The maximum number of AtExit functions that can be supported.

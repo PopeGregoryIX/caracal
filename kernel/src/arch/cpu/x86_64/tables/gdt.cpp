@@ -11,8 +11,6 @@
 
 namespace arch
 {
-	Gdt Gdt::_instance;
-
 	Gdt::Gdt( void )
 	: _entryCount(0x2000)
 	{

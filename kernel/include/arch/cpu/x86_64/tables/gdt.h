@@ -74,8 +74,6 @@ namespace arch
 	class Gdt
 	{
 	public:
-		static inline Gdt& GetInstance( void )	{	return _instance;	}
-
 		Gdt( void );
 
 		void Load( void );
@@ -150,10 +148,7 @@ namespace arch
 		GdtEntry _gdt[0x2000] __attribute__((aligned(64)));
 		GdtDescriptor _gdtr __attribute__((aligned(64)));
 		uint16_t _entryCount;
-		tssTable _tss __attribute__((aligned(64)));
-
-		static Gdt _instance;
-		
+		tssTable _tss __attribute__((aligned(64)));		
 	};
 }
 

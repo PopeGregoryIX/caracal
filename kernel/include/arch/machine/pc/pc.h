@@ -12,6 +12,9 @@
 #include <cpu.h>
 #include <x86_64.h>
 
+extern "C" void __acquireLock(uintptr_t* lock);
+extern "C" void __releaseLock(uintptr_t* lock);
+
 namespace arch
 {
 	class Pc : public Machine
@@ -21,10 +24,7 @@ namespace arch
 
 		static Pc& GetPcInstance( void ) { return _instance; }
 
-		inline void AcquireLock(uintptr_t* lock)
-		{
-			
-		}
+		inline void AcquireLock(uintptr_t* lock) { __acquireLock(lock); }
 		
 		bool ApBoot( void );
 
@@ -40,10 +40,7 @@ namespace arch
 
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}
 
-		inline void ReleaseLock(uintptr_t* lock) 
-		{ 
-
-		}
+		inline void ReleaseLock(uintptr_t* lock) { __releaseLock(lock); }
 	private:
 		void AddCpu(X86_64 cpu);
 

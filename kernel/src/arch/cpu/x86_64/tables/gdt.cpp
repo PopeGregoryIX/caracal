@@ -52,6 +52,8 @@ namespace arch
 
 	void Gdt::Load( void )
 	{
+		if(_gdtr.offset % 64 != 0) FATAL("Misaligned GDT.");
+		if((uintptr_t)&_gdtr % 64 != 0) FATAL("Misaligned GDTR");
 		_gdtr.size = (uint16_t)((_entryCount * sizeof(GdtEntry)) - 1);
 		_gdtr.offset = (uintptr_t)_gdt;
 

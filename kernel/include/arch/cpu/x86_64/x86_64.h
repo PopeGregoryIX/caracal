@@ -63,6 +63,8 @@ namespace arch
 			static Spinlock _pageLock;
 
 			static Gdt _bspGdt;
+
+			static Gdt** _gdts;
 	};
 }
 

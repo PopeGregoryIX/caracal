@@ -1,7 +1,7 @@
 #ifndef __SPINLOCK_H
 #define __SPINLOCK_H
 
-#include <archdef.h>
+#include <stdint.h>
 
 class Spinlock
 {

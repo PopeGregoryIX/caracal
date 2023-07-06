@@ -11,11 +11,15 @@
 #include <debug/consoleoutput.h>
 #include <debug/consolecolour.h>
 #include <stdint.h>
+#include <memory/spinlock.h>
 
 class DebugConsole
 {
 public:
 	static DebugConsole& GetInstance( void ) { return _instance; }
+
+	inline void LockConsole( void ){_lock.Acquire();}
+	inline void UnlockConsole( void ){_lock.Release();}
 
 	void AddOutputDevice(ConsoleOutput& device);
 	void SetOutputColour(uint32_t foreground, uint32_t background);
@@ -40,6 +44,7 @@ protected:
 
 	static const int MAXOUTPUTDEVICES = 3;
 	ConsoleOutput* _outputDevices[MAXOUTPUTDEVICES];
+	Spinlock _lock;
 };
 
 #endif /* KERNEL_INCLUDE_DEBUG_DEBUGCONSOLE_H_ */

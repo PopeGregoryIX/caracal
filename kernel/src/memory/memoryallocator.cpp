@@ -71,6 +71,7 @@ void* MemoryAllocator::Allocate(size_t bytes)
     {
         if(item->bytes >= bytes)
         {
+            _lock.Acquire();
             RemoveFree(item);
 
             //  See if this region is large enough to split
@@ -85,6 +86,7 @@ void* MemoryAllocator::Allocate(size_t bytes)
             }
 
             AddUsed(item);
+            _lock.Release();
             return (void*)(item->base);
         }
         item = item->next;
@@ -97,6 +99,7 @@ void* MemoryAllocator::Allocate(size_t bytes)
 
 void MemoryAllocator::ExtendHeap(uintptr_t bytes)
 {
+    _lock.Acquire();
     bytes+= sizeof(item_t);
     if(bytes < KERNEL_HEAP_INCREMENT) bytes = KERNEL_HEAP_INCREMENT;
 
@@ -109,6 +112,7 @@ void MemoryAllocator::ExtendHeap(uintptr_t bytes)
     newItem->base = ((uint64_t)oldHeapTop) + sizeof(item_t);
     newItem->bytes = additionalSize - sizeof(item_t);
     AddFree(newItem);
+    _lock.Release();
 }
 
 void MemoryAllocator::Free(void* ptr)

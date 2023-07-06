@@ -10,6 +10,7 @@
 
 #include <stdint.h>
 #include <debug/consolecolour.h>
+#include <memory/spinlock.h>
 
 class ConsoleOutput
 {
@@ -27,6 +28,7 @@ public:
 	virtual ~ConsoleOutput(){}
 protected:
 	ConsoleColour _colour;
+	Spinlock _lock;
 };
 
 #endif /* KERNEL_INCLUDE_DEBUG_CONSOLEOUTPUT_H_ */

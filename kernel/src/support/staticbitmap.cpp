@@ -24,6 +24,7 @@ StaticBitmap::StaticBitmap(uint64_t* bitmap, size_t bytes, bool zero, bool max)
 
 void StaticBitmap::Clear(size_t base, size_t length)
 {
+    _lock.Acquire();
     if(base > Max() || (base + length - 1) > Max()) 
         FATAL("Overflow detected on StaticBitmap while clearing bits.");
 
@@ -68,10 +69,12 @@ void StaticBitmap::Clear(size_t base, size_t length)
             _bitmap[q] &= ~bitPattern;
         }
     }
+    _lock.Release();
 }
 
 uint64_t StaticBitmap::FindFirstClear()
 {
+    _lock.Acquire();
     for(size_t i = 0; i < (_bytes / sizeof(uint64_t)); ++i)
     {
         if(_bitmap[i] != UINT64_MAX)
@@ -79,16 +82,21 @@ uint64_t StaticBitmap::FindFirstClear()
             for(size_t j = 0; j < BITS_PER_FRAME; ++j)
             {
                 if(((_bitmap[i] ^ (1ULL << j)) & (1ULL << j)) == (1ULL << j))
+                {
+                    _lock.Release();
                     return (i * BITS_PER_FRAME) + j;
+                }
             }
         }
     }
 
+    _lock.Release();
     return -1;
 }
 
 uint64_t StaticBitmap::FindLastClear()
 {
+    _lock.Acquire();
     for(size_t i = (_bytes / sizeof(uint64_t)) - 1; i != UINT64_MAX; --i)
     {
         if(_bitmap[i] != UINT64_MAX)
@@ -98,18 +106,22 @@ uint64_t StaticBitmap::FindLastClear()
             for(size_t j = 0; j <= (BITS_PER_FRAME - 1); ++j)
             {
                 if(((_bitmap[i] ^ bitPattern) & bitPattern) == bitPattern)
+                {
+                    _lock.Release();
                     return (i * BITS_PER_FRAME) + (BITS_PER_FRAME - (j + 1));
-
+                }
                 bitPattern = bitPattern >> 1;
             }
         }
     }
 
+    _lock.Release();
     return -1;
 }
 
 uint64_t StaticBitmap::FindFirstClear(size_t length)
 {
+    _lock.Acquire();
     size_t frames = length / BITS_PER_FRAME;
     if((length % BITS_PER_FRAME) != 0) frames++;
 
@@ -123,7 +135,11 @@ uint64_t StaticBitmap::FindFirstClear(size_t length)
                 if(_bitmap[i + j] != 0) found = false;
 
             //  we have found the start of enough consecutive frames for allocation!
-            if (found) return (i * BITS_PER_FRAME);
+            if (found) 
+            {
+                _lock.Release();
+                return (i * BITS_PER_FRAME);
+            }
         }
         else
         {
@@ -134,18 +150,22 @@ uint64_t StaticBitmap::FindFirstClear(size_t length)
             for(size_t j = 0; j <= (BITS_PER_FRAME - length); ++j)
             {
                 if(((_bitmap[i] ^ bitPattern) & bitPattern) == bitPattern)
+                {
+                    _lock.Release();
                     return (i * BITS_PER_FRAME) + j;
-
+                }
                 bitPattern = bitPattern << 1;
             }
         }
     }
 
+    _lock.Release();
     return -1;
 }
 
 uint64_t StaticBitmap::FindLastClear(size_t length)
 {
+    _lock.Acquire();
     size_t frames = length / BITS_PER_FRAME;
     if((length % BITS_PER_FRAME) != 0) frames++;
 
@@ -159,7 +179,11 @@ uint64_t StaticBitmap::FindLastClear(size_t length)
                 if(_bitmap[i + j] != 0) found = false;
 
             //  we have found the start of enough consecutive frames for allocation!
-            if (found) return (i * BITS_PER_FRAME);
+            if (found) 
+            {
+                _lock.Release();
+                return (i * BITS_PER_FRAME);
+            }
         }
         else
         {
@@ -170,18 +194,21 @@ uint64_t StaticBitmap::FindLastClear(size_t length)
             for(size_t j = 0; j <= (BITS_PER_FRAME - length); ++j)
             {
                 if(((_bitmap[i] ^ bitPattern) & bitPattern) == bitPattern)
+                {
+                    _lock.Release();
                     return (i * BITS_PER_FRAME) + (BITS_PER_FRAME - (j + length));
-
+                }
                 bitPattern = bitPattern >> 1;
             }
         }
     }
-
+    _lock.Release();
     return -1;
 }
 
 uint64_t StaticBitmap::FindLastClear(size_t length, size_t alignment)
 {
+    _lock.Acquire();
     size_t frames = length / BITS_PER_FRAME;
     if((length % BITS_PER_FRAME) != 0) frames++;
     
@@ -199,14 +226,19 @@ uint64_t StaticBitmap::FindLastClear(size_t length, size_t alignment)
             if(_bitmap[i + j] != 0) found = false;
 
         //  we have found the start of enough consecutive frames for allocation!
-        if (found) return (i * BITS_PER_FRAME);
+        if (found)
+        {
+            _lock.Release();
+             return (i * BITS_PER_FRAME);
+        }
     }
-
+    _lock.Release();
     return -1;
 }
 
 void StaticBitmap::Set(size_t base, size_t length)
 {
+    _lock.Acquire();
     if(base > Max() || (base + length - 1) > Max())         
     {
         INFO("Base: " << base << "\tLength: " << length);
@@ -248,4 +280,5 @@ void StaticBitmap::Set(size_t base, size_t length)
                 _bitmap[q] = UINT64_MAX;
         }
     }
+    _lock.Release();
 }

@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include <debug/debug.h>
+#include <memory/spinlock.h>
 
 class StaticBitmap
 {
@@ -22,6 +23,8 @@ class StaticBitmap
         size_t _bytes;                                      ///< Total size of bitmap in bytes
         const size_t BITS_PER_FRAME = sizeof(uint64_t) * 8; ///< Number of bits used to store each frame
         const size_t BYTES_PER_FRAME = sizeof(uint64_t);
+        Spinlock _lock;
+
     public:
         StaticBitmap() : _bitmap(nullptr), _bytes(0){}
 
@@ -35,11 +38,18 @@ class StaticBitmap
         
         inline void Clear(size_t bit) 
         {   
+            _lock.Acquire();
             if(bit > Max()) FATAL("Overflow detected on StaticBitmap while clearing bits.");
             _bitmap[bit / BITS_PER_FRAME] &= ~(1ULL << (bit % BITS_PER_FRAME));    
+            _lock.Release();
         }
 
-        inline uint64_t FindAndSet( void ) { uint64_t returnValue = FindLastClear(); if(returnValue != UINT64_MAX) Set(returnValue); return returnValue; }
+        inline uint64_t FindAndSet( void ) 
+        { 
+            uint64_t returnValue = FindLastClear(); 
+            if(returnValue != UINT64_MAX) Set(returnValue); 
+            return returnValue; 
+        }
 
         inline uint64_t FindAndSet( size_t length ) { uint64_t returnValue = FindLastClear(length); if(returnValue != UINT64_MAX) Set(returnValue, length); return returnValue; }
 
@@ -64,8 +74,10 @@ class StaticBitmap
         
         inline void Set(size_t bit) 
         { 
+            _lock.Acquire();
             if(bit > Max()) FATAL("Overflow detected on StaticBitmap while setting bits.");
             _bitmap[bit / BITS_PER_FRAME] |= (1ULL << (bit % BITS_PER_FRAME));    
+            _lock.Release();
         }
         
         inline size_t Max(void){  return (_bytes * sizeof(uint64_t)) - 1; }

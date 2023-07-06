@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <archdef.h>
+#include <memory/spinlock.h>
 
 typedef uintptr_t (*requestHeapBytes)(intptr_t bytes);
 
@@ -42,7 +43,8 @@ class MemoryAllocator
         item_t* _free;
         item_t* _used;
         requestHeapBytes _requestHeapBytes;
-
+        Spinlock _lock;
+        
         inline uintptr_t HeapSize( void ) { return _heapTop - _heapStart; }
 
         void ExtendHeap(uintptr_t bytes);

@@ -15,9 +15,12 @@
 #include <registers.h>
 #include <debug/debug.h>
 #include <cpu.h>
+#include <memory/spinlock.h>
 
 namespace arch
 {
+    Spinlock Exceptions::_coreDumpLock;
+    
     const char* Exceptions::_ExceptionNames[32] = {	"Divide Error", "Debug", "Non-maskable Interrupt", "Breakpoint",
 												"Overflow", "Boundary Range Exceeded", "Undefined Opcode", "Device Unavailable",
 												"Double Fault", "Reserved", "Invalid TSS", "Not Present", "Stack Segment",
@@ -40,6 +43,8 @@ namespace arch
 
     void Exceptions::DumpCore(Registers* registers)
     {
+        _coreDumpLock.Acquire();
+
         DebugConsole& debug = DebugConsole::GetInstance();
         
         PrintRegisters("RAX", registers->rax, "RBX", registers->rbx);
@@ -69,6 +74,7 @@ namespace arch
 
         debug << "\nStack stored at: " << (uint64_t)registers << "\n";
         
+        _coreDumpLock.Release();
         /*debug << "First 10 stack frames:\n";
 
         

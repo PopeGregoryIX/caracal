@@ -12,7 +12,6 @@
 namespace arch
 {
 	Gdt::Gdt( void )
-	: _entryCount(0x2000)
 	{
 		//	NULL segment
 		_gdt[GDTI_NULL] = GdtEntry();
@@ -52,9 +51,9 @@ namespace arch
 
 	void Gdt::Load( void )
 	{
-		if(_gdtr.offset % 64 != 0) FATAL("Misaligned GDT.");
-		if((uintptr_t)&_gdtr % 64 != 0) FATAL("Misaligned GDTR");
-		_gdtr.size = (uint16_t)((_entryCount * sizeof(GdtEntry)) - 1);
+		if((uintptr_t)_gdt % 64 != 0) FATAL("Misaligned GDT at " << (uintptr_t)_gdt);
+		if((uintptr_t)&_gdtr % 64 != 0) FATAL("Misaligned GDTR at " << (uintptr_t)&_gdtr);
+		_gdtr.size = (uint16_t)((GDT_ENTRY_COUNT * sizeof(GdtEntry)) - 1);
 		_gdtr.offset = (uintptr_t)_gdt;
 
 		__loadGdt((void*)&_gdtr, 0x08, 0x10);

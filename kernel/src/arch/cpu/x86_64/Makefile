@@ -51,3 +51,6 @@ clean:
 		
 makedirs:
 	@mkdir -p $(BINDIRS)
+
+gdb:
+	@gdb -s $(BINDIR)/$(SYMFILE) -ex "target remote localhost:1234"

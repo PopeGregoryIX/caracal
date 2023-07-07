@@ -69,7 +69,6 @@ void kmain()
 		{
 			FATAL("AP boot failed.");
 		}
-		for(;;){}
 	}
 
 	IdleLoop();

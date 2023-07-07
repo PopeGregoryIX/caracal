@@ -47,8 +47,7 @@ namespace arch
 {
 	Spinlock X86_64::_pageLock;
 
-	Gdt X86_64::_bspGdt;
-	Gdt** X86_64::_gdts;
+	Gdt X86_64::_gdts[0x100];
 
 	X86_64::X86_64()
 	{
@@ -60,8 +59,8 @@ namespace arch
 		{
 			//	1. Initialise GDT - it's in an unknown state
 			VINFO("Initialise GDT");
-			_bspGdt.Load();
-			_bspGdt.LoadTss();
+			_gdts[bootboot.bspid].Load();
+			_gdts[bootboot.bspid].LoadTss();
 
 			//	2. Initialise IDT - we need to be able to handle interrupts
 			//	   Installing the Double Fault handler makes the code a little more robust (preventing triple-faults?)
@@ -82,21 +81,15 @@ namespace arch
 			//	VMM as this will destroy mapping in the lower part of the heap manager.
 			INFO("Creating initial Process and Thread");
 			UserFunctions::GetInstance().Initialise(X86_64::SystemCall);
-
-			//	Dynamic allocation for tables etc...
-			_gdts = (Gdt**)VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(sizeof(Gdt*) * bootboot.numcores);
-			if(_gdts == nullptr) FATAL("Unable to allocate space for GDT list.");
-			_gdts[Cpu::CurrentProcessorId()] = &_bspGdt;
 		}
 		else
 		{
-			if(Cpu::CurrentProcessorId() > bootboot.numcores)
-				FATAL("Some assumptions are made about CPU core numbers, but they are not sequential!");
-			Gdt& gdt = *(_gdts[Cpu::CurrentProcessorId()] = (Gdt*)VirtualMemoryManager::GetInstance().GetKernelAllocator().Allocate(sizeof(Gdt)));
+			if(Cpu::CurrentProcessorId() > bootboot.numcores) FATAL("Some assumptions are made about CPU core numbers, but they are not sequential!");
+			Gdt& gdt = _gdts[Cpu::CurrentProcessorId()];
 			gdt.Load();
 
 			Idt::GetInstance().Load();
-			FATAL("Attempt to initialise an non-BSP CPU.");
+			INFO("Attempt to initialise an non-BSP CPU.");
 		}
 
 		X86_64::EnableInterrupts();

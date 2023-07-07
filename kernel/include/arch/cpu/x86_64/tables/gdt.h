@@ -56,6 +56,8 @@
 #define GDTI_RING3_DATA	(GDTE_RING3_DATA / 0x08)
 #define GDTI_TSS		(GDTE_TSS / 0x08)
 
+#define GDT_ENTRY_COUNT	0x10
+
 /**
  * 
  * 
@@ -145,9 +147,8 @@ namespace arch
 			uintptr_t offset;
 		} __attribute__((packed));
 	private:
-		GdtEntry _gdt[0x2000] __attribute__((aligned(64)));
+		GdtEntry _gdt[GDT_ENTRY_COUNT] __attribute__((aligned(64)));
 		GdtDescriptor _gdtr __attribute__((aligned(64)));
-		uint16_t _entryCount;
 		tssTable _tss __attribute__((aligned(64)));		
 	};
 }

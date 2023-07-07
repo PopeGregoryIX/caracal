@@ -14,6 +14,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <tables/idt.h>
+#include <memory/spinlock.h>
 
 namespace arch
 {
@@ -27,6 +28,7 @@ namespace arch
     {
         private:
             static const char* _ExceptionNames[32]; ///< Names of exceptions - used in the unhandled exception window.
+            static Spinlock _coreDumpLock;
 
             /**
              * @brief A handler which is executed if no other handler is installed.

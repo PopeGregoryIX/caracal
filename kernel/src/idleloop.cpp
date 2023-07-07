@@ -14,6 +14,6 @@ void IdleLoop( void )
     console.PutChar('\n');
     for(;;) 
     { 
-        UserFunctions::GetInstance().DoSyscall(CALL_YIELD);
+        //UserFunctions::GetInstance().DoSyscall(CALL_YIELD);
     }
 }

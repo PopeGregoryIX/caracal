@@ -25,7 +25,7 @@ class UserFunctions
 
 
         static Thread* Halt(Thread* outgoing);
-        inline Thread* Yield(Thread* outgoing) { return ProcessManager::GetInstance().TaskSwitch(outgoing); }
+        inline Thread* Yield(Thread* outgoing) { return outgoing; }
 
     private:
         static UserFunctions instance_;

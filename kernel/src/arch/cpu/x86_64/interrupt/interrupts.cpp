@@ -15,7 +15,7 @@ namespace arch
 {
 	Registers* Interrupts::SoftwareInterrupt(Registers* registers)
 	{
-		Thread* outgoing = ProcessManager::GetInstance().GetRunningThread();
+		/*Thread* outgoing = ProcessManager::GetInstance().GetRunningThread();
 		Thread* incoming = nullptr;
 		VINFO("Outgoing Thread: " << outgoing->GetId() << " stack " << (uintptr_t)registers);
 
@@ -40,7 +40,7 @@ namespace arch
 		else
 			FATAL("incoming == outgoing");
 		
-		VINFO("Incoming Thread: " << incoming->GetId() << " stack " << (uintptr_t)registers)
+		VINFO("Incoming Thread: " << incoming->GetId() << " stack " << (uintptr_t)registers)*/
 		return registers;
 	}
 }

@@ -8,7 +8,7 @@
 #include <process/process.h>
 #include <processservices.h>
 
-Process::Process(arch::processId_t id, arch::processState_t* state)
+Process::Process(arch::processId_t id, arch::processState_t state)
 : id_(id), state_(state)
 {
 

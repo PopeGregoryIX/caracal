@@ -18,39 +18,17 @@ class ProcessManager
 	public:
 		static ProcessManager& GetInstance( void ){ return instance_; }
 
-		ProcessManager( void );
+		ProcessManager( void ) : _processId(0){}
 
-		void Initialise( arch::processState_t* initialProcessState, arch::threadState_t* initialThreadState,
-				arch::threadId_t initialThreadId);
+		Process& CreateNewSupervisorProcess( uintptr_t entryPoint );
 
-		inline Thread* GetRunningThread(){ return GetRunningThread(Cpu::CurrentProcessorId()); }
+		static void IdleTask( void );
 
-		inline Thread* GetRunningThread(size_t processorId)
-		{
-			//INFO("Processor ID " << (uintptr_t)processorId);
-			for(size_t i = 0; i < this->runningThreadCount_; ++i)
-			{
-				if( runningThreads_[i].processorId == processorId)
-					return runningThreads_[i].thread;
-			}
-
-			return nullptr;
-		}
-
-		Thread* TaskSwitch(Thread* outgoing);
+		inline uint64_t GetnewProcessId( void ){ return _processId++; }
 	private:
-		typedef struct runningThread
-		{
-			size_t processorId;
-			Thread* thread;
-		} runningthread_t;
-
-		arch::processId_t nextId_;
 		static ProcessManager instance_;
-		List<Process*> processes_;
-
-		size_t runningThreadCount_;
-		runningthread_t* runningThreads_;
+		uint64_t _processId;
+		
 };
 
 

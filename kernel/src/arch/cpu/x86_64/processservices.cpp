@@ -4,6 +4,8 @@
 #include <process/process.h>
 #include <process/thread.h>
 #include <cpu.h>
+#include <memory/heapmanager.h>
+#include <process/processmanager.h>
 
 namespace arch
 {
@@ -33,5 +35,17 @@ namespace arch
 
         Thread* newThread = new Thread(newStackLocation, *process, newThreadState);
         return newThread;
+    }
+
+    Process* ProcessServices::CreateProcess( void )
+    {
+        //	create a copy of PML4
+		INFO("Setting up PML4");
+		pageDirectoryEntry_t* pml4 = HeapManager::GetNewPagingStructure();
+		memorycopy<pageDirectoryEntry_t>(pml4, (pageDirectoryEntry_t*)X86_64::ReadCr3(), 0x200);
+		
+        Process* process = new Process(ProcessManager::GetInstance().GetnewProcessId(), (processState_t)pml4);
+
+        return process;
     }
 }

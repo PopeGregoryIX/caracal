@@ -16,11 +16,11 @@ class Process
 {
 	private:
 		arch::processId_t id_;
-		arch::processState_t* state_;
+		arch::processState_t state_;
 		List<Thread*> threads;
 
 	public:
-		Process(arch::processId_t id, arch::processState_t* state);
+		Process(arch::processId_t id, arch::processState_t state);
 
 		Thread* AddThread(arch::threadId_t threadId, arch::threadState_t* state);
 		Thread* CreateThread(uintptr_t entry);

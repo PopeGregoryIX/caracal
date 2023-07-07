@@ -57,15 +57,6 @@ namespace arch
 		X86_64 bspCpu;
 		AddCpu(bspCpu);
 
-		//	Create process for idle loop.
-		processState_t* processInfo = new processState_t;
-		threadState_t* threadState = nullptr;
-		*processInfo = X86_64::ReadCr3();
-
-		ProcessManager& processManager = ProcessManager::GetInstance();
-		processManager.Initialise(processInfo, threadState, SUPERVISOR_THREAD_STACK);
-		processManager.GetRunningThread()->GetProcess().CreateThread((uintptr_t)&IdleLoop);
-
 		//	Signal AP's to boot
 		INFO("Signal AP's");
 		_setBspDone();
@@ -76,6 +67,13 @@ namespace arch
 	{
 		_bootLock.Acquire();
 		X86_64 cpu;
+
+		//	create a copy of PML4
+		INFO("Setting up PML4");
+		pageDirectoryEntry_t* pml4 = HeapManager::GetNewPagingStructure();
+		memorycopy<pageDirectoryEntry_t>(pml4, (pageDirectoryEntry_t*)X86_64::ReadCr3(), 0x200);
+		X86_64::WriteCr3((uintptr_t)pml4);
+
 		_bootLock.Release();
 		return true;
 	}

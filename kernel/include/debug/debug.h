@@ -33,7 +33,7 @@
 #endif
 
 #ifdef DEBUG
-#define FATAL(x) {	DebugConsole::GetInstance().LockConsole(); DebugConsole::GetInstance() << ConsoleColour(0xFF0000, 0x000000) << "\n[ERROR]   " << ConsoleColour(0xFFFFFF, 0x000000) << x << " - System Halted."; Machine::GetInstance().HaltCurrentCore(); DebugConsole::GetInstance().UnlockConsole();	}
+#define FATAL(x) {	DebugConsole::GetInstance().LockConsole(); DebugConsole::GetInstance() << ConsoleColour(0xFF0000, 0x000000) << "\n[ERROR]   " << ConsoleColour(0xFFFFFF, 0x000000) << x << " - System Halted."; DebugConsole::GetInstance().UnlockConsole(); Machine::GetInstance().HaltCurrentCore(); }
 #else
 #define FATAL(x) {}
 #endif

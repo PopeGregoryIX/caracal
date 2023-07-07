@@ -14,7 +14,7 @@
 #include <runtime/cxx.h>
 #include <machine.h>
 #include <cpu.h>
-#include <process/process.h>
+#include <process/processmanager.h>
 #include <caracal.h>
 
 DebugConsole& debug = DebugConsole::GetInstance();
@@ -71,7 +71,8 @@ void kmain()
 		}
 	}
 
-	IdleLoop();
+	ProcessManager& processManager = ProcessManager::GetInstance();
+	processManager.CreateNewSupervisorProcess((uintptr_t)(processManager.IdleTask));
 
 	FATAL("Reached end of main routine. No further code to execute");
 

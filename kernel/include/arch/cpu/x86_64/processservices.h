@@ -15,6 +15,8 @@ namespace arch
             inline static ProcessServices& GetInstance(){ return _instance; }
 
             Thread* CreateThread(Process* process, uintptr_t entryPoint);
+
+            Process* CreateProcess( void );
         private:
             static ProcessServices _instance;
 

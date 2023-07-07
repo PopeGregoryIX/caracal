@@ -76,5 +76,5 @@ void kmain()
 
 	FATAL("Reached end of main routine. No further code to execute");
 
-	_fini();
+	_fini();	// technicality - we shouldn't reach here.
 }

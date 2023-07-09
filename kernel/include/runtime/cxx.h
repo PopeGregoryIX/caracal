@@ -96,9 +96,9 @@ void __cxa_pure_virtual();
  * \param count Number of instances of T to copy.
  *
  */
-template <class T> T* memorycopy(const T* dest, const T* src, size_t count)
+template <class TData> TData* memorycopy(const TData* dest, const TData* src, size_t count)
 {
-    T* d = (T*)dest, * s = (T*)src;
+    TData* d = (TData*)dest, * s = (TData*)src;
 
     //	This if statement makes safe for overlapping memory areas.
     if(d >= s)
@@ -106,7 +106,7 @@ template <class T> T* memorycopy(const T* dest, const T* src, size_t count)
     else
         while(count--) *d++ = *s++;
 
-    return (T*)dest;
+    return (TData*)dest;
 }
 
 inline void* memorycopy(const void* dest, const void* src, size_t count)

@@ -37,10 +37,13 @@ void PageFrameAllocator::Initialise( size_t frameSize )
 
     //  Assume that all memory is unavailable unless marked otherwise
     _pages = StaticBitmap(bitmapBase, (size_t)bitmapSizeBytes, false, true);
-    MemoryArrayIterator i = mmap.GetIterator();
-    do
+
+    MemoryMapEntry* mme = mmap.GetFirst();
+    for(size_t i = 0; i < mmap.Count(); i++)
     {
-        if(i.Current().IsFree() && (i.Current().size > 0))
-            _pages.Clear((i.Current().base / _frameSize), i.Current().size / _frameSize);
-    } while (i.MoveNext());
+        if (mme[i].IsFree() && mme[i].size > 0)
+            _pages.Clear((mme[i].base / _frameSize), mme[i].size / _frameSize);
+
+        
+    }
 }

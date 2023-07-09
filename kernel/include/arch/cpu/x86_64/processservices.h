@@ -2,7 +2,6 @@
 #define __PROCESS_SERVICES_H
 
 #include <archdef.h>
-#include <support/templates/list.h>
 
 class Process;
 class Thread;
@@ -20,7 +19,7 @@ namespace arch
         private:
             static ProcessServices _instance;
 
-            List<uintptr_t> _threadStacks;
+            //List<uintptr_t> _threadStacks;
     };
 }
 

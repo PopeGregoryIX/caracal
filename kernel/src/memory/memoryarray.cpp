@@ -18,8 +18,9 @@ MemoryArray MemoryArray::_instance;
 const char* MemoryArray::_memoryType[4] = { "Used", "Free", "ACPI", "MMIO" };
 
 MemoryArray::MemoryArray( void )
-: StaticArray((MemoryMapEntry*)_mmap, 0, MMAP_MAX_ENTRIES)
 {
+    _data = _mmap;
+    _maxCount = MMAP_MAX_ENTRIES;
     //  pull in the BootBoot memory map so that we can perform allocations
     _count = 0;
 
@@ -34,20 +35,19 @@ MemoryArray::MemoryArray( void )
 
 void MemoryArray::Align( size_t alignVal)
 {
-    MemoryArrayIterator i = GetIterator();
-    do
+    for(size_t i = 0; i < Count(); i++)
     {
-        size_t delta = alignVal - (i.Current().base % alignVal);
+        size_t delta = alignVal - (_mmap[i].base % alignVal);
         
         if(delta != 0)
         {
-            i.Current().base+= delta;
-            i.Current().size-= delta;
+            _mmap[i].base+= delta;
+            _mmap[i].size-= delta;
         }
 
-        delta = i.Current().size % alignVal;
-        if(delta != 0) i.Current().size -= delta;
-    } while(i.MoveNext());
+        delta = _mmap[i].size % alignVal;
+        if(delta != 0) _mmap[i].size -= delta;
+    }
 }
 
 void* MemoryArray::Allocate(size_t bytes)
@@ -88,12 +88,11 @@ size_t MemoryArray::GetHighestAddress( void )
 {
     size_t returnValue = 0;
 
-    MemoryArrayIterator i = GetIterator();
-    do
+    for(size_t i = 0; i < Count(); i++)
     {
-        if(i.Current().IsFree() && (i.Current().Top() > returnValue)) 
-            returnValue = i.Current().Top();
-    } while(i.MoveNext());
+        if(_mmap[i].IsFree() && (_mmap[i].Top() > returnValue)) 
+            returnValue = _mmap[i].Top();
+    }
 
     return returnValue;
 }
@@ -102,20 +101,18 @@ size_t MemoryArray::GetTotalFreeMemory( void )
 {
     size_t returnValue = 0;
     
-    MemoryArrayIterator i = GetIterator();
-    do
+    for(size_t i = 0; i < Count(); i++)
     {
-        if(i.Current().IsFree()) returnValue+= i.Current().size;
-    } while(i.MoveNext());
+        if(_mmap[i].IsFree()) returnValue+= _mmap[i].size;
+    }
 
     return returnValue;
 }
 
 void MemoryArray::Print()
 {
-    MemoryArrayIterator i = GetIterator();
-    do
+    for(size_t i = 0; i < Count(); i++)
     {
-        INFO((uint64_t)i.Current().base << " - " << (uint64_t)i.Current().Top() << " : " << _memoryType[i.Current().type]);
-    } while(i.MoveNext());
+        INFO((uint64_t)_mmap[i].base << " - " << (uint64_t)_mmap[i].Top() << " : " << _memoryType[_mmap[i].type]);
+    }
 }

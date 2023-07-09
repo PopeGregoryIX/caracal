@@ -9,7 +9,6 @@
 #define KERNEL_INCLUDE_PROCESS_PROCESSMANAGER_H_
 
 #include <archdef.h>
-#include <support/templates/list.h>
 #include <process/process.h>
 #include <process/thread.h>
 

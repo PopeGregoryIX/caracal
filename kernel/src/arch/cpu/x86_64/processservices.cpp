@@ -14,7 +14,7 @@ namespace arch
     Thread* ProcessServices::CreateThread(Process* process, uintptr_t entryPoint)
     {
         INFO("Create new thread");
-        (void)entryPoint;
+        /*(void)entryPoint;
         //  TODO: This does not deal with deleted threads!
         size_t threadCount = process->GetThreads().Count();
         INFO("Count is " << (uintptr_t)threadCount);
@@ -34,7 +34,8 @@ namespace arch
         newThreadState->userSs = 0x10;
 
         Thread* newThread = new Thread(newStackLocation, *process, newThreadState);
-        return newThread;
+        return newThread;*/
+        (void)process; (void)entryPoint; return nullptr;
     }
 
     Process* ProcessServices::CreateProcess( void )

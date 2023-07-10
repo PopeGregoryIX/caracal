@@ -15,8 +15,10 @@ public:
 
     struct ContainerItem
     {
+        ContainerItem(TData data) : _data(data){}
         TData _data;
-        virtual ContainerItem Next( void ) = 0;
+        virtual ContainerItem& Next( void ) = 0;
+        virtual ContainerItem& Previous( void ) = 0;
     };
     
 };

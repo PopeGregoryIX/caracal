@@ -15,6 +15,7 @@ class Iterator
     protected:
         TContainer& _container;
         typename Container<TData>::ContainerItem& _current;
+
     public:
         Iterator(TContainer& container, typename Container<TData>::ContainerItem initial)
         : _container(container), _current(initial)
@@ -23,9 +24,11 @@ class Iterator
 
         inline size_t Count( void ) {   return _container.Count();  }
 
-        inline TData& operator*( void ) {   return _current._data;  }
+        inline typename Container<TData>::ContainerItem& Current( void ) {  return _current;    }
+
+        inline TData& operator*( void ) {   return Current()._data;  }
         
-        inline Iterator<TContainer,TData> operator++( void )
+        inline virtual Iterator<TContainer,TData> operator++( void )
         {
             _current = _current.Next();
             return this;

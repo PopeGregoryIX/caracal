@@ -11,6 +11,7 @@
 #include <archdef.h>
 #include <process/process.h>
 #include <process/thread.h>
+#include <support/templates/ring.h>
 
 class ProcessManager
 {
@@ -27,6 +28,8 @@ class ProcessManager
 	private:
 		static ProcessManager instance_;
 		uint64_t _processId;
+
+		Ring<Process&> _runningProcesses;
 		
 };
 

@@ -16,6 +16,8 @@ Process& ProcessManager::CreateNewSupervisorProcess( uintptr_t entryPoint )
     Process* process = arch::ProcessServices::GetInstance().CreateProcess();
     process->CreateThread( entryPoint );
 
+    _runningProcesses.Add(*process);
+    
     return *process;
 }
 

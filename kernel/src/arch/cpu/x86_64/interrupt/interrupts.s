@@ -16,7 +16,7 @@ pushq	$\num
 pushaq
 
 mov		%rsp,	%rdi
-mov 	__exception_call_table + (\num * 8),	%rax
+movabs 	__exception_call_table + (\num * 8),	%rax
 call	*%rax
 mov		%rax,	%rsp
 
@@ -35,7 +35,7 @@ pushq	$\num
 pushaq
 
 mov		%rsp,	%rdi
-mov    __exception_call_table + (\num * 8),	%rax
+movabs    __exception_call_table + (\num * 8),	%rax
 call	*%rax
 mov		%rax,	%rsp
 
@@ -55,7 +55,7 @@ pushq	$\num
 pushaq
 
 mov		%rsp,	%rdi
-mov	__irq_call_table + (\num * 8),	%rax
+movabs	__irq_call_table + (\num * 8),	%rax
 call	*%rax
 mov		%rax,	%rsp
 

@@ -4,7 +4,8 @@ _entry:
     mov $1, %rax
     cpuid
     shr $24, %rbx
-    cmpw %bx, bootboot + 0xC
+    movabs bootboot + 0xC, %rax
+    cmpw %bx, %ax
     jne .ap
 
     jmp kmain
@@ -13,7 +14,7 @@ _entry:
     mov %cr3, %rax              //   keep BSP and AP memory maps consistent (otherwise _bsp_init_done is out of sync)
     mov %rax, %cr3
 
-    mov $_bsp_init_done, %rax
+    movabs $_bsp_init_done, %rax
     mov (%rax), %r14
     cmp $0, %r14
     je .ap
@@ -26,7 +27,7 @@ _setBspDone:
     push %rax
     push %rcx
 
-    mov $_bsp_init_done, %rax
+    movabs $_bsp_init_done, %rax
     mov $0xFFFFFFFFFFFFFFFF, %rcx
     mov %rcx, (%rax)
 

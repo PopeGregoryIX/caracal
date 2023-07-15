@@ -1,6 +1,6 @@
 #	Global Definitions
 CCDIR:= ~/opt/cross/bin/
-BINDIR:= ./bin/$(ARCH)/$(CPU)-$(BINFORMAT)
+BINDIR:= ./bin/$(ARCH)/$(CPU)
 SRCDIR:= ./$(ARCH)/$(CPU)/src
 DEBUG:= DEBUG
 VERBOSE:= NOTVERBOSE
@@ -13,9 +13,7 @@ ISOFILE:= caracal.iso
 #	Basic File Definitions
 CPPSRC := $(shell find $(SRCDIR) -type f -name "*.cpp" -not -path "*arch*" -not -path "*include*")
 
-ASMSRC := $(shell find $(SRCDIR) -type f -name "*.s" -not -path "*include*")
-
-NASMSRC:=	$(shell find $(SRCDIR) -type f -name "*.asm" -not -path "*include*")
+ASMSRC := $(shell find $(SRCDIR) -type f -name "*.s" -not -path "*include*" -not -path "*crt*")
 
 FONTSRC:= $(shell find $(SRCDIR) -type f -name "*.psf" -not -path "*arch*" -not -path "*include*")
 
@@ -56,13 +54,7 @@ CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -g
 CPPFLAGS+= -D $(DEBUG) -D $(VERBOSE) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
 
 #	Flags for LD start here
-LDFLAGS:= -T $(SRCDIR)/arch/cpu/$(CPU)/link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
+LDFLAGS:= -T $(SRCDIR)/../../link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
 LDADD:= --start-group -L $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER) -lgcc --end-group
 
--include $(SRCDIR)/../Makefile
-
-clean:
-
-all:
-
-install:
+-include $(SRCDIR)/../../Makefile

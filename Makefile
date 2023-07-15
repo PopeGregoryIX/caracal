@@ -24,8 +24,8 @@ all:
 
 install:
 	@echo Installing...
-#@cp ./bootstrap/bin/pc/x86_64-elf/bootstrap.sys ./filesystem/sys/core
-	@cp ./kernel/bin/pc/x86_64-elf/kernel.sys ./filesystem/sys/core
+	@cp ./bootstrap/bin/$(ARCH)/$(CPU)/bootstrap.sys ./filesystem/sys/core
+	@cp ./kernel/bin/$(ARCH)/$(CPU)-$(BINFORMAT)/kernel.sys ./filesystem/sys/kernel
 	@./tools/bootboot/mkbootimg ./config/caracal.json ./images/caracal64.img
 
 clean:

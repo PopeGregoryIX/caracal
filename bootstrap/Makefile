@@ -15,7 +15,7 @@ CPPSRC := $(shell find $(SRCDIR) -type f -name "*.cpp" -not -path "*arch*" -not 
 
 ASMSRC := $(shell find $(SRCDIR) -type f -name "*.s" -not -path "*include*" -not -path "*crt*")
 
-FONTSRC:= $(shell find $(SRCDIR) -type f -name "*.psf" -not -path "*arch*" -not -path "*include*")
+FONTSRC:= $(shell find $(SRCDIR) -type f -name "*.psf")
 
 ALLSRC := $(CPPSRC) $(ASMSRC) $(NASMSRC) $(FONTSRC)
 
@@ -54,7 +54,7 @@ CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -g
 CPPFLAGS+= -D $(DEBUG) -D $(VERBOSE) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
 
 #	Flags for LD start here
-LDFLAGS:= -T $(SRCDIR)/../../link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
+LDFLAGS:= -T $(SRCDIR)/../link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
 LDADD:= --start-group -L $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER) -lgcc --end-group
 
--include $(SRCDIR)/../../Makefile
+-include $(SRCDIR)/../Makefile

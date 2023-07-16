@@ -41,8 +41,9 @@ $(BINDIR)/%.asm.o: $(SRCDIR)/%.asm
 	@nasm -o $@ -f elf64 $<
 
 $(BINDIR)/%.psf.o: $(SRCDIR)/%.psf
-	@$(CCDIR)x86_64-elf-ld -r -b binary -o $@ $<
-
+	@$(CCDIR)$(CPU)-$(BINFORMAT)-ld -r -b binary -o $@ $<
+	@$(CCDIR)$(CPU)-$(BINFORMAT)-objdump -xD $@ > $@.txt
+	
 doc:
 	@doxygen kernel.doxyfile > /dev/null
 

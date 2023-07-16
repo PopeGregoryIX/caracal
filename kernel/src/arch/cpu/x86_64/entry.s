@@ -1,6 +1,8 @@
 .globl _entry
 .extern kmain
 _entry:
+    jmp _entry
+    
     mov $1, %rax
     cpuid
     shr $24, %rbx

@@ -14,7 +14,9 @@ const char String::ltHexLower_[16] = {'0','1','2','3','4','5','6','7','8','9','a
 int String::compare(const char* s1, const char* s2, int maxLength)
 {
     int len = (int)length(s1);
+	int len2 = (int)length(s2);
 
+	if((maxLength == 0) && (len != len2)) return 1;
     if((maxLength != 0) && (len > maxLength)) len = maxLength;
 
     for(int i = 0; i < maxLength; ++i)

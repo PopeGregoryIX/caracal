@@ -7,10 +7,10 @@ linearFrameBuffer   = 0xfffffffffc000000;
 bootboot            = 0xffffffffffe00000;
 environment         = 0xffffffffffe01000;*/
 
-mmio                = 0xfffffffff0000000;
-fb                  = 0xfffffffff4000000;
-bootboot            = 0xfffffffff8000000;
-environment         = 0xfffffffff8001000;
+mmio                = 0xFFFFFE8000000000;
+fb                  = 0xFFFFFE8004000000;
+bootboot            = 0xFFFFFE8008000000;
+environment         = 0xFFFFFE8008100000;
 initstack = 0x4000;
 
 /*  Bootboot - puts everything in a single segment  */
@@ -20,7 +20,7 @@ PHDRS
 }
 SECTIONS
 {
-    . = 0xfffffffff8002000;
+    . = 0xFFFFFE8100000000;
     kernelStart = .;
     .text : {
         KEEP(*(.text.boot*)) 
@@ -40,6 +40,9 @@ SECTIONS
     } :boot
 
     kernelEnd = .;
+
+    . = ALIGN(0x1000);
+    gdtSpace = .;
 
     /DISCARD/ : { *(.comment) }
 }

@@ -28,7 +28,6 @@ public:
 	virtual ~ConsoleOutput(){}
 protected:
 	ConsoleColour _colour;
-	Spinlock _lock;
 };
 
 #endif /* KERNEL_INCLUDE_DEBUG_CONSOLEOUTPUT_H_ */

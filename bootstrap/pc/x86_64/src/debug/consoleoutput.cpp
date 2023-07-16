@@ -17,14 +17,10 @@ ConsoleOutput::ConsoleOutput( void )
 
 void ConsoleOutput::PutString(const char *s)
 {
-	_lock.Acquire();
 	while(*s) PutChar(*s++);
-	_lock.Release();
 }
 
 void ConsoleOutput::SetColour(uint32_t foreground, uint32_t background)
 {
-	_lock.Acquire();
 	_colour.Foreground = foreground, _colour.Background = background;
-	_lock.Release();
 }

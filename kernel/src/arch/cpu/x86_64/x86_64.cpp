@@ -178,7 +178,6 @@ namespace arch
 
 	void X86_64::PageInLarge(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress)
 	{
-		//INFO("Page In Virtual: " << virtualAddress << " physical " << physicalAddress << " flags " << flags);
 		uint64_t* pml4 = (uint64_t*)CPU_CLASS::ReadCr3();
 		
 		if(virtualAddress == UINT64_MAX) FATAL("Unable to page in - no physical memory allocated.");

@@ -18,9 +18,6 @@ class DebugConsole
 public:
 	static DebugConsole& GetInstance( void ) { return _instance; }
 
-	inline void LockConsole( void ){_lock.Acquire();}
-	inline void UnlockConsole( void ){_lock.Release();}
-
 	void AddOutputDevice(ConsoleOutput& device);
 	void SetOutputColour(uint32_t foreground, uint32_t background);
 	inline void SetOutputColour(ConsoleColour c) { SetOutputColour(c.Foreground, c.Background); }
@@ -37,6 +34,7 @@ public:
 
 	inline DebugConsole& operator<<(const char c) { PutChar(c); return *this; }
 	inline DebugConsole& operator<<(const char* s) { PutString(s); return *this; }
+	inline DebugConsole& operator<<(const bool b) { b ? PutString("true") : PutString("false"); return *this; }
 	inline DebugConsole& operator<<(uint64_t i) { PutHex(i); return *this; }
 	inline DebugConsole& operator<<(ConsoleColour c) { SetOutputColour(c); return *this; }
 protected:
@@ -44,7 +42,6 @@ protected:
 
 	static const int MAXOUTPUTDEVICES = 3;
 	ConsoleOutput* _outputDevices[MAXOUTPUTDEVICES];
-	Spinlock _lock;
 };
 
 #endif /* KERNEL_INCLUDE_DEBUG_DEBUGCONSOLE_H_ */

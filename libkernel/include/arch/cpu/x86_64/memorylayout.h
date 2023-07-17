@@ -34,6 +34,7 @@ namespace arch
     const uintptr_t MEMRANGE_CBOOT=0xFFFFFE8000608000ULL;
     const uintptr_t MEMRANGE_CONFIG=0xFFFFFE8000609000ULL;
     const uintptr_t MEMRANGE_GDT=0xFFFFFE8000700000ULL;
+    const uintptr_t MEMRANGE_MEMBITMAP=0xFFFFFE8000800000ULL;
 
     //  PT Covers 2 MiB
     #define PTE_RANGE   0x1000ULL

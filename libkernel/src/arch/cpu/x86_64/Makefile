@@ -8,7 +8,7 @@ LDFLAGS+= --no-warn-rwx-segments
 -include $(DEPFILES)
 
 all: makedirs $(OBJFILES) Makefile
-	@$(CCDIR)$(CPU)-$(BINFORMAT)-ar ruv $(BINDIR)/$(BINARY) $(OBJFILES)
+	@$(CCDIR)$(CPU)-$(BINFORMAT)-ar ru $(BINDIR)/$(BINARY) $(OBJFILES)
 	@$(CCDIR)$(CPU)-$(BINFORMAT)-ranlib $(BINDIR)/$(BINARY)
 
 dist:

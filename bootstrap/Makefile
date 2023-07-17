@@ -47,6 +47,9 @@ INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)/../include/arch/machine -I $(SRC
 INCLUDES+= -I $(SRCDIR)/../include/arch/cpu/$(CPU) -I $(SRCDIR)/../include/arch/machine/$(ARCH)
 INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
 INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
+INCLUDES+= -I $(HOME)/caracal/libkernel/include -I $(HOME)/caracal/libkernel/include/arch/machine/$(ARCH)
+INCLUDES+= -I $(HOME)/caracal/libkernel/include/arch/machine -I $(HOME)/caracal/libkernel/include/arch/cpu/$(CPU)
+INCLUDES+= -I $(HOME)/caracal/libkernel/include/arch/cpu
 
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -pedantic -pedantic-errors -fpic
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
@@ -56,5 +59,6 @@ CPPFLAGS+= -D $(DEBUG) -D $(VERBOSE) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINF
 #	Flags for LD start here
 LDFLAGS:= -T $(SRCDIR)/../link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
 LDADD:= --start-group -L $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER) -lgcc --end-group
+LDADD:= --start-group -L $(HOME)/caracal/libkernel/bin/$(ARCH)/$(CPU) -lkernel --end-group
 
 -include $(SRCDIR)/../Makefile

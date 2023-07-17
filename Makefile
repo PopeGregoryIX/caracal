@@ -19,6 +19,7 @@ endif
 
 all:
 	@echo Building...
+	@make -s all -C libkernel
 	@make -s all -C bootstrap
 	@make -s all -C kernel
 
@@ -30,6 +31,7 @@ install:
 
 clean:
 	@echo Cleaning...
+	@make -s clean -C libkernel
 	@make -s clean -C bootstrap
 	@make -s clean -C kernel
 	@rm -f images/*.img
@@ -37,6 +39,7 @@ clean:
 
 doc:
 	@echo Making Documentation...
+	@make -s clean -C libkernel
 	@make -s doc -C bootstrap
 	@make -s doc -C kernel
 

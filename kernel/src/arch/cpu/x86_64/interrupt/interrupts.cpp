@@ -8,7 +8,7 @@
 #include <process/processmanager.h>
 #include <debug/debug.h>
 #include <process/userfunctions.h>
-#include <tables/tss.h>
+#include <tss.h>
 #include <pc.h>
 
 namespace arch

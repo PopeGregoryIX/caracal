@@ -16,7 +16,7 @@
 #include <debug/debug.h>
 #include "x86_64.h"
 #include <registers.h>
-#include "memory/memorylayout.h"
+#include <memorylayout.h>
 
 /**
  * @brief Contains the architecture-dependent portions of the kernel.

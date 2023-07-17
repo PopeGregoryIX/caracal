@@ -5,8 +5,8 @@
  *      Author: mail
  */
 
-#include <tables/tss.h>
-#include <tables/gdt.h>
+#include <tss.h>
+#include <gdt.h>
 
 namespace arch
 {

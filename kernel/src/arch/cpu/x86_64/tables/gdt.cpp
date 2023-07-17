@@ -5,7 +5,7 @@
  *      Author: Adam
  */
 #include <stdint.h>
-#include <tables/gdt.h>
+#include <gdt.h>
 #include <runtime/cxx.h>
 #include <debug/debug.h>
 

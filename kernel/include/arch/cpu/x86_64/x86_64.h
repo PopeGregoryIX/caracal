@@ -15,7 +15,7 @@
 #include <cpu.h>
 #include <memory/pageframeallocator.h>
 #include <interrupt/interrupts.h>
-#include <tables/gdt.h>
+#include <gdt.h>
 
 namespace arch
 {

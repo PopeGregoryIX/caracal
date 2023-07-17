@@ -13,13 +13,13 @@
 #include <stddef.h>
 #include <debug/debug.h>
 #include <debug/lfbconsoleoutput.h>
-#include <tables/gdt.h>
+#include <gdt.h>
 #include <tables/idt.h>
 #include <memory/pageframeallocator.h>
 #include <process/processmanager.h>
 #include <process/userfunctions.h>
 #include <memory/memoryarray.h>
-#include <memory/memorylayout.h>
+#include <memorylayout.h>
 #include <memory/heapmanager.h>
 #include <interrupt/exceptions.h>
 #include <interrupt/interrupts.h>

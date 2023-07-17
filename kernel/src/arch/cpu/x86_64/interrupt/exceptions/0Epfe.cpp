@@ -3,7 +3,7 @@
 #include <archdef.h>
 #include <interrupt/exceptions.h>
 #include <registers.h>
-#include <memory/memorylayout.h>
+#include <memorylayout.h>
 #include <memory/virtualmemorymanager.h>
 #include <memory/memoryallocator.h>
 #include <memory/heapmanager.h>

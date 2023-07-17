@@ -12,7 +12,7 @@
 #define GDT_H_
 
 #include <stdint.h>
-#include <tables/tss.h>
+#include <tss.h>
 
 ///	@brief Set if GDT entry is present
 #define GDT_PRESENT		(1 << 7)

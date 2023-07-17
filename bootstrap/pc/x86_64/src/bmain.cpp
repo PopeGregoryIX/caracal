@@ -9,7 +9,8 @@
 #include <debug/debugconsole.h>
 #include <debug/lfbconsoleoutput.h>
 #include <memory/pageframeallocator.h>
-#include <memory/memorylayout.h>
+#include <memorylayout.h>
+#include <cboot.h>
 
 DebugConsole& debug = DebugConsole::GetInstance();
 int tar_lookup(unsigned char *archive, char *filename, char **out);
@@ -50,14 +51,50 @@ void bmain( void )
         uintptr_t top = base + kernel.GetMemorySize();
         uintptr_t requiredPages = (top - base) / 0x200000;
         if(((top - base) % 0x200000) != 0) requiredPages++;
-
         uintptr_t physMem = PageFrameAllocator::GetInstance().Allocate(requiredPages * 0x200000, 0x200000);
         for(uintptr_t i = 0; i < requiredPages; i++)
         {
             PageInLarge(PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE | PAGE_LARGE, 
             base + (i * 0x200000), physMem + (i * 0x200000));
         }
+
+        //  Page in space for the data structures
+        uintptr_t dataPhysMem = PageFrameAllocator::GetInstance().Allocate(requiredPages * 0x200000, 0x200000);
+        PageInLarge(PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE | PAGE_LARGE, arch::MEMRANGE_DATA, dataPhysMem);
+
+        CBoot* cboot = (CBoot*)arch::MEMRANGE_CBOOT;
+        cboot->bspId = bootboot.bspid;
+        cboot->cpuCount = bootboot.numcores;
+        cboot->configStringAddress = arch::MEMRANGE_CONFIG;
+        cboot->configStringBytes = 0;
+        cboot->lfbAddress = arch::MEMRANGE_LFB;
+        cboot->lfbFormat = bootboot.fb_type;
+        cboot->lfbScanlineBytes = bootboot.fb_scanline;
+        cboot->lfbScreenHeight = bootboot.fb_height;
+        cboot->lfbScreenWidth = bootboot.fb_width;
+        cboot->lfbSize = bootboot.fb_size;
+        cboot->magic[0] = 'C';cboot->magic[0] = 'A';cboot->magic[0] = '8';cboot->magic[0] = 'A';
+        cboot->magic[0] = 'C';cboot->magic[0] = 'A';cboot->magic[0] = 'L';cboot->magic[0] = '!';
+        cboot->mmapAddress = arch::MEMRANGE_MMAP;
+        cboot->mmapBytes = bootboot.size - (((uintptr_t)&(bootboot.mmap)) - ((uintptr_t)&bootboot));
+        cboot->size = sizeof(*cboot);
+        cboot->version = 1;
+        cboot->gdtAddress = arch::MEMRANGE_GDT;
         
+        //  copy the memory map to final location
+        memcpy((void*)(cboot->mmapAddress), (void*)(&bootboot.mmap), cboot->mmapBytes);
+
+        //  Page in the linear frame buffer
+        uintptr_t lfbPages = bootboot.fb_size / 0x200000;
+        if((bootboot.fb_size % 0x200000) != 0) lfbPages++;
+        for(uintptr_t i = 0; i < lfbPages; i++)
+        {
+            PageInLarge(PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE | PAGE_LARGE, 
+                arch::MEMRANGE_LFB + (i * 0x200000),
+                bootboot.fb_ptr + (i * 0x200000)
+            );
+        }
+
         INFO("Symbol gdt is at " << kernel.GetSymbolAddress("gdtSpace"));
 
         //  Relocate the kernel

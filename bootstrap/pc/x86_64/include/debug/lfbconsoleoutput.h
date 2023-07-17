@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include <debug/consoleoutput.h>
-#include <debug/pcscreenfont.h>
+#include <pcscreenfont.h>
 #include <debug/consolecolour.h>
 
 
@@ -34,11 +34,11 @@ private:
 	uint32_t _currentX, _currentY, _tabStop;
 	uint32_t _bytesPerPixel;
 
-	const psf2_t *font = (const psf2_t*)&_binary_pc_x86_64_src_data_font_psf_start;
+	const psf2_t *font = (const psf2_t*)&_binary_src_data_font_psf_start;
 
 	inline uint8_t* GetGlyph(const char c)
 	{
-		return (uint8_t*)&_binary_pc_x86_64_src_data_font_psf_start + font->headersize +
+		return (uint8_t*)&_binary_src_data_font_psf_start + font->headersize +
 								(c>0&&(uint32_t)(c)<font->numglyph?c:0)*font->bytesperglyph;
 	}
 };

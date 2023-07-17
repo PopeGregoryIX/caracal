@@ -6,7 +6,7 @@
  */
 #include <debug/debugconsole.h>
 #include <stddef.h>
-#include <debug/pcscreenfont.h>
+#include <pcscreenfont.h>
 #include <support/string.h>
 
 DebugConsole DebugConsole::_instance;

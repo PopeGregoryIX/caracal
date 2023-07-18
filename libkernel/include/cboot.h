@@ -20,11 +20,25 @@ struct CBoot
     uint64_t mmapBytes;
     uint64_t configStringAddress;
     uint64_t configStringBytes;
-    uint64_t mmioAddress;
-    uint64_t mmioBytes;
+    CBoot_Arch cbootArchData;
+} __attribute__((packed));
+
+union CBoot_Arch
+{
+    CBoot_PC*  cbootArchPC;
+    CBoot_ARM* cbootArchArm;
+}
+
+struct CBoot_PC
+{
     uint64_t gdtAddress;
     uint64_t gdtBytes;
 } __attribute__((packed));
 
+struct CBoot_ARM
+{
+    uint64_t mmioAddress;
+    uint64_t mmioBytes;
+} __attribute__((packed));
 
 #endif

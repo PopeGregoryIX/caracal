@@ -27,7 +27,7 @@ union CBoot_Arch
 {
     CBoot_PC*  cbootArchPC;
     CBoot_ARM* cbootArchArm;
-}
+};
 
 struct CBoot_PC
 {

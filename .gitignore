@@ -46,9 +46,12 @@
 
 # Documentation
 *kernel/doc/*
+
+
 *build/*
 *.vscode/*
 *.idea/*
+*bin/*
 *sys/core
 filesystem/sys/core
 filesystem/sys/kernel

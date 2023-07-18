@@ -5,8 +5,8 @@
 
 struct CBoot
 {
-    char magic[8];
-    uint32_t version;
+    uint64_t magic;             // 0x0CA8ACAl
+    uint32_t version;           // 1
     uint32_t size;
     uint32_t bspId;
     uint32_t cpuCount;

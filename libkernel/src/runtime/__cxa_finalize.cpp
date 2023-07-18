@@ -4,7 +4,7 @@
  * \author Adam Jones (AJSoft)
  * \brief Defines the __cxa_finalize support function for global/static objects.
  */
-#include <runtime/cxx.h>
+#include <cxx.h>
 #include <stdint.h>
 extern AtExitFunction* __atexit_funcs;
 

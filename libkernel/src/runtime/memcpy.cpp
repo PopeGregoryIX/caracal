@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <runtime/cxx.h>
+#include <cxx.h>
 
 extern "C" void* memcpy( void* dest, void* src, size_t numBytes)
 {

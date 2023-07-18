@@ -6,12 +6,13 @@
  */
 #include <stdint.h>
 #include <gdt.h>
-#include <runtime/cxx.h>
-#include <debug/debug.h>
+#include <cxx.h>
 
 namespace arch
 {
-	Gdt::Gdt( void )
+	Gdt::Gdt( void ){ Initialise(); }
+
+	void Gdt::Initialise( void )
 	{
 		//	NULL segment
 		_gdt[GDTI_NULL] = GdtEntry();
@@ -51,8 +52,6 @@ namespace arch
 
 	void Gdt::Load( void )
 	{
-		if((uintptr_t)_gdt % 64 != 0) FATAL("Misaligned GDT at " << (uintptr_t)_gdt);
-		if((uintptr_t)&_gdtr % 64 != 0) FATAL("Misaligned GDTR at " << (uintptr_t)&_gdtr);
 		_gdtr.size = (uint16_t)((GDT_ENTRY_COUNT * sizeof(GdtEntry)) - 1);
 		_gdtr.offset = (uintptr_t)_gdt;
 

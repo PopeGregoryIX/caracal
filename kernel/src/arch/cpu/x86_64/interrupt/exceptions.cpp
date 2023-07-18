@@ -15,7 +15,7 @@
 #include <registers.h>
 #include <debug/debug.h>
 #include <cpu.h>
-#include <memory/spinlock.h>
+#include <spinlock.h>
 
 namespace arch
 {

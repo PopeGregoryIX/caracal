@@ -3,6 +3,28 @@
 
 #include <stdint.h>
 
+#define CBOOT_MAGIC 0x0CA8ACA1
+
+#define CBOOT_VERSION   1
+
+struct CBoot_PC
+{
+    uint64_t gdtAddress;
+    uint64_t gdtBytes;
+} __attribute__((packed));
+
+struct CBoot_ARM
+{
+    uint64_t mmioAddress;
+    uint64_t mmioBytes;
+} __attribute__((packed));
+
+union CBoot_Arch
+{
+    CBoot_PC*  cbootArchPC;
+    CBoot_ARM* cbootArchArm;
+};
+
 struct CBoot
 {
     uint64_t magic;             // 0x0CA8ACAl
@@ -23,22 +45,6 @@ struct CBoot
     CBoot_Arch cbootArchData;
 } __attribute__((packed));
 
-union CBoot_Arch
-{
-    CBoot_PC*  cbootArchPC;
-    CBoot_ARM* cbootArchArm;
-};
-
-struct CBoot_PC
-{
-    uint64_t gdtAddress;
-    uint64_t gdtBytes;
-} __attribute__((packed));
-
-struct CBoot_ARM
-{
-    uint64_t mmioAddress;
-    uint64_t mmioBytes;
-} __attribute__((packed));
+extern CBoot cboot;
 
 #endif

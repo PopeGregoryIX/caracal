@@ -5,7 +5,7 @@
  * \brief Defines the _dso_handle pointer along with other support structures for Global/Static
  * object support.
  */
-#include <runtime/cxx.h>
+#include <cxx.h>
 
 AtExitFunction __atexit_funcs[ATEXIT_FUNCTION_MAX];
 

@@ -4,7 +4,7 @@
  *  Created on: 28 Feb 2013
  *      Author: Adam
  */
-#include <runtime/cxx.h>
+#include <cxx.h>
 
 extern "C" int __aeabi_atexit(void* object, void (*destroyer)(void*), void* dso_handle)
 {

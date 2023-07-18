@@ -10,7 +10,7 @@
  */
 #include <stdint.h>
 #include <stddef.h>
-#include <runtime/cxx.h>
+#include <cxx.h>
 #include <support/staticbitmap.h>
 #include <debug/debug.h>
 

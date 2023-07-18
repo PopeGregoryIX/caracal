@@ -15,7 +15,7 @@
 #include <stddef.h>
 #include <support/staticbitmap.h>
 #include <debug/debug.h>
-#include <memory/spinlock.h>
+#include <spinlock.h>
 
 /**
  * @brief Responsible for allocating frames of physical RAM.

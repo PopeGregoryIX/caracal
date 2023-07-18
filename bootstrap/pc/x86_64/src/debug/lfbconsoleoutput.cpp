@@ -8,7 +8,7 @@
 #include <debug/lfbconsoleoutput.h>
 #include <bootboot.h>
 #include <debug/consolecolour.h>
-#include <runtime/cxx.h>
+#include <cxx.h>
 #include <support/string.h>
 
 	LfbConsoleOutput LfbConsoleOutput::_instance;

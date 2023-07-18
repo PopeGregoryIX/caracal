@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <bootboot.h>
 #include <debug/debug.h>
-#include <runtime/cxx.h>
+#include <cxx.h>
 #include <machine.h>
 #include <cpu.h>
 #include <process/processmanager.h>

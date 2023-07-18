@@ -6,7 +6,7 @@
 #include <archdef.h>
 #include <memory/pageframeallocator.h>
 #include <debug/debug.h>
-#include <runtime/cxx.h>
+#include <cxx.h>
 
 namespace arch
 {   

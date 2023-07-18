@@ -29,8 +29,6 @@ public:
 
 	virtual bool ApBoot( void ) = 0;
 
-	virtual void AcquireLock(uintptr_t* lock) = 0;
-
 	virtual bool Boot( void ) = 0;
 
 	virtual Cpu& GetCpu( void ) = 0;
@@ -40,8 +38,6 @@ public:
 	virtual size_t GetCpuCount( void ) = 0;
 
 	virtual void HaltCurrentCore() { while(1); }
-
-	virtual void ReleaseLock( uintptr_t* lock ) = 0;
 
 	virtual ~Machine( void ){}
 };

@@ -5,7 +5,7 @@
  * \brief Defines the __cxa_atexit support function for global/static objects.
  */
 
-#include <runtime/cxx.h>
+#include <cxx.h>
 extern AtExitFunction* __atexit_funcs;
 
 int __cxa_atexit(void (*dtor) (void*), void* arg, void* dso)

@@ -14,7 +14,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <tables/idt.h>
-#include <memory/spinlock.h>
+#include <spinlock.h>
 
 namespace arch
 {

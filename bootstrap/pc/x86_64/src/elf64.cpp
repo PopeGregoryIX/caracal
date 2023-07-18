@@ -1,5 +1,5 @@
 #include <elf64.h>
-#include <runtime/cxx.h>
+#include <cxx.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <debug/debug.h>

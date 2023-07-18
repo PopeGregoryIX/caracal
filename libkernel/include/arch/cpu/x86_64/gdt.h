@@ -78,6 +78,8 @@ namespace arch
 	public:
 		Gdt( void );
 
+		void Initialise( void );
+
 		void Load( void );
 		void LoadTss( void );
 		

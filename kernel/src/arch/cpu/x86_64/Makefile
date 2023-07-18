@@ -53,4 +53,4 @@ makedirs:
 	@mkdir -p $(BINDIRS)
 
 gdb:
-	@gdb -s $(BINDIR)/$(SYMFILE) -ex "target remote localhost:1234"
+	@gdb -s $(BINDIR)/$(SYMFILE) -s $(BINDIR)/../../../../bootstrap/bin/pc/x86_64/bootstrap.sym -ex "target remote localhost:1234"

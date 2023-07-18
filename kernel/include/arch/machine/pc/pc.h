@@ -11,10 +11,7 @@
 #include <machine.h>
 #include <cpu.h>
 #include <x86_64.h>
-#include <memory/spinlock.h>
-
-extern "C" void __acquireLock(uintptr_t* lock);
-extern "C" void __releaseLock(uintptr_t* lock);
+#include <spinlock.h>
 
 namespace arch
 {
@@ -24,8 +21,6 @@ namespace arch
 		inline Pc() : _cpuCount(0) {}
 
 		static Pc& GetPcInstance( void ) { return _instance; }
-
-		inline void AcquireLock(uintptr_t* lock) { __acquireLock(lock); }
 		
 		bool ApBoot( void );
 
@@ -40,8 +35,6 @@ namespace arch
 		inline size_t GetCpuCount( void ) { return _cpuCount; }
 
 		void HaltCurrentCore()	{	asm("cli\nhlt");	}
-
-		inline void ReleaseLock(uintptr_t* lock) { __releaseLock(lock); }
 	private:
 		void AddCpu(X86_64 cpu);
 

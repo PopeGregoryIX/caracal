@@ -7,7 +7,7 @@
 #include <machine.h>
 #include <caracal.h>
 #include <pc.h>
-#include <runtime/cxx.h>
+#include <cxx.h>
 #include <x86_64.h>
 #include <stdint.h>
 #include <stddef.h>

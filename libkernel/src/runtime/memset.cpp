@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include <runtime/cxx.h>
+#include <cxx.h>
 
 extern "C" void * memset( void* ptr, int value, size_t num)
 {

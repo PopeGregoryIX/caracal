@@ -7,7 +7,7 @@
 
 #include <debug/consoleoutput.h>
 #include <stdint.h>
-#include <memory/spinlock.h>
+#include <spinlock.h>
 
 ConsoleOutput::ConsoleOutput( void )
 {

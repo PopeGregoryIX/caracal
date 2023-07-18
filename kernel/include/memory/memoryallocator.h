@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <archdef.h>
-#include <memory/spinlock.h>
+#include <spinlock.h>
 
 typedef uintptr_t (*requestHeapBytes)(intptr_t bytes);
 

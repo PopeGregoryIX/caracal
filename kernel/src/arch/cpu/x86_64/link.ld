@@ -1,17 +1,6 @@
-ENTRY(_entry)
+ENTRY(kmain)
 
-/*  Used by BOOTBOOT.   */
-/* overridden default bootboot values
-mmio                = 0xfffffffff8000000;
-linearFrameBuffer   = 0xfffffffffc000000;
-bootboot            = 0xffffffffffe00000;
-environment         = 0xffffffffffe01000;*/
-
-mmio                = 0xFFFFFE8000000000;
-fb                  = 0xFFFFFE8004000000;
-bootboot            = 0xFFFFFE8008000000;
-environment         = 0xFFFFFE8008100000;
-initstack = 0x4000;
+cboot               = 0xFFFFFE8000608000;
 
 /*  Bootboot - puts everything in a single segment  */
 PHDRS

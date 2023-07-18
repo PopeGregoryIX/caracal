@@ -3,7 +3,7 @@
 
 #include <support/templates/container.h>
 #include <support/templates/iterator.h>
-#include <memory/spinlock.h>
+#include <spinlock.h>
 
 template<class TData>
 class Ring : Container<TData>

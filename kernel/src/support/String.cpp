@@ -4,7 +4,7 @@
  *  Created on: 12 Jun 2013
  *      Author: Adam
  */
-#include <runtime/cxx.h>
+#include <cxx.h>
 #include <support/string.h>
 
 uint8_t String::numBase_ = 16;

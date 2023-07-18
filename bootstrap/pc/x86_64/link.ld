@@ -13,6 +13,8 @@ bootboot            = 0xfffffffff8000000;
 environment         = 0xfffffffff8001000;
 initstack = 0x4000;
 
+cboot               = 0xFFFFFE8000608000;
+
 /*  Bootboot - puts everything in a single segment  */
 PHDRS
 {

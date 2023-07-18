@@ -11,7 +11,7 @@
 #include <debug/consoleoutput.h>
 #include <debug/consolecolour.h>
 #include <stdint.h>
-#include <memory/spinlock.h>
+#include <spinlock.h>
 
 class DebugConsole
 {

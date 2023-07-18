@@ -14,7 +14,7 @@
 
 #include <stdint.h>
 #include <debug/debug.h>
-#include <memory/spinlock.h>
+#include <spinlock.h>
 
 class StaticBitmap
 {

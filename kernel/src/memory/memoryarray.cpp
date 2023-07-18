@@ -11,7 +11,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <memory/memoryarray.h>
-#include <bootboot.h>
+#include <cboot.h>
 
 MemoryArray MemoryArray::_instance;
 
@@ -24,9 +24,9 @@ MemoryArray::MemoryArray( void )
     //  pull in the BootBoot memory map so that we can perform allocations
     _count = 0;
 
-    MMapEnt* nextEntry = &(bootboot.mmap);
+    MMapEnt* nextEntry = (MMapEnt*)(cboot.mmapAddress);
 
-    while((uintptr_t)nextEntry < (uintptr_t)&bootboot + bootboot.size)
+    while((uintptr_t)nextEntry < cboot.mmapAddress + cboot.mmapBytes)
     {
         _mmap[_count++] = {nextEntry->ptr, nextEntry->size & ~0xFULL, (uint8_t)MMapEnt_Type(nextEntry) };
         nextEntry++;

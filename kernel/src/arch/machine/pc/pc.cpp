@@ -57,9 +57,6 @@ namespace arch
 		X86_64 bspCpu;
 		AddCpu(bspCpu);
 
-		//	Signal AP's to boot
-		INFO("Signal AP's");
-		_setBspDone();
 		return true;
 	}
 

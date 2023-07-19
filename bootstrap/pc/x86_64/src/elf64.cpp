@@ -35,11 +35,9 @@ void Elf64::Relocate( void )
     for(size_t i = 0; i < _header->e_phnum; i++)
     {
         ProgramHeader& programHeader = GetProgramHeader(i);
-        INFO("Program " << (uintptr_t)i << ": size " << programHeader.p_memsz);
 
         if(programHeader.p_memsz > 0)
         {
-            INFO("Relocate to " << programHeader.p_vaddr);
             memcpy((void*)programHeader.p_vaddr, (void*)GetFileOffset(programHeader.p_offset), programHeader.p_filesz);
 
             if(programHeader.p_memsz > programHeader.p_filesz)
@@ -48,8 +46,6 @@ void Elf64::Relocate( void )
             }
         }
     }
-
-    INFO((char*)&GetStringTable()[1]);
 }
 
 void Elf64::Start( void )

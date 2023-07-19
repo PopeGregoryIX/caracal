@@ -27,8 +27,6 @@ void PageFrameAllocator::Initialise( size_t frameSize )
     char decimal[0x20];
     String::itoa(MemoryArray::GetInstance().GetHighestAddress() / (1024*1024), decimal, 10);
 
-    INFO("Total Free Memory: " << decimal << "MiB");
-
     size_t bitmapSizeBytes = ((MemoryArray::GetInstance().GetHighestAddress() / _frameSize) / sizeof(uint64_t)); // we can store 0x1000 per *bit*
     if(bitmapSizeBytes % sizeof(uint64_t)) bitmapSizeBytes += sizeof(uint64_t) - (bitmapSizeBytes % sizeof(uint64_t));
 

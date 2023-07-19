@@ -6,7 +6,7 @@
  */
 #include <stdint.h>
 #include <debug/lfbconsoleoutput.h>
-#include <bootboot.h>
+#include <cboot.h>
 #include <debug/consolecolour.h>
 #include <cxx.h>
 #include <support/string.h>
@@ -17,8 +17,8 @@ namespace arch
 
 	LfbConsoleOutput::LfbConsoleOutput( void )
 	{
-		_widthChars = bootboot.fb_scanline / font->width;
-		_heightChars = bootboot.fb_height / font->height;
+		_widthChars = cboot.lfbScanlineBytes / font->width;
+		_heightChars = cboot.lfbScreenHeight / font->height;
 		_currentX = _currentY = 0;
 		_bytesPerPixel = 4;
 		_tabStop = 5;
@@ -26,9 +26,9 @@ namespace arch
 
 	void LfbConsoleOutput::Cls( void )
 	{
-		uint32_t* lfb = (uint32_t*)&fb;
+		uint32_t* lfb = (uint32_t*)cboot.lfbAddress;
 
-		for(size_t i = 0; i <  bootboot.fb_width * bootboot.fb_height; ++i)
+		for(size_t i = 0; i <  cboot.lfbScreenWidth * cboot.lfbScreenHeight; ++i)
 			lfb[i] = _colour.Background;
 
 		_currentX = _currentY = 0;
@@ -49,7 +49,7 @@ namespace arch
 				_currentX+= 5 - (_currentX % _tabStop);
 				break;
 			default:
-				int offset =	(_currentY * font->height * bootboot.fb_scanline) +
+				int offset =	(_currentY * font->height * cboot.lfbScanlineBytes) +
 								(_currentX * (font->width + 1) * _bytesPerPixel);
 
 				unsigned int glyphX, glyphY, glyphLine, glyphMask;
@@ -60,7 +60,7 @@ namespace arch
 					glyphMask=1<<(font->width-1);
 					/* display a row */
 					for(glyphX=0;glyphX<=font->width;glyphX++){
-						*((uint32_t*)((uint64_t)&fb+glyphLine)) =
+						*((uint32_t*)((uint64_t)cboot.lfbAddress+glyphLine)) =
 								*((unsigned int*)glyph) & glyphMask ? _colour.Foreground : _colour.Background;
 						/* adjust to the next pixel */
 						glyphMask >>= 1;
@@ -68,7 +68,7 @@ namespace arch
 					}
 					/* adjust to the next line */
 					glyph += glyphBytesPerLine;
-					offset  += bootboot.fb_scanline;
+					offset  += cboot.lfbScanlineBytes;
 				}
 				_currentX++;
 		}
@@ -90,13 +90,13 @@ namespace arch
 
 	void LfbConsoleOutput::Scroll( void )
 	{
-		uint32_t* dest = (uint32_t*)&fb;
-		uint32_t* src = &dest[bootboot.fb_width * font->height];
+		uint32_t* dest = (uint32_t*)cboot.lfbAddress;
+		uint32_t* src = &dest[cboot.lfbScreenWidth * font->height];
 
-		::memorycopy<uint32_t>(dest, src, bootboot.fb_width * ((bootboot.fb_height * font->height) -1));
+		::memorycopy<uint32_t>(dest, src, cboot.lfbScreenWidth * ((cboot.lfbScreenHeight * font->height) -1));
 
-		uint32_t startClear = bootboot.fb_width * ((bootboot.fb_height * font->height) -1);
-		uint32_t endClear = bootboot.fb_width * ((bootboot.fb_height * font->height));
+		uint32_t startClear = cboot.lfbScreenWidth * ((cboot.lfbScreenHeight * font->height) -1);
+		uint32_t endClear = cboot.lfbScreenWidth * ((cboot.lfbScreenHeight * font->height));
 
 		for(uint32_t c = startClear; c < endClear ; ++c)
 			dest[c] = _colour.Background;

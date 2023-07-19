@@ -108,11 +108,3 @@ size_t MemoryArray::GetTotalFreeMemory( void )
 
     return returnValue;
 }
-
-void MemoryArray::Print()
-{
-    for(size_t i = 0; i < Count(); i++)
-    {
-        INFO((uint64_t)_mmap[i].base << " - " << (uint64_t)_mmap[i].Top() << " : " << _memoryType[_mmap[i].type]);
-    }
-}

@@ -37,13 +37,11 @@ void bmain( void )
         _proceedLock.Acquire();
 
         debug.AddOutputDevice(LfbConsoleOutput::GetInstance());
-        INFO("Caracal bootstrap.");
 
         PageFrameAllocator& pageFrameAllocator = ::PageFrameAllocator::GetInstance();
 		pageFrameAllocator.Initialise(0x1000);
         
         if(kernelPointer == 0) FATAL("Kernel not found on Initial RamDisk.");
-        INFO("Kernel size is: " << initRd.GetFileSize(kernelPointer));
 
         //  Load the kernel ELF file
         Elf64 kernel((void*)initRd.GetFileData(kernelPointer));

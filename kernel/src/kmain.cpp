@@ -16,9 +16,12 @@
 #include <cpu.h>
 #include <process/processmanager.h>
 #include <caracal.h>
+#include <spinlock.h>
 
 DebugConsole& debug = DebugConsole::GetInstance();
 Machine& machine = Machine::GetInstance();
+bool bspDone = false;
+Spinlock cpuLock;
 
 /**
  * @brief Kernel entry point.
@@ -38,6 +41,7 @@ void kmain()
 	//	distinguish between BSP's and AP's early on in code
 	if(Cpu::IsBsp())
 	{
+		cpuLock.Acquire();
 		_init();
 
 		//	The aim here is to spend a relatively short time in this kmain
@@ -59,9 +63,15 @@ void kmain()
 		{
 			FATAL("Boot routine failed");
 		}
+		bspDone = true;
+		cpuLock.Release();
 	}
 	else
 	{
+		while(!bspDone)	{}
+		cpuLock.Acquire();
+
+
 		if(machine.ApBoot())
 		{
 			INFO("AP " << (uint64_t)Cpu::CurrentProcessorId() << " boot routine complete");
@@ -70,6 +80,8 @@ void kmain()
 		{
 			FATAL("AP boot failed.");
 		}
+
+		cpuLock.Release();
 	}
 
 	ProcessManager& processManager = ProcessManager::GetInstance();

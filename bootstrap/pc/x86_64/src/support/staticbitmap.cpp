@@ -241,8 +241,6 @@ void StaticBitmap::Set(size_t base, size_t length)
     _lock.Acquire();
     if(base > Max() || (base + length - 1) > Max())         
     {
-        INFO("Base: " << base << "\tLength: " << length);
-        
         FATAL("Overflow detected on StaticBitmap while setting bits.");
     }
     size_t startQuad = base / BITS_PER_FRAME;

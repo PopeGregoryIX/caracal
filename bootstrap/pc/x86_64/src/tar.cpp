@@ -10,7 +10,6 @@ void Tar::PrintDirectoryListing( void )
 
     while(String::compare((char*)cd->ustar, (char*)"ustar", 5) == 0)
     {
-        INFO((char*)(cd->fileName));
         cd = (TarHeader*)(((uintptr_t)cd) + 512);
     }
 }

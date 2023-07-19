@@ -16,6 +16,7 @@
 #include <support/staticbitmap.h>
 #include <debug/debug.h>
 #include <spinlock.h>
+#include <cxx.h>
 
 /**
  * @brief Responsible for allocating frames of physical RAM.
@@ -58,6 +59,10 @@ class PageFrameAllocator
         inline void Free( uintptr_t page ) { _pages.Clear(page / _frameSize); }
 
         inline void Free( uintptr_t page, size_t bytes ) { _pages.Clear(page / _frameSize, GetWholePages(bytes)); }
+
+        inline void CopyBitmap(void* dest) {    memcpy(dest, _pages.Bitmap(), _pages.Bytes()); }
+
+        inline uint64_t BitmapSize( void ) { return _pages.Bytes(); }
 };
 
 #endif

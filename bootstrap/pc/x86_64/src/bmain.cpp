@@ -21,6 +21,7 @@ DebugConsole& debug = DebugConsole::GetInstance();
 Spinlock _proceedLock;
 bool bspDone = false;
 Elf64* _kernel;
+volatile uint32_t cpuInitCount = 0;
 
 void bmain( void )
 {
@@ -62,7 +63,7 @@ void bmain( void )
         }
 
         //  Page in space for the data structures
-        uintptr_t dataPhysMem = PageFrameAllocator::GetInstance().Allocate(requiredPages * 0x200000, 0x200000);
+        uintptr_t dataPhysMem = PageFrameAllocator::GetInstance().Allocate(0x200000, 0x200000);
         PageInLarge(PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE | PAGE_LARGE, arch::MEMRANGE_DATA, dataPhysMem);
 
         cboot.bspId = bootboot.bspid;
@@ -81,7 +82,9 @@ void bmain( void )
         cboot.size = sizeof(CBoot);
         cboot.version = CBOOT_VERSION;
         cboot.cbootArchData.cbootArchPC->gdtAddress = arch::MEMRANGE_GDT;
-        
+        cboot.memoryBitmapLocation = arch::MEMRANGE_MEMBITMAP;
+
+
         //  copy the memory map to final location
         memcpy((void*)(cboot.mmapAddress), (void*)(&bootboot.mmap), cboot.mmapBytes);
 
@@ -109,7 +112,6 @@ void bmain( void )
             __asm__ __volatile__ ("pause");
             WriteCr3(ReadCr3());            
         }
-
         _proceedLock.Acquire();
     }
 
@@ -132,7 +134,23 @@ void bmain( void )
        
     
     __stackReset(stackPointer);
+    cpuInitCount++;
     _proceedLock.Release();
+
+    while(cpuInitCount < cboot.cpuCount)    {    }
+
+    _proceedLock.Acquire();
+        cpuInitCount--;
+    _proceedLock.Release();
+
+    while(cpuInitCount < cboot.cpuCount)    
+    {    
+        if(processorId == cboot.bspId)
+        {
+            // NEED TO COPY BITMAP TO MEMRANGE_MEMBITMAP
+            
+        }
+    }
 
     //  Launch the kernel
     _kernel->Start();

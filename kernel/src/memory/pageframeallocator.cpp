@@ -8,6 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
+#include <cxx.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <debug/debug.h>
@@ -25,7 +26,7 @@ void PageFrameAllocator::Initialise( size_t frameSize )
     MemoryArray& mmap = MemoryArray::GetInstance();
     mmap.Align(_frameSize);
     char decimal[0x20];
-    String::itoa(MemoryArray::GetInstance().GetHighestAddress() / (1024*1024), decimal, 10);
+    itoa(MemoryArray::GetInstance().GetHighestAddress() / (1024*1024), decimal, 10);
 
     INFO("Total Free Memory: " << decimal << "MiB");
 

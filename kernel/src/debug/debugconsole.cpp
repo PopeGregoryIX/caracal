@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <pcscreenfont.h>
 #include <support/string.h>
+#include <cxx.h>
 
 DebugConsole DebugConsole::_instance;
 
@@ -45,7 +46,7 @@ void DebugConsole::PutBinary(uint64_t h)
 {
 	char buffer[65];
 	PutString("0b");
-	PutString((const char*)String::itoa(h, buffer, 2));
+	PutString((const char*)itoa(h, buffer, 2));
 }
 
 void DebugConsole::PutChar(const char c)
@@ -60,22 +61,22 @@ void DebugConsole::PutChar(const char c)
 void DebugConsole::PutDecimal(uint64_t h)
 {
 	char buffer[21];
-	PutString((const char*)String::itoa(h, buffer, 10));
+	PutString((const char*)itoa(h, buffer, 10));
 }
 
 void DebugConsole::PutHex(uint64_t h)
 {
 	char buffer[17];
 	PutString("0x");
-	PutString((const char*)String::itoa(h, buffer, 16));
+	PutString((const char*)itoa(h, buffer, 16));
 }
 
 void DebugConsole::PutPaddedHex(uint64_t h)
 {
 	char buffer[17];
 	PutString("0x");
-	String::itoa(h, buffer, 16);
-	size_t len = String::length(buffer);
+	itoa(h, buffer, 16);
+	size_t len = strlen(buffer);
 
 	for(size_t i = 0; i < 16-len; ++i) PutChar('0');
 

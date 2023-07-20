@@ -13,40 +13,31 @@
 #include <memory/memoryarray.h>
 #include <cboot.h>
 
-MemoryArray MemoryArray::_instance;
-
 const char* MemoryArray::_memoryType[4] = { "Used", "Free", "ACPI", "MMIO" };
 
-MemoryArray::MemoryArray( void )
+MemoryArray::MemoryArray( uint64_t mmap, size_t bytes )
 {
-    _data = _mmap;
-    _maxCount = MMAP_MAX_ENTRIES;
-    //  pull in the BootBoot memory map so that we can perform allocations
-    _count = 0;
+    _data = (MemoryMapEntry*)mmap;
+    _maxCount = _count = bytes / sizeof(MemoryMapEntry);
+    _maxCount++;
 
-    MMapEnt* nextEntry = (MMapEnt*)(cboot.mmapAddress);
-
-    while((uintptr_t)nextEntry < cboot.mmapAddress + cboot.mmapBytes)
-    {
-        _mmap[_count++] = {nextEntry->ptr, nextEntry->size & ~0xFULL, (uint8_t)MMapEnt_Type(nextEntry) };
-        nextEntry++;
-    }
+    Print();
 }
 
 void MemoryArray::Align( size_t alignVal)
 {
     for(size_t i = 0; i < Count(); i++)
     {
-        size_t delta = alignVal - (_mmap[i].base % alignVal);
+        size_t delta = alignVal - (_data[i].base % alignVal);
         
         if(delta != 0)
         {
-            _mmap[i].base+= delta;
-            _mmap[i].size-= delta;
+            _data[i].base+= delta;
+            _data[i].size-= delta;
         }
 
-        delta = _mmap[i].size % alignVal;
-        if(delta != 0) _mmap[i].size -= delta;
+        delta = _data[i].size % alignVal;
+        if(delta != 0) _data[i].size -= delta;
     }
 }
 
@@ -56,17 +47,17 @@ void* MemoryArray::Allocate(size_t bytes)
 
     for(size_t i = Count() - 1; i > 0; --i)
     {
-        if(_mmap[i].type == MMAP_FREE && _mmap[i].size >= bytes)
+        if(_data[i].type == MMAP_FREE && _data[i].size >= bytes)
         {
             Insert(i);
-            _mmap[i].base = _mmap[i+1].base;
-            _mmap[i].size = bytes;
-            _mmap[i].type = MMAP_USED;
+            _data[i].base = _data[i+1].base;
+            _data[i].size = bytes;
+            _data[i].type = MMAP_USED;
 
-            _mmap[i+1].base+= bytes;
-            _mmap[i+1].size-= bytes;
+            _data[i+1].base+= bytes;
+            _data[i+1].size-= bytes;
 
-            return (void*)_mmap[i].base;
+            return (void*)_data[i].base;
         }
     }
 
@@ -77,10 +68,10 @@ void MemoryArray::Insert(size_t index)
 {
     for(size_t i = Count() - 1; i >= index; --i)
     {
-        _mmap[i+1] = _mmap[i];
+        _data[i+1] = _data[i];
     }
 
-    _mmap[index] = {0,0,0};
+    _data[index] = {0,0,0};
     _count++;
 }
 
@@ -90,8 +81,8 @@ size_t MemoryArray::GetHighestAddress( void )
 
     for(size_t i = 0; i < Count(); i++)
     {
-        if(_mmap[i].IsFree() && (_mmap[i].Top() > returnValue)) 
-            returnValue = _mmap[i].Top();
+        if(_data[i].IsFree() && (_data[i].Top() > returnValue)) 
+            returnValue = _data[i].Top();
     }
 
     return returnValue;
@@ -103,7 +94,7 @@ size_t MemoryArray::GetTotalFreeMemory( void )
     
     for(size_t i = 0; i < Count(); i++)
     {
-        if(_mmap[i].IsFree()) returnValue+= _mmap[i].size;
+        if(_data[i].IsFree()) returnValue+= _data[i].size;
     }
 
     return returnValue;
@@ -113,6 +104,6 @@ void MemoryArray::Print()
 {
     for(size_t i = 0; i < Count(); i++)
     {
-        INFO((uint64_t)_mmap[i].base << " - " << (uint64_t)_mmap[i].Top() << " : " << _memoryType[_mmap[i].type]);
+        INFO((uint64_t)_data[i].base << " - " << (uint64_t)_data[i].Top() << " : " << _memoryType[_data[i].type]);
     }
 }

@@ -9,7 +9,7 @@
 #include <debug/debug.h>
 #include <debug/debugconsole.h>
 #include <debug/lfbconsoleoutput.h>
-#include <memory/pageframeallocator.h>
+#include <memory/memoryarray.h>
 #include <memorylayout.h>
 #include <cboot.h>
 #include <gdt.h>
@@ -22,6 +22,7 @@ Spinlock _proceedLock;
 bool bspDone = false;
 Elf64* _kernel;
 volatile uint32_t cpuInitCount = 0;
+bool mmapCopied = false;
 
 void bmain( void )
 {
@@ -31,6 +32,7 @@ void bmain( void )
 
     Tar initRd((void*)bootboot.initrd_ptr);
     uintptr_t kernelPointer = initRd.GetEntryHandle("sys/kernel");
+    MemoryArray& memoryArray = MemoryArray::GetInstance();
 
     if(processorId == bootboot.bspid)
     {
@@ -38,9 +40,7 @@ void bmain( void )
         _proceedLock.Acquire();
 
         debug.AddOutputDevice(LfbConsoleOutput::GetInstance());
-
-        PageFrameAllocator& pageFrameAllocator = ::PageFrameAllocator::GetInstance();
-		pageFrameAllocator.Initialise(0x1000);
+        memoryArray.Align();
         
         if(kernelPointer == 0) FATAL("Kernel not found on Initial RamDisk.");
 
@@ -55,7 +55,8 @@ void bmain( void )
         uintptr_t top = base + kernel.GetMemorySize();
         uintptr_t requiredPages = (top - base) / 0x200000;
         if(((top - base) % 0x200000) != 0) requiredPages++;
-        uintptr_t physMem = PageFrameAllocator::GetInstance().Allocate(requiredPages * 0x200000, 0x200000);
+        uintptr_t physMem = memoryArray.Allocate2M(requiredPages * 0x200000);
+        if(physMem == 0) FATAL("Unable to locate memory for kernel.");
         for(uintptr_t i = 0; i < requiredPages; i++)
         {
             PageInLarge(PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE | PAGE_LARGE, 
@@ -63,7 +64,8 @@ void bmain( void )
         }
 
         //  Page in space for the data structures
-        uintptr_t dataPhysMem = PageFrameAllocator::GetInstance().Allocate(0x200000, 0x200000);
+        uintptr_t dataPhysMem = memoryArray.Allocate2M(0x200000);
+        if(dataPhysMem == 0) FATAL("Unable to locate memory for kernel.");
         PageInLarge(PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE | PAGE_LARGE, arch::MEMRANGE_DATA, dataPhysMem);
 
         cboot.bspId = bootboot.bspid;
@@ -82,9 +84,6 @@ void bmain( void )
         cboot.size = sizeof(CBoot);
         cboot.version = CBOOT_VERSION;
         cboot.cbootArchData.cbootArchPC->gdtAddress = arch::MEMRANGE_GDT;
-
-        //  copy the memory map to final location
-        memcpy((void*)(cboot.mmapAddress), (void*)(&bootboot.mmap), cboot.mmapBytes);
 
         //  Page in the linear frame buffer
         uintptr_t lfbPages = bootboot.fb_size / 0x200000;
@@ -118,7 +117,7 @@ void bmain( void )
     uintptr_t gdtRange = (uintptr_t)gdt - (((uintptr_t)gdt) % 0x200000);
     if(!IsPagedIn(gdtRange))
     {
-        uintptr_t gdtPhysMem = PageFrameAllocator::GetInstance().Allocate(0x200000, 0x200000);
+        uintptr_t gdtPhysMem = memoryArray.Allocate2M(0x200000);
         PageInLarge(PAGE_LARGE | PAGE_GLOBAL | PAGE_PRESENT | PAGE_WRITE, gdtRange, gdtPhysMem);
     }
     gdt->Initialise();
@@ -126,15 +125,27 @@ void bmain( void )
     gdt->LoadTss();
 
     uintptr_t stackPointer = (arch::MEMRANGE_STACKS - (0x400000 * processorId));
-    uintptr_t stackPhysMem = PageFrameAllocator::GetInstance().Allocate(0x200000, 0x200000);
+    uintptr_t stackPhysMem = memoryArray.Allocate2M(0x200000);
     PageInLarge(PAGE_LARGE | PAGE_GLOBAL | PAGE_PRESENT | PAGE_WRITE, stackPointer - 0x200000, stackPhysMem);
     stackPointer-= sizeof(uintptr_t);
        
-    __stackReset(stackPointer);
     cpuInitCount++;
     _proceedLock.Release();
 
-    while(cpuInitCount < cboot.cpuCount)    {    }
+    while(cpuInitCount < cboot.cpuCount)    
+    {    
+        
+    }
+
+    _proceedLock.Acquire();
+        if(!mmapCopied)
+        {
+            memcpy((void*)(cboot.mmapAddress), (void*)memoryArray.GetFirst(), memoryArray.Size());
+            mmapCopied = true;
+        }
+        __stackReset(stackPointer);
+    _proceedLock.Release();
+
 
     //  Launch the kernel
     _kernel->Start();
@@ -190,7 +201,7 @@ void WriteCr3(uint64_t value) { asm volatile ( "movq %0, %%cr3" : : "a"(value) )
 
 pageDirectoryEntry_t* GetNewPagingStructure( void )
 {
-    uintptr_t pageStructure = PageFrameAllocator::GetInstance().Allocate();
+    uintptr_t pageStructure = MemoryArray::GetInstance().Allocate();
     if(pageStructure == UINT64_MAX) FATAL("Unable to find memory for a new paging structure.");
 
     ::memset((void*)pageStructure, 0, 0x1000);

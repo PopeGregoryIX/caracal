@@ -33,25 +33,27 @@ MemoryArray::MemoryArray( void )
     }
 }
 
-void MemoryArray::Align( size_t alignVal)
+void MemoryArray::Align()
 {
+    //  Generally align the memory map to 0x1000 bytes
     for(size_t i = 0; i < Count(); i++)
     {
-        size_t delta = alignVal - (_mmap[i].base % alignVal);
+        size_t delta = 0x1000 - (_mmap[i].base % 0x1000);
         
-        if(delta != 0)
+        if(delta != 0x1000)
         {
             _mmap[i].base+= delta;
             _mmap[i].size-= delta;
         }
 
-        delta = _mmap[i].size % alignVal;
+        delta = _mmap[i].size % 0x1000;
         if(delta != 0) _mmap[i].size -= delta;
     }
 }
 
-void* MemoryArray::Allocate(size_t bytes)
+uintptr_t MemoryArray::Allocate()
 {
+    size_t bytes = 0x1000;
     if((bytes % 0x1000) != 0) bytes += (0x1000 - (bytes % 0x1000));
 
     for(size_t i = Count() - 1; i > 0; --i)
@@ -66,11 +68,47 @@ void* MemoryArray::Allocate(size_t bytes)
             _mmap[i+1].base+= bytes;
             _mmap[i+1].size-= bytes;
 
-            return (void*)_mmap[i].base;
+            return _mmap[i].base;
         }
     }
 
-    return nullptr;
+    return 0;
+}
+
+uintptr_t MemoryArray::Allocate2M(size_t bytes)
+{
+    if((bytes % 0x200000) != 0) bytes += (0x200000 - (bytes % 0x200000));
+
+    for(size_t i = Count() - 1; i > 0; --i)
+    {
+        if(_mmap[i].type == MMAP_FREE && _mmap[i].size >= (bytes + 0x200000))
+        {
+            uintptr_t delta = 0x200000 - (_mmap[i].base % 0x200000);
+            if (delta!= 0x200000)
+            {
+                Insert(i);
+                _mmap[i].base = _mmap[i+1].base;
+                _mmap[i].size = delta;
+                _mmap[i].type = MMAP_FREE;
+
+                _mmap[i+1].base+= delta;
+                _mmap[i+1].size-= delta;
+                i++;
+            }
+
+            Insert(i);
+            _mmap[i].base = _mmap[i+1].base;
+            _mmap[i].size = bytes;
+            _mmap[i].type = MMAP_USED;
+
+            _mmap[i+1].base+= bytes;
+            _mmap[i+1].size-= bytes;
+            
+            return _mmap[i].base;
+        }
+    }
+
+    return 0;
 }
 
 void MemoryArray::Insert(size_t index)

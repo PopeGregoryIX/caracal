@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <bootboot.h>
 #include <debug/debug.h>
+#include <cxx.h>
 
 #define MMAP_MAX_ENTRIES 0x200
 
@@ -26,9 +27,11 @@ class MemoryArray
 
         MemoryArray( void );
 
-        void Align(size_t alignVal);
+        void Align();
 
-        void* Allocate(size_t bytes);
+        uintptr_t Allocate();
+
+        uintptr_t Allocate2M(size_t bytes);
 
         void Insert(size_t index);
 
@@ -50,6 +53,8 @@ class MemoryArray
         }
 
         inline virtual  size_t Count( void ) { return _count; }
+
+        inline virtual size_t Size( void ) { return _count * sizeof(MemoryMapEntry); }
     private:
         static MemoryArray _instance;
         MemoryMapEntry* _data;

@@ -23,9 +23,7 @@ struct MemoryMapEntry
 class MemoryArray
 {
     public:
-        static MemoryArray& GetInstance( void )   {   return _instance; }
-
-        MemoryArray( void );
+        MemoryArray( uint64_t mmap, size_t bytes );
 
         void Align(size_t alignVal);
 
@@ -52,12 +50,10 @@ class MemoryArray
 
         inline virtual  size_t Count( void ) { return _count; }
     private:
-        static MemoryArray _instance;
         MemoryMapEntry* _data;
         size_t _maxCount;
         size_t _count;
         static const char* _memoryType[4];
-        MemoryMapEntry _mmap[MMAP_MAX_ENTRIES];
 };
 
 #endif

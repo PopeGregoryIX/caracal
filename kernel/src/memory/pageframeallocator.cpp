@@ -16,6 +16,7 @@
 #include <support/staticbitmap.h>
 #include <support/string.h>
 #include <memory/memoryarray.h>
+#include <cboot.h>
 
 PageFrameAllocator PageFrameAllocator::_instance;
 
@@ -23,14 +24,12 @@ void PageFrameAllocator::Initialise( size_t frameSize )
 {
     _frameSize = ((frameSize > 0x100) && (frameSize % sizeof(uintptr_t) == 0)) ? frameSize : 0x1000;
 
-    MemoryArray& mmap = MemoryArray::GetInstance();
-    mmap.Align(_frameSize);
+    MemoryArray mmap(cboot.mmapAddress, cboot.mmapBytes);
     char decimal[0x20];
-    itoa(MemoryArray::GetInstance().GetHighestAddress() / (1024*1024), decimal, 10);
-
+    itoa(mmap.GetHighestAddress() / (1024*1024), decimal, 10);
     INFO("Total Free Memory: " << decimal << "MiB");
 
-    size_t bitmapSizeBytes = ((MemoryArray::GetInstance().GetHighestAddress() / _frameSize) / sizeof(uint64_t)); // we can store 0x1000 per *bit*
+    size_t bitmapSizeBytes = ((mmap.GetHighestAddress() / _frameSize) / sizeof(uint64_t)); // we can store 0x1000 per *bit*
     if(bitmapSizeBytes % sizeof(uint64_t)) bitmapSizeBytes += sizeof(uint64_t) - (bitmapSizeBytes % sizeof(uint64_t));
 
     uint64_t* bitmapBase = (uint64_t*)mmap.Allocate(bitmapSizeBytes);
@@ -44,7 +43,5 @@ void PageFrameAllocator::Initialise( size_t frameSize )
     {
         if (mme[i].IsFree() && mme[i].size > 0)
             _pages.Clear((mme[i].base / _frameSize), mme[i].size / _frameSize);
-
-        
     }
 }

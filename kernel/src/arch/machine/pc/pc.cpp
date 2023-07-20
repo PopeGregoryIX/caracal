@@ -46,12 +46,13 @@ namespace arch
 		//	This is where we set up the machine. This is purely called
 		//	by the BSP.
 		INFO("Running boot routines for machine type: PC");
-		
+
 		//	1. Initialise the memory map - we need to be able to allocate physical pages
 		VINFO("Initialise Page Frame Allocator");
 		PageFrameAllocator& pageFrameAllocator = ::PageFrameAllocator::GetInstance();
 		pageFrameAllocator.Initialise(0x1000);
-
+		FATAL("PAUSE");
+		
 		//	2. Initialise CPU structures, such as GDT / IDT / TSS etc...
 		INFO("Initialise BSP");
 		X86_64 bspCpu;

@@ -82,8 +82,6 @@ void bmain( void )
         cboot.size = sizeof(CBoot);
         cboot.version = CBOOT_VERSION;
         cboot.cbootArchData.cbootArchPC->gdtAddress = arch::MEMRANGE_GDT;
-        cboot.memoryBitmapLocation = arch::MEMRANGE_MEMBITMAP;
-
 
         //  copy the memory map to final location
         memcpy((void*)(cboot.mmapAddress), (void*)(&bootboot.mmap), cboot.mmapBytes);
@@ -132,29 +130,14 @@ void bmain( void )
     PageInLarge(PAGE_LARGE | PAGE_GLOBAL | PAGE_PRESENT | PAGE_WRITE, stackPointer - 0x200000, stackPhysMem);
     stackPointer-= sizeof(uintptr_t);
        
-    
     __stackReset(stackPointer);
     cpuInitCount++;
     _proceedLock.Release();
 
     while(cpuInitCount < cboot.cpuCount)    {    }
 
-    _proceedLock.Acquire();
-        cpuInitCount--;
-    _proceedLock.Release();
-
-    while(cpuInitCount < cboot.cpuCount)    
-    {    
-        if(processorId == cboot.bspId)
-        {
-            // NEED TO COPY BITMAP TO MEMRANGE_MEMBITMAP
-            
-        }
-    }
-
     //  Launch the kernel
     _kernel->Start();
-    
 }
 
 bool IsPagedIn(uintptr_t virtualAddress)

@@ -40,8 +40,6 @@ struct CBoot
     uint32_t lfbScanlineBytes;
     uint64_t mmapAddress;
     uint64_t mmapBytes;
-    uint64_t memoryBitmapLocation;
-    uint64_t memoryBitmapSize;
     uint64_t configStringAddress;
     uint64_t configStringBytes;
     CBoot_Arch cbootArchData;

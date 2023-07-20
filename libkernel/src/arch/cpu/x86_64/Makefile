@@ -8,8 +8,8 @@ LDFLAGS+= --no-warn-rwx-segments
 -include $(DEPFILES)
 
 all: makedirs $(OBJFILES) Makefile
-	@$(CCDIR)$(CPU)-$(BINFORMAT)-ar ru $(BINDIR)/$(BINARY) $(OBJFILES)
-	@$(CCDIR)$(CPU)-$(BINFORMAT)-ranlib $(BINDIR)/$(BINARY)
+	$(CPU)-$(BINFORMAT)-ar ru $(BINDIR)/$(BINARY) $(OBJFILES)
+	$(CPU)-$(BINFORMAT)-ranlib $(BINDIR)/$(BINARY)
 
 dist:
 	@rm -f $(FILESYSDIR)/$(FILESYSBINARY)
@@ -22,16 +22,16 @@ dump:
 	@$(CPU)-$(BINFORMAT)-objdump -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(DUMPFILE)
 
 $(BINDIR)/%.cpp.o: $(SRCDIR)/%.cpp
-	@$(CCDIR)$(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -MP -MMD -c $< -o $@
+	$(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -MP -MMD -c $< -o $@
 
 $(BINDIR)/%.s.o: $(SRCDIR)/%.s
-	@$(CCDIR)$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
+	$(CPU)-$(BINFORMAT)-as $(ASFLAGS) -o $@ $<
 
 $(BINDIR)/%.asm.o: $(SRCDIR)/%.asm
 	@nasm -o $@ -f elf64 $<
 
 $(BINDIR)/%.psf.o: $(SRCDIR)/%.psf
-	@$(CCDIR)x86_64-elf-ld -r -b binary -o $@ $<
+	$(CPU)-$(BINFORMAT)-ld -r -b binary -o $@ $<
 
 doc:
 	@doxygen kernel.doxyfile > /dev/null

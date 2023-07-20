@@ -42,6 +42,7 @@
 *INITRD*
 *.o.txt
 *.sys.txt
+*bootstrap.txt
 *.efi
 
 # Documentation

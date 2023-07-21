@@ -19,30 +19,18 @@ endif
 
 all:
 	@echo Building...
-	@make -s all -C libkernel
-	@make -s all -C bootstrap
-	@make -s all -C kernel
+	@make -s -C bootstrap
 
 install:
 	@echo Installing...
-	@cp ./bootstrap/bin/$(ARCH)/$(CPU)/bootstrap.sys ./filesystem/sys/core
-	@cp ./kernel/bin/$(ARCH)/$(CPU)-$(BINFORMAT)/kernel.sys ./filesystem/sys/kernel
-	@./tools/bootboot/mkbootimg ./config/caracal.json ./images/caracal64.img
 
 clean:
-	@echo Cleaning...
-	@make -s clean -C libkernel
-	@make -s clean -C bootstrap
-	@make -s clean -C kernel
-	@rm -f images/*.img
-	@rm -f ./filesystem/sys/core
+	@echo Cleaning...	
+	@make clean -s -C bootstrap
 
 doc:
 	@echo Making Documentation...
-	@make -s clean -C libkernel
-	@make -s doc -C bootstrap
-	@make -s doc -C kernel
-
+	
 run:
 	@qemu-system-x86_64 -m 8G -boot d -smp 4 -usb -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
 	-drive file="$$HOME/caracal/images/caracal64.img",if=ide,index=1,format=raw

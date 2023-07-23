@@ -20,6 +20,6 @@
     "no-default-libraries": true,
     "position-independent-executables": false,
     "pre-link-args": {
-      "ld.lld": ["--script=./src/arch/cpu/x86_64/link.ld"]
+      "ld.lld": ["--script=./src/arch/cpu/x86_64/link.ld", "./src/data/font.psf.o"]
     }
   }

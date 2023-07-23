@@ -1,0 +1,8 @@
+[package]
+name = "cboot"
+version = "0.1.0"
+authors = ["Adam Jones"]
+edition = "2021"
+
+[dependencies]
+rlibc = "1.0"

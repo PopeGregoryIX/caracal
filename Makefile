@@ -25,7 +25,7 @@ endif
 
 all:
 	@echo Building...
-	@make -s -C bootstrap
+	@make -s -C cboot
 
 install:
 	@echo Installing...
@@ -35,7 +35,7 @@ install:
 clean:
 	@echo Cleaning...	
 	@rm -rf $(BINDIR)
-	@make clean -s -C bootstrap
+	@make clean -s -C cboot
 
 doc:
 	@echo Making Documentation...

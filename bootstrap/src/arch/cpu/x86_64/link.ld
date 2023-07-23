@@ -1,32 +1,45 @@
-ENTRY(kmain)
+ENTRY(bmain)
 
-cboot               = 0xFFFFFE8000608000;
+mmio        = 0xfffffffff8000000;
+fb          = 0xfffffffffc000000;
+bootboot    = 0xffffffffffe00000;
+environment = 0xffffffffffe01000;
+initstack = 4096;
 
-/*  Bootboot - puts everything in a single segment  */
+KERNEL_OFFSET = 0xffffffffffe02000;
+
+
 PHDRS
 {
-  boot PT_LOAD;
+  boot PT_LOAD FILEHDR PHDRS;
 }
 SECTIONS
 {
-    . = 0xFFFFFE8100000000;
-    kernelStart = .;
-    .text : {
-        KEEP(*(.text.boot*));
-        *(.text* .text.*)
-		*(.padata* .padata.*)
-        *(.data* .data.*)
-    } :boot 
-    .bss (NOLOAD) : {
-        . = ALIGN(16);
-        *(.bss* .bss.*)
-        *(COMMON)
+    . = 0xffffffffffe02000;
+    .text . + SIZEOF_HEADERS : AT(ADDR(.text) - KERNEL_OFFSET + SIZEOF_HEADERS) {
+        __text_start = .;
+        KEEP(*(.text.boot)) *(.text .text.* .gnu.linkonce.t*)
+        . = ALIGN(4096);
+        __text_end = .;
     } :boot
 
-    kernelEnd = .;
+    .rodata : AT(ADDR(.rodata) - KERNEL_OFFSET) {
+        __rodata_start = .;
+        *(.rodata*)
+        . = ALIGN(4096);
+        __rodata_end = .;
+    } :boot
 
-    . = ALIGN(0x1000);
-    gdtSpace = .;
+    .data : AT(ADDR(.data) - KERNEL_OFFSET) {
+        __data_start = .;
+        *(.data*)
+        . = ALIGN(4096);
+        __data_end = .;
+        __bss_start = .;
+        *(.bss*)
+        . = ALIGN(4096);
+        __bss_end = .;
+    } :boot
 
-    /DISCARD/ : { *(.comment) }
+    /DISCARD/ : { *(.eh_frame) *(.comment) }
 }

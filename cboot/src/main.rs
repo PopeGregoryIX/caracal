@@ -7,8 +7,11 @@
 mod panic;
 #[path = "boot/bootboot.rs"]
 mod bootboot;
+#[path = "arch/cpu/x86_64/cpu.rs"]
+mod cpu;
 #[path = "arch/cpu/x86_64/debug.rs"]
 mod debug;
+mod utility;
 
 extern crate rlibc;
 
@@ -16,10 +19,11 @@ extern crate rlibc;
 pub extern "C" fn bmain() -> ! {
    
    use bootboot::*;
-   let bootboot_r = unsafe { & (*(BOOTBOOT_INFO as *const BOOTBOOT)) };
-   let processorId = GetProcessorId().unwrap();
 
-   if IsBoot(bootboot_r.bspid)
+   let bootboot_r = unsafe { & (*(BOOTBOOT_INFO as *const BOOTBOOT)) };
+   let processorId = cpu::GetProcessorId().unwrap();
+
+   if cpu::IsBoot(bootboot_r.bspid)
    {
         let mut debugOutput = debug::DebugOutput::new(5);
         debugOutput.Puts("CBoot Version 0.0.1\n");
@@ -33,7 +37,8 @@ pub extern "C" fn bmain() -> ! {
             debugOutput.Putc(b'\n');
         }
 
-        debugOutput.Puts("Initialising BSP.");
+        debugOutput.Puts("Initialising BSP.\n");
+        debugOutput.Puti(65535, 10);
    }
    else
    {
@@ -51,27 +56,4 @@ pub extern "C" fn bmain() -> ! {
 
 
    loop {}
-}
-
-fn IsBoot(bspId: u16) -> bool
-{
-    return match GetProcessorId()
-    {
-        None => false,
-        Some(val) => val == bspId
-    }
-}
-
-fn GetProcessorId() -> Option<u16>
-{
-    use raw_cpuid::CpuId;
-    let cpuid = CpuId::new();
-    let features = cpuid.get_feature_info();
-
-    if features.is_some()
-    {
-        return Some(features.unwrap().initial_local_apic_id() as u16);
-    }
-
-    return None;
 }

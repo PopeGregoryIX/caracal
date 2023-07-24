@@ -2,6 +2,8 @@
 
 #[path = "../../../boot/bootboot.rs"]
 mod bootboot;
+#[path = "../../../utility.rs"]
+mod utility;
 
 extern crate rlibc;
 
@@ -135,5 +137,14 @@ impl DebugOutput
         }
     }
 
+    pub fn Puti(&mut self, number: u64, base: u8)
+    {
+        let mut buffer:[u8; 65] = [0;65];
+        utility::ItoA(number, base, &mut buffer);
+        self.Puta(&buffer);
+    }
+
     pub fn Puts(&mut self, string: &'static str)    {   for s in string.bytes() {   self.Putc(s); } }
+
+    pub fn Puta(&mut self, string: &[u8])    {   for s in string {   if *s == b'\0' {return;} else {self.Putc(*s); }} }
 }

@@ -3,7 +3,7 @@
     "disksize": 128,
     "align": 1024,
     "iso9660": true,
-    "config": "config/bootboot.config",
+    "config": "config/x86_64-elf-bootboot.config",
     "initrd": { "type": "tar", "gzip": false, "directory": "filesystem" },
     "partitions": [
         { "type": "boot", "size": 16 }

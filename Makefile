@@ -1,55 +1,58 @@
 #	General Makefile for all architectures
-ifeq ($(ARCH),)
-export ARCH:= pc
-endif
+MACHINE?= pc
+CPU?= x86_64
+BINFORMAT?= elf
+TRIPLET?= $(CPU)-$(BINFORMAT)
+OBJCOPY_FORMAT?= elf64-x86-64
+OBJCOPY_PLATFORM?= i386
+BASEDIR?= $(shell pwd)
+OBJDIR?= $(BASEDIR)/obj
+BINDIR?= $(BASEDIR)/bin
+IMGDIR?= $(BASEDIR)/img
 
-ifeq ($(CPU),)
-export CPU:= x86_64
-endif
-
-ifeq ($(BINFORMAT),)
-export BINFORMAT:= elf
-endif
-
-CURDIR:= $(shell pwd)
-
-ifeq ($(BINDIR),)
-export BINDIR:= $(CURDIR)/bin
-endif
+MAKE_EXPORTS:= ARCH=$(ARCH) MACHINE=$(MACHINE) CPU=$(CPU) BINFORMAT=$(BINFORMAT)
+MAKE_EXPORTS+= TRIPLET=$(TRIPLET) BASEDIR=$(BASEDIR) OBJDIR=$(OBJDIR) BINDIR=$(BINDIR) 
+MAKE_EXPORTS+= IMGDIR=$(IMGDIR) OBJCOPY_FORMAT=$(OBJCOPY_FORMAT) OBJCOPY_PLATFORM=$(OBJCOPY_PLATFORM)
 
 ifndef VERBOSE
 .SILENT:
 endif
 
-.phony: all install clean doc run debug
+.phony: all install clean doc run debug boot
 
-all:
-	@echo Building...
-	@make -s -C cboot
+all: all-boot
 
 install:
 	@echo Installing...
-	@cp ./bin/cboot.elf ./filesystem/sys/core
-	@./tools/bootboot/mkbootimg ./config/caracal.json ./images/caracal64.img
+	@cp $(BINDIR)/cboot.elf ./filesystem/sys/core
+	@./tools/bootboot/mkbootimg ./config/caracal.json $(IMGDIR)/$(TRIPLET)-caracal.img
 	
-clean:
-	@echo Cleaning...	
+clean: clean-boot
 	@rm -rf $(BINDIR)
-	@make clean -s -C cboot
+	@rm -rf $(OBJDIR)
+	@rm -rf $(IMGDIR)
 
 doc:
 	@echo Making Documentation...
 	
 run:
 	@qemu-system-x86_64 -m 8G -boot d -smp 4 -usb -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
-	-drive file="$$HOME/caracal/images/caracal64.img",if=ide,index=1,format=raw
+	-drive file="$(IMGDIR)/$(TRIPLET)-caracal.img",if=ide,index=1,format=raw
 
 debug:
 	@qemu-system-x86_64 -S -s -m 8G -boot d -smp 4 -usb -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
-	-drive file="$$HOME/caracal/images/caracal64.img",if=ide,index=1,format=raw
+	-drive file="$(IMGDIR)/$(TRIPLET)-caracal.img",if=ide,index=1,format=raw
+
+all-boot: makedirs
+	@make -s -C cboot $(MAKE_EXPORTS)
+
+clean-boot:
+	@make clean -s -C cboot $(MAKE_EXPORTS)
 
 makedirs:
+	@mkdir -p $(OBJDIR)
 	@mkdir -p $(BINDIR)
-
+	@mkdir -p $(IMGDIR)
+	
 gdb:
 	@make -s gdb -C kernel

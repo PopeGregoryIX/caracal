@@ -1,4 +1,7 @@
 BINARY?= cboot.sys
+DUMPFILE?= cboot.sys.txt
+SYMFILE?= cboot.sys.sym
+
 CPPFLAGS+= -mno-red-zone -mcmodel=large
 
 .PHONY:	all	makedirs clean dump dist doc

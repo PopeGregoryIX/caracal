@@ -48,8 +48,8 @@ OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%.cpp.o,$(CPPSRC)) \
 
 # C++ Runtime
 CRTI_OBJ=$(OBJDIR)/arch/$(CPU)/crti.o
-CRTBEGIN_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtbegin.o)
-CRTEND_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtend.o)
+CRTBEGIN_OBJ:=$(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER)/crtbegin.o
+CRTBEGIN_OBJ:=$(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER)/crtend.o
 CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/crtn.o
 
 # Linker and Compiler Flags
@@ -58,7 +58,7 @@ INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
 INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
 
 LDFLAGS:= -T $(TARGETSDIR)/$(TRIPLET)-link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
-LDADD:= --start-group -L $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER) -lgcc --end-group
+LDADD:= --start-group -L $(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER) -lgcc --end-group
 LDADD:= --start-group -L $(LIBDIR) -lkernel --end-group
 
 WFLAGS:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align

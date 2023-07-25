@@ -7,12 +7,14 @@ all: makedirs $(OBJFILES) Makefile
 	@$(AR) r $(OBJDIR)/$(BINARY) $(OBJFILES)
 	@$(RANLIB) $(OBJDIR)/$(BINARY)
 
-install: makedirs all Makefile
-	cp $(OBJDIR)/$(BINARY) $(BINDIR)/$(BINARY)
-	cp -rf $(SRCDIR)/../include $(BINDIR)/include
+install: all
+	@cp $(OBJDIR)/$(BINARY) $(BINDIR)/$(BINARY)
+	@cp -rf $(SRCDIR)/../include $(BINDIR)/include
 
 clean:
-
+	@rm -f $(OBJDIR)/$(BINARY)
+	@rm -f $(OBJFILES)
+	
 makedirs:
 	@mkdir -p $(OBJDIRS)
 	@mkdir -p $(BINDIR)

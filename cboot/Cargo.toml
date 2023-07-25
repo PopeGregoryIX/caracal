@@ -8,3 +8,9 @@ edition = "2021"
 rlibc = "1.0"
 x86_64 = "0.14.10"
 raw-cpuid = "11.0.1"
+
+[profile.dev]
+opt-level = 'z'
+
+[profile.release]
+opt-level = 'z'

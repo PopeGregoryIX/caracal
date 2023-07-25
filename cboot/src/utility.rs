@@ -16,17 +16,17 @@ pub fn ItoA(number: u64, base: u8, result: &mut[u8; 65])
             num >>= 1;
             index+= 1;
         }
+
+        
     }
     else if base == 10
-    {
+    {        
         let mut num = number;
-        let mut digit: u8;
         while num != 0
         {
-            digit = (number % 10) as u8;
-            result[index] = LOOKUP_TABLE_UPPER[digit as usize];
-            index = index + 1;
-            num = num / 10;
+            result[index] = LOOKUP_TABLE_UPPER[(num % 10) as usize];
+            num/= 10;
+            index+= 1;
         }
     }
     else if base == 16

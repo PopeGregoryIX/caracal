@@ -1,0 +1,36 @@
+BINARY?= libkernel.a
+CPPFLAGS+= -mno-red-zone -mcmodel=large
+
+.PHONY:	all	makedirs clean dump dist doc
+
+all: makedirs $(OBJFILES) Makefile
+	@$(AR) r $(OBJDIR)/$(BINARY) $(OBJFILES)
+	@$(RANLIB) $(OBJDIR)/$(BINARY)
+
+install: makedirs all Makefile
+	cp $(OBJDIR)/$(BINARY) $(BINDIR)/$(BINARY)
+	cp -rf $(SRCDIR)/../include $(BINDIR)/include
+
+clean:
+
+makedirs:
+	@mkdir -p $(OBJDIRS)
+	@mkdir -p $(BINDIR)
+
+dump:
+
+# individual targets
+$(OBJDIR)/arch/$(CPU)/crti.o: $(SRCDIR)/arch/$(CPU)/crti.s
+	@$(AS) $(ASFLAGS) -o $@ $<
+
+$(OBJDIR)/arch/$(CPU)/crtn.o: $(SRCDIR)/arch/$(CPU)/crtn.s
+	@$(AS) $(ASFLAGS) -o $@ $<
+
+$(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp
+	@$(CXX) $(CPPFLAGS) -MP -MMD -c $< -o $@
+
+$(OBJDIR)/%.s.o: $(SRCDIR)/%.s
+	$(AS) $(ASFLAGS) -o $@ $<
+
+$(OBJDIR)/%.psf.o: $(SRCDIR)/%.psf
+	$(LD) -r -b binary -o $@ $<

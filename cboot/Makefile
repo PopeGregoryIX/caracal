@@ -6,13 +6,13 @@ OBJCOPY_FORMAT?= elf64-x86-64
 OBJCOPY_PLATFORM?= i386
 BASEDIR?= $(shell pwd)/../
 OBJBASE?= $(BASEDIR)/obj
-OBJDIR?= $(OBJBASE)/libkernel/$(TRIPLET)
-BINDIR?= $(BINBASE)/libkernel/$(TRIPLET)
+OBJDIR:= $(OBJBASE)/cboot/$(TRIPLET)
+BINDIR?= $(BINBASE)/cboot/$(TRIPLET)
 IMGDIR?= $(BASEDIR)/img
 CONFIGDIR?= $(BASEDIR)/config
 CPPVER?= 13.1.0
 CPPDIR?= ~/opt/cross/bin
-
+LIBDIR?= $(BINBASE)/libkernel/$(TRIPLET)
 SRCDIR?= ./src
 TARGETSDIR?=./targets
 
@@ -51,21 +51,19 @@ CRTI_OBJ=$(OBJDIR)/arch/$(CPU)/crti.o
 CRTBEGIN_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtbegin.o)
 CRTEND_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtend.o)
 CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/crtn.o
-			
-DEPFILES := $(patsubst %.cpp,%.cpp.d,$(CPPSRC))
 
-#	Flags for Assembler - See arch/cpu/Makefile for specific arch-based definitions
-ASFLAGS:= --fatal-warnings
+# Linker and Compiler Flags
+INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)/../include/arch/$(CPU) -I $(SRCDIR)/../include/arch/$(MACHINE)
+INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
+INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
 
-#	Flags for C++ start here - See arch/cpu/Makefile for specific arch-based definitions
+LDFLAGS:= -T $(TARGETSDIR)/$(TRIPLET)-link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
+LDADD:= --start-group -L $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER) -lgcc --end-group
+LDADD:= --start-group -L $(LIBDIR) -lkernel --end-group
+
 WFLAGS:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align
 WFLAGS+= -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion
 WFLAGS+= -Wmissing-declarations -Wno-long-long -Werror
-
-INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)/../include/arch/machine -I $(SRCDIR)/../include/arch/cpu
-INCLUDES+= -I $(SRCDIR)/../include/arch/cpu/$(CPU) -I $(SRCDIR)/../include/arch/machine/$(ARCH)
-INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
-INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
 
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -pedantic -pedantic-errors -fpic
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions

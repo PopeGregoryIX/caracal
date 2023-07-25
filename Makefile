@@ -1,55 +1,77 @@
 #	General Makefile for all architectures
-ifeq ($(ARCH),)
-export ARCH:= pc
-endif
+MACHINE?= pc
+CPU?= x86_64
+BINFORMAT?= elf
+TRIPLET?= $(CPU)-$(BINFORMAT)
+OBJCOPY_FORMAT?= elf64-x86-64
+OBJCOPY_PLATFORM?= i386
+BASEDIR?= $(shell pwd)
+OBJBASE?= $(BASEDIR)/obj
+BINBASE?= $(BASEDIR)/bin
+IMGDIR?= $(BASEDIR)/img
+CONFIGDIR?= $(BASEDIR)/config
+CPPVER?= 13.1.0
+CPPDIR?= ~/opt/cross/bin
 
-ifeq ($(CPU),)
-export CPU:= x86_64
-endif
+#	System Binaries
+QEMU?= qemu-system-$(CPU)
+MKBOOTIMG?= ./tools/bootboot/mkbootimg
 
-ifeq ($(BINFORMAT),)
-export BINFORMAT:= elf
-endif
+
+#	Make System
+MAKE_EXPORTS:= ARCH=$(ARCH) MACHINE=$(MACHINE) CPU=$(CPU) BINFORMAT=$(BINFORMAT)
+MAKE_EXPORTS+= TRIPLET=$(TRIPLET) BASEDIR=$(BASEDIR) BINBASE=$(BINBASE) OBJBASE=$(OBJBASE) 
+MAKE_EXPORTS+= IMGDIR=$(IMGDIR)
+MAKE_EXPORTS+= CPPDIR=$(CPPDIR)
 
 ifndef VERBOSE
 .SILENT:
 endif
 
-.phony: all install clean doc run debug
+.phony: all install clean doc run debug all-boot clean-boot
 
-all:
-	@echo Building...
-	@make -s all -C libkernel
-	@make -s all -C bootstrap
-	@make -s all -C kernel
+all: all-lib install-lib all-boot
 
 install:
 	@echo Installing...
-	@cp ./bootstrap/bin/$(ARCH)/$(CPU)/bootstrap.sys ./filesystem/sys/core
-	@cp ./kernel/bin/$(ARCH)/$(CPU)-$(BINFORMAT)/kernel.sys ./filesystem/sys/kernel
-	@./tools/bootboot/mkbootimg ./config/caracal.json ./images/caracal64.img
-
-clean:
-	@echo Cleaning...
-	@make -s clean -C libkernel
-	@make -s clean -C bootstrap
-	@make -s clean -C kernel
-	@rm -f images/*.img
-	@rm -f ./filesystem/sys/core
+	@cp $(BINDIR)/cboot.elf ./filesystem/sys/core
+	@$(MKBOOTIMG) $(CONFIGDIR)/$(TRIPLET)-bootboot.json $(IMGDIR)/$(TRIPLET)-caracal.img
+	
+clean: clean-boot
+	@rm -rf $(BINBASE)
+	@rm -rf $(OBJBASE)
+	@rm -rf $(IMGDIR)
 
 doc:
 	@echo Making Documentation...
-	@make -s clean -C libkernel
-	@make -s doc -C bootstrap
-	@make -s doc -C kernel
-
+	
 run:
-	@qemu-system-x86_64 -m 8G -boot d -smp 4 -usb -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
-	-drive file="$$HOME/caracal/images/caracal64.img",if=ide,index=1,format=raw
+	@$(QEMU) -m 8G -boot d -smp 4 -usb -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
+	-drive file="$(IMGDIR)/$(TRIPLET)-caracal.img",if=ide,index=1,format=raw
 
 debug:
-	@qemu-system-x86_64 -S -s -m 8G -boot d -smp 4 -usb -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
-	-drive file="$$HOME/caracal/images/caracal64.img",if=ide,index=1,format=raw
+	@$(QEMU) -S -s -m 8G -boot d -smp 4 -usb -drive if=pflash,format=raw,readonly=on,file=/usr/share/OVMF/OVMF_CODE.fd \
+	-drive file="$(IMGDIR)/$(TRIPLET)-caracal.img",if=ide,index=1,format=raw
+
+all-boot: makedirs
+	make -s -C cboot $(MAKE_EXPORTS)
+
+install-boot: makedirs
+	make install -s -C cboot $(MAKE_EXPORTS)
+
+clean-boot:
+	@make clean -s -C cboot $(MAKE_EXPORTS)
+
+all-lib: makedirs
+	make -s -C libkernel $(MAKE_EXPORTS)
+
+install-lib: makedirs
+	make install -s -C libkernel $(MAKE_EXPORTS)
+
+makedirs:
+	@mkdir -p $(OBJBASE)
+	@mkdir -p $(BINBASE)
+	@mkdir -p $(IMGDIR)
 
 gdb:
-	@make -s gdb -C kernel
+	@make -s gdb -C kernel $(MAKE_EXPORTS)

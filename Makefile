@@ -6,25 +6,31 @@ TRIPLET?= $(CPU)-$(BINFORMAT)
 OBJCOPY_FORMAT?= elf64-x86-64
 OBJCOPY_PLATFORM?= i386
 BASEDIR?= $(shell pwd)
-OBJDIR?= $(BASEDIR)/obj
-BINDIR?= $(BASEDIR)/bin
+OBJBASE?= $(BASEDIR)/obj
+BINBASE?= $(BASEDIR)/bin
 IMGDIR?= $(BASEDIR)/img
 CONFIGDIR?= $(BASEDIR)/config
+CPPVER?= 13.1.0
+CPPDIR?= ~/opt/cross/bin
 
 #	System Binaries
 QEMU?= qemu-system-$(CPU)
 MKBOOTIMG?= ./tools/bootboot/mkbootimg
+
+
+#	Make System
 MAKE_EXPORTS:= ARCH=$(ARCH) MACHINE=$(MACHINE) CPU=$(CPU) BINFORMAT=$(BINFORMAT)
-MAKE_EXPORTS+= TRIPLET=$(TRIPLET) BASEDIR=$(BASEDIR) OBJDIR=$(OBJDIR) BINDIR=$(BINDIR) 
-MAKE_EXPORTS+= IMGDIR=$(IMGDIR) OBJCOPY_FORMAT=$(OBJCOPY_FORMAT) OBJCOPY_PLATFORM=$(OBJCOPY_PLATFORM)
+MAKE_EXPORTS+= TRIPLET=$(TRIPLET) BASEDIR=$(BASEDIR) BINBASE=$(BINBASE) OBJBASE=$(OBJBASE) 
+MAKE_EXPORTS+= IMGDIR=$(IMGDIR)
+MAKE_EXPORTS+= CPPDIR=$(CPPDIR)
 
 ifndef VERBOSE
 .SILENT:
 endif
 
-.phony: all install clean doc run debug boot
+.phony: all install clean doc run debug all-boot clean-boot
 
-all: all-boot
+all: all-lib install-lib all-boot
 
 install:
 	@echo Installing...
@@ -32,8 +38,8 @@ install:
 	@$(MKBOOTIMG) $(CONFIGDIR)/$(TRIPLET)-bootboot.json $(IMGDIR)/$(TRIPLET)-caracal.img
 	
 clean: clean-boot
-	@rm -rf $(BINDIR)
-	@rm -rf $(OBJDIR)
+	@rm -rf $(BINBASE)
+	@rm -rf $(OBJBASE)
 	@rm -rf $(IMGDIR)
 
 doc:
@@ -48,14 +54,23 @@ debug:
 	-drive file="$(IMGDIR)/$(TRIPLET)-caracal.img",if=ide,index=1,format=raw
 
 all-boot: makedirs
-	@make -s -C cboot $(MAKE_EXPORTS)
+	make -s -C cboot $(MAKE_EXPORTS)
+
+install-boot: makedirs
+	make install -s -C cboot $(MAKE_EXPORTS)
 
 clean-boot:
 	@make clean -s -C cboot $(MAKE_EXPORTS)
 
+all-lib: makedirs
+	make -s -C libkernel $(MAKE_EXPORTS)
+
+install-lib: makedirs
+	make install -s -C libkernel $(MAKE_EXPORTS)
+
 makedirs:
-	@mkdir -p $(OBJDIR)
-	@mkdir -p $(BINDIR)
+	@mkdir -p $(OBJBASE)
+	@mkdir -p $(BINBASE)
 	@mkdir -p $(IMGDIR)
 
 gdb:

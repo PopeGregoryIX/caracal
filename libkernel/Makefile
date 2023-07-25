@@ -1,61 +1,56 @@
-#	General Makefile for all architectures
-ifeq ($(ARCH),)
-ARCH:= pc
-endif
+MACHINE?= pc
+CPU?= x86_64
+BINFORMAT?= elf
+TRIPLET?= $(CPU)-$(BINFORMAT)
+OBJCOPY_FORMAT?= elf64-x86-64
+OBJCOPY_PLATFORM?= i386
+BASEDIR?= $(shell pwd)/../
+OBJBASE?= $(BASEDIR)/obj
+OBJDIR?= $(OBJBASE)/libkernel/$(TRIPLET)
+BINDIR?= $(BINBASE)/libkernel/$(TRIPLET)
+IMGDIR?= $(BASEDIR)/img
+CONFIGDIR?= $(BASEDIR)/config
+CPPVER?= 13.1.0
+CPPDIR?= ~/opt/cross/bin
 
-ifeq ($(CPU),)
-CPU:= x86_64
-endif
+SRCDIR?= ./src
+TARGETSDIR?=./targets
 
-ifeq ($(BINFORMAT),)
-BINFORMAT:= elf
-endif
+# binaries
+AS?= $(CPPDIR)/$(TRIPLET)-as
+AR?= $(CPPDIR)/$(TRIPLET)-ar
+CXX?= $(CPPDIR)/$(TRIPLET)-gcc-$(CPPVER)
+LD?= $(CPPDIR)/$(TRIPLET)-ld
+OBJCOPY?= $(CPPDIR)/$(TRIPLET)-objcopy
+OBJDUMP?= $(CPPDIR)/$(TRIPLET)-objdump
+RANLIB?= $(CPPDIR)/$(TRIPLET)-ranlib
 
-#	Global Definitions
-CCDIR:= ~/opt/cross/bin/
-BINDIR:= ./bin/$(ARCH)/$(CPU)
-SRCDIR:= ./src
-DEBUG:= DEBUG
-VERBOSE:= NOTVERBOSE
-FILESYSDIR:= ../filesystem
-FILESYSBOOTDIR:= $(FILESYSDIR)/BOOTBOOT
-FILESYSBINARY:= INITRD
-ISODIR:= ../images
-ISOFILE:= caracal.iso
+# source paths and directories
+SRCDIRS :=$(shell find $(SRCDIR) -type d -not -path "*arch*" -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/$(CPU) -type d -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/$(MACHINE) -type d -not -path "*include*")
 
-#	Basic File Definitions
-CPPSRC := $(shell find $(SRCDIR) -type f -name "*.cpp" -not -path "*arch*" -not -path "*include*") \
-			$(shell find $(SRCDIR)/arch/machine/$(ARCH) -type f -name "*.cpp" -not -path "*include*") \
-			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type f -name "*.cpp" -not -path "*include*")
+CPPSRC:= $(shell find $(SRCDIR) -type f -name "*.cpp" -not -path "*arch*" -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/$(CPU) -type f -name "*.cpp" -not -path "*include*") \
+			$(shell find $(SRCDIR)/arch/$(MACHINE) -type f -name "*.cpp" -not -path "*include*")
 
-ASMSRC := $(shell find $(SRCDIR)/arch/machine/$(ARCH) -type f -name "*.s" -not -path "*include*") \
-			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type f -name "*.s" -not -path "*include*")
-
-NASMSRC:=	$(shell find $(SRCDIR)/arch/machine/$(ARCH) -type f -name "*.asm" -not -path "*include*") \
-			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type f -name "*.asm" -not -path "*include*")
+ASMSRC := $(shell find $(SRCDIR)/arch/$(CPU) -type f -name "*.s" -not -path "*include*" -not -path "*crti.s" -not -path "*crtn.s")
 
 FONTSRC:= $(shell find $(SRCDIR) -type f -name "*.psf" -not -path "*arch*" -not -path "*include*")
 
-ALLSRC := $(CPPSRC) $(ASMSRC) $(NASMSRC) $(FONTSRC)
+ALLSRC := $(CPPSRC) $(ASMSRC) $(FONTSRC)
 
-HDRFILES := $(shell find $(SRCDIRS) -type f -name "*.h" -not -path "*arch*") \
-			$(shell find $(SRCDIR)/../include/arch/ -maxdepth 1 -type f -name "*.h") \
-			$(shell find $(SRCDIR)/../include/arch/machine/$(ARCH) -type f -name "*.h") \
-			$(shell find $(SRCDIR)/../include/arch/cpu/$(CPU) -type f -name "*.h")
+# output paths and directories
+OBJDIRS := $(patsubst $(SRCDIR)%, $(OBJDIR)%, $(SRCDIRS))
+OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%.cpp.o,$(CPPSRC)) \
+			$(patsubst $(SRCDIR)%.s,$(OBJDIR)%.s.o,$(ASMSRC)) \
+			$(patsubst $(SRCDIR)%.psf,$(OBJDIR)%.psf.o,$(FONTSRC))
 
-SRCDIRS :=$(shell find $(SRCDIR) -type d -not -path "*arch*" -not -path "*include*") \
-			$(shell find $(SRCDIR)/arch/machine/$(ARCH) -type d -not -path "*include*") \
-			$(shell find $(SRCDIR)/arch/cpu/$(CPU) -type d -not -path "*include*")
-
-CPPVER:=13.1.0
-CRTI_OBJ=$(BINDIR)/runtime/crti.o
-CRTBEGIN_OBJ:=$(shell $(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -print-file-name=crtbegin.o)
-CRTEND_OBJ:=$(shell $(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -print-file-name=crtend.o)
-CRTN_OBJ=$(BINDIR)/runtime/crtn.o
-
-BINDIRS := $(patsubst $(SRCDIR)%,$(BINDIR)%,$(SRCDIRS))
-OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(BINDIR)%.cpp.o,$(CPPSRC)) $(patsubst $(SRCDIR)%.s,$(BINDIR)%.s.o,$(ASMSRC)) \
-			$(patsubst $(SRCDIR)%.asm,$(BINDIR)%.asm.o,$(NASMSRC)) $(patsubst $(SRCDIR)%.psf,$(BINDIR)%.psf.o,$(FONTSRC))
+# C++ Runtime
+CRTI_OBJ=$(OBJDIR)/arch/$(CPU)/crti.o
+CRTBEGIN_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtend.o)
+CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/crtn.o
 			
 DEPFILES := $(patsubst %.cpp,%.cpp.d,$(CPPSRC))
 
@@ -75,6 +70,5 @@ INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fi
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -pedantic -pedantic-errors -fpic
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
 CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -g
-CPPFLAGS+= -D $(DEBUG) -D $(VERBOSE) -D __CPU=$(CPU) -D __ARCH=$(ARCH) -D __BINFORMAT=$(BINFORMAT)
 
--include ./src/arch/cpu/$(CPU)/Makefile
+-include $(TARGETSDIR)/$(TRIPLET)-Makefile

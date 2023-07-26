@@ -54,8 +54,8 @@ CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/crtn.o
 
 # Linker and Compiler Flags
 INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)/../include/arch/$(CPU) -I $(SRCDIR)/../include/arch/$(MACHINE)
-INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
-INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
+INCLUDES+= -I $(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER)/include -I $(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER)/include-fixed
+INCLUDES+= -I $(LIBDIR)/include
 
 LDFLAGS:= -T $(TARGETSDIR)/$(TRIPLET)-link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
 LDADD:= --start-group -L $(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER) -lgcc --end-group

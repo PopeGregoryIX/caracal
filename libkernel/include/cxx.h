@@ -114,4 +114,7 @@ template <class TData> TData* memorycopy(const TData* dest, const TData* src, si
 
 ///////////////////////////////////////////////////////////////////////
 
+extern "C" void _init( void );
+extern "C" void _fini( void );
+
 #endif /* SUPPORT_H_ */

@@ -18,8 +18,8 @@ class DebugConsole
 public:
 	static DebugConsole& GetInstance( void ) { return _instance; }
 
-	inline void LockConsole( void ){_lock.Acquire();}
-	inline void UnlockConsole( void ){_lock.Release();}
+	inline void LockConsole( void ){characterLock.Acquire();}
+	inline void UnlockConsole( void ){characterLock.Release();}
 
 	void AddOutputDevice(ConsoleOutput& device);
 	void SetOutputColour(uint32_t foreground, uint32_t background);
@@ -44,7 +44,7 @@ protected:
 
 	static const int MAXOUTPUTDEVICES = 3;
 	ConsoleOutput* _outputDevices[MAXOUTPUTDEVICES];
-	Spinlock _lock;
+	Spinlock characterLock;
 };
 
 #endif /* KERNEL_INCLUDE_DEBUG_DEBUGCONSOLE_H_ */

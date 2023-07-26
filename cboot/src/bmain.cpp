@@ -19,6 +19,7 @@ void bmain( void )
 
     if(CpuUtilities::IsBsp())
     {
+        _init();
         _mainlock.Acquire();
         _console.PutDecimal(CpuUtilities::GetCurrentProcessorId());   
         _bspInitialised = true;

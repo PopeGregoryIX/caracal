@@ -28,7 +28,7 @@ ifndef VERBOSE
 .SILENT:
 endif
 
-.phony: all install clean doc run debug all-boot clean-boot
+.phony: all install clean doc run debug all-boot clean-boot gdb
 
 all: all-lib install-lib all-boot
 
@@ -74,4 +74,4 @@ makedirs:
 	@mkdir -p $(IMGDIR)
 
 gdb:
-	@make -s gdb -C kernel $(MAKE_EXPORTS)
+	gdb -s ./bin/cboot/x86_64-elf/cboot.sys.sym -ex "target remote localhost:1234"

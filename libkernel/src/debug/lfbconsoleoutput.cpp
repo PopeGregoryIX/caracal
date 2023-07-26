@@ -3,11 +3,27 @@
 #include <debug/lfbconsoleoutput.h>
 #include <cxx.h>
 
+LfbConsoleOutput::LfbConsoleOutput(){}
+
 LfbConsoleOutput::LfbConsoleOutput(uintptr_t fb, const psf2_t* font, uint32_t width, uint32_t height, uint32_t scanlineBytes, uint32_t bytesPerPixel )
 : 	_widthBytes(width), _heightBytes(height), _currentX(0), _currentY(0), _tabStop(5),
 	_bytesPerPixel(bytesPerPixel), _scanlineBytes(scanlineBytes), _fb(fb), _font(font)
 {
     _widthChars = _heightBytes / _font->width;
+    _heightChars = _widthBytes / _font->height;
+}
+
+void LfbConsoleOutput::Initialise(uintptr_t fb, const psf2_t* font, uint32_t width, uint32_t height, uint32_t scanlineBytes, uint32_t bytesPerPixel)
+{
+	_widthBytes = width;
+	_heightBytes = height;
+	_currentX = _currentY = 0;
+	_tabStop = 5;
+	_bytesPerPixel = bytesPerPixel;
+	_scanlineBytes = scanlineBytes;
+	_fb = fb;
+	_font = font;
+	_widthChars = _heightBytes / _font->width;
     _heightChars = _widthBytes / _font->height;
 }
 

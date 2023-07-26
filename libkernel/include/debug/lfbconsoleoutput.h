@@ -10,7 +10,11 @@
 class LfbConsoleOutput : public ConsoleOutput
 {
     public:
+		LfbConsoleOutput( void );
+
 		LfbConsoleOutput(uintptr_t fb, const psf2_t* font, uint32_t width, uint32_t height, uint32_t scanlineBytes, uint32_t bpp );
+
+		void Initialise(uintptr_t fb, const psf2_t* font, uint32_t width, uint32_t height, uint32_t scanlineBytes, uint32_t bpp );
 
 		void PutChar(const char c);
 

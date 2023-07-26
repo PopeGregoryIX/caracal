@@ -11,5 +11,4 @@ AtExitFunction __atexit_funcs[ATEXIT_FUNCTION_MAX];
 
 unsigned int __atexitFunctionCount = 0;
 
-void *__dso_handle; // This is now provided by crti.o, crtbegin.o, crtend.o, crtn.o
-
+//void *__dso_handle; // This is now provided by crti.o, crtbegin.o, crtend.o, crtn.o

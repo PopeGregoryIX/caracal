@@ -48,8 +48,8 @@ OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%.cpp.o,$(CPPSRC)) \
 
 # C++ Runtime
 CRTI_OBJ=$(OBJDIR)/arch/$(CPU)/crti.o
-CRTBEGIN_OBJ:=$(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER)/crtbegin.o
-CRTBEGIN_OBJ:=$(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER)/crtend.o
+CRTBEGIN_OBJ:=$(shell $(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ:=$(shell $(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -print-file-name=crtend.o)
 CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/crtn.o
 
 # Linker and Compiler Flags

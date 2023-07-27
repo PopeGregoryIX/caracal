@@ -3,11 +3,16 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <archdef.h>
+#include <debug.h>
+#include <cxx.h>
 #include <bootboot.h>
-#include <debug/debug.h>
 
 #define MMAP_MAX_ENTRIES 0x200
+
+#define MMAP_USED     0
+#define MMAP_FREE     1
+#define MMAP_ACPI     2
+#define MMAP_MMIO     3
 
 struct MemoryMapEntry
 {
@@ -18,16 +23,18 @@ struct MemoryMapEntry
     uintptr_t Top() { return base + size; }
 };
 
-
-
 class MemoryArray
 {
     public:
-        MemoryArray( uint64_t mmap, size_t bytes );
+        static MemoryArray& GetInstance( void )   {   return _instance; }
 
-        void Align(size_t alignVal);
+        void Initialise( const MMapEnt* firstEntry );
 
-        void* Allocate(size_t bytes);
+        void Align();
+
+        uintptr_t Allocate();
+
+        uintptr_t Allocate2M(size_t bytes);
 
         void Insert(size_t index);
 
@@ -49,11 +56,15 @@ class MemoryArray
         }
 
         inline virtual  size_t Count( void ) { return _count; }
+
+        inline virtual size_t Size( void ) { return _count * sizeof(MemoryMapEntry); }
     private:
+        static MemoryArray _instance;
         MemoryMapEntry* _data;
         size_t _maxCount;
         size_t _count;
         static const char* _memoryType[4];
+        MemoryMapEntry _mmap[MMAP_MAX_ENTRIES];
 };
 
 #endif

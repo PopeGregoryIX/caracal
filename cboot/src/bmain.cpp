@@ -7,35 +7,45 @@
 #include <debug.h>
 #include <debug/debugconsole.h>
 #include <debug/lfbconsoleoutput.h>
+#include <memory/memoryarray.h>
 
-bool _bspInitialised = false;
-Spinlock _mainlock;
+bool bspInitialised = false;
+Spinlock mainLock;
 DebugConsole& debug = DebugConsole::GetInstance();
+LfbConsoleOutput lfb;
 
+/**
+ * @brief Bootstrap entry point.
+ * 
+ * It is ultimately hoped that the bootstrap will be able to handle various loaders.
+ * For now, bootboot is the only supported loader.
+*/
 void bmain( void )
 {
     CpuUtilities::SetBspId(bootboot.bspid);
+    int processorId = CpuUtilities::GetCurrentProcessorId();
+    MemoryArray& mmap = MemoryArray::GetInstance();
     
     if(CpuUtilities::IsBsp())
     {
         _init();
-        _mainlock.Acquire();
+        mmap.Initialise(&(bootboot.mmap));
+        mainLock.Acquire();
         
-        LfbConsoleOutput _lfb(bootboot.fb_ptr, (const psf2_t*)&_binary_src_data_font_psf_start, bootboot.fb_width, bootboot.fb_height, bootboot.fb_scanline, 4);
-        debug.AddOutputDevice(_lfb);
+        lfb.Initialise(bootboot.fb_ptr, (const psf2_t*)&_binary_src_data_font_psf_start, bootboot.fb_width, bootboot.fb_height, bootboot.fb_scanline, 4);
+        debug.AddOutputDevice(lfb);
 
-        INFO("BSP OK");    
-        _bspInitialised = true;
+        INFO("BSP (" << (uintptr_t)processorId << ") OK");    
+        bspInitialised = true;
     }
     else
     {
-        while(!_bspInitialised){}
-        _mainlock.Acquire();
-        //for(int i = 0; i < processorId; i++) _debugConsole << '\n';
-        //_debugConsole << (uint64_t)processorId << '\n';  
+        while(!bspInitialised){}
+        mainLock.Acquire();
+        INFO("AP (" << (uintptr_t)processorId << ") OK");    
     }
 
-    _mainlock.Release();
+    mainLock.Release();
     
     for(;;) {}
 

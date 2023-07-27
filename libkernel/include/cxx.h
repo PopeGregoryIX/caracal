@@ -23,12 +23,16 @@ extern "C"
 int idle(int, char**);
 
 //	Library functions (until replaced by kernel-level stdlib)
+extern "C" void _init( void );
+extern "C" void _fini( void );
 extern "C" void* memset( void* ptr, int value, size_t num);
 extern "C" void* memcpy( void* dest, void* src, size_t numBytes);
 int strncmp(const char* s1, const char* s2, int maxLength);
+int strcmp(const char* s1, const char* s2);
 size_t strlen(const char* s);
 char* itoa(uint64_t num, char* buffer, uint8_t base);
 char* strcpy(char* dest, const char* src);
+size_t octToBin(unsigned char *str, int size) ;
 
 //	Support for Global / Static Objects////////////////////////////////
 #define ATEXIT_FUNCTION_MAX	0x200 ///< The maximum number of AtExit functions that can be supported.
@@ -113,8 +117,5 @@ template <class TData> TData* memorycopy(const TData* dest, const TData* src, si
 }
 
 ///////////////////////////////////////////////////////////////////////
-
-extern "C" void _init( void );
-extern "C" void _fini( void );
 
 #endif /* SUPPORT_H_ */

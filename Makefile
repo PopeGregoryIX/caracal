@@ -36,14 +36,15 @@ endif
 
 .phony: all install clean doc run debug all-boot clean-boot gdb
 
-all: all-lib install-lib all-boot
+all: all-lib install-lib all-boot all-kernel
 
 install:
 	@echo Installing...
 	@cp $(BINBASE)/cboot/$(TRIPLET)/cboot.sys ./filesystem/sys/core
+	@cp $(BINBASE)/kernel/$(TRIPLET)/caracal.sys ./filesystem/kernel
 	@$(MKBOOTIMG) $(CONFIGDIR)/$(TRIPLET)-bootboot.json $(IMGDIR)/$(TRIPLET)-caracal.img
 	
-clean: clean-boot
+clean: clean-boot clean-lib clean-kernel
 	@rm -rf $(BINBASE)
 	@rm -rf $(OBJBASE)
 	@rm -rf $(IMGDIR)
@@ -68,11 +69,20 @@ install-boot: makedirs
 clean-boot:
 	@make clean -s -C cboot $(MAKE_EXPORTS)
 
+all-kernel: makedirs
+	make -s -C kernel $(MAKE_EXPORTS)
+
+clean-kernel:
+	make clean -s -C kernel $(MAKE_EXPORTS)
+
 all-lib: makedirs
 	make -s -C libkernel $(MAKE_EXPORTS)
 
 install-lib: makedirs
 	make install -s -C libkernel $(MAKE_EXPORTS)
+
+clean-lib:
+	make clean -s -C libkernel $(MAKE_EXPORTS)
 
 makedirs:
 	@mkdir -p $(OBJBASE)

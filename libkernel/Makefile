@@ -16,6 +16,8 @@ CPPDIR?= ~/opt/cross/bin
 SRCDIR?= ./src
 TARGETSDIR?=./targets
 
+DEBUG=DEBUG
+
 # binaries
 AS?= $(CPPDIR)/$(TRIPLET)-as
 AR?= $(CPPDIR)/$(TRIPLET)-ar
@@ -64,5 +66,6 @@ INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fi
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -pedantic -pedantic-errors -fpic
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
 CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -g
+CPPFLAGS+= -D DEBUG=$(DEBUG)
 
 -include $(TARGETSDIR)/$(TRIPLET)-Makefile

@@ -1,0 +1,31 @@
+BINARY?= caracal.sys
+DUMPFILE?= caracal.sys.txt
+SYMFILE?= caracal.sys.sym
+
+CPPFLAGS+= -mno-red-zone -mcmodel=large
+
+.PHONY:	all	makedirs clean dump dist doc
+
+all: makedirs $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(CRTEND_OBJ) $(CRTN_OBJ) $(OBJFILES) Makefile
+	@$(LD) $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
+	@$(OBJDUMP) -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(DUMPFILE)
+	@$(OBJCOPY) --only-keep-debug $(BINDIR)/$(BINARY) $(BINDIR)/$(SYMFILE)
+	@$(OBJCOPY) --strip-debug $(BINDIR)/$(BINARY)
+
+clean:
+
+makedirs:
+	@mkdir -p $(OBJDIRS)
+	@mkdir -p $(BINDIR)
+
+dump:
+
+# individual targets
+$(OBJDIR)/arch/$(CPU)/crti.o: $(SRCDIR)/arch/$(CPU)/crti.s
+	@$(AS) $(ASFLAGS) -o $@ $<
+
+$(OBJDIR)/arch/$(CPU)/crtn.o: $(SRCDIR)/arch/$(CPU)/crtn.s
+	@$(AS) $(ASFLAGS) -o $@ $<
+
+$(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp
+	@$(CXX) $(CPPFLAGS) -MP -MMD -c $< -o $@

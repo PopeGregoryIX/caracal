@@ -8,20 +8,7 @@
  * @copyright Copyright (c) 2021
  * 
  */
-#include <stdint.h>
-#include <bootboot.h>
-#include <debug/debug.h>
-#include <cxx.h>
-#include <machine.h>
-#include <cpu.h>
-#include <process/processmanager.h>
 #include <caracal.h>
-#include <spinlock.h>
-
-DebugConsole& debug = DebugConsole::GetInstance();
-Machine& machine = Machine::GetInstance();
-bool bspDone = false;
-Spinlock cpuLock;
 
 /**
  * @brief Kernel entry point.
@@ -36,57 +23,5 @@ Spinlock cpuLock;
  */
 void kmain()
 {
-	//	At this point we are limited to statics (no heap allocation)
-	//	kmain is called by *all* SMP cores and therefore needs to
-	//	distinguish between BSP's and AP's early on in code
-	if(Cpu::IsBsp())
-	{
-		cpuLock.Acquire();
-		_init();
-
-		//	The aim here is to spend a relatively short time in this kmain
-		//	function. In the style of a microkernel, we want to exit this
-		//	boot process and get everything working inside its own process
-		//	space. This means AP's will also take part in system
-		//	initialisation.
-		machine.AddDefaultConsoleDevices(debug);
-		debug << ConsoleColour(0xFFFFFF, 0x000000);
-		INFO( "Initialising Caracal v1.0" );
-		VINFO( "BSP ID: " << (uint64_t)Cpu::CurrentProcessorId());
-		
-		if(machine.Boot())
-		{
-			INFO("Architecture-specific boot routine complete");
-		}
-		else
-		{
-			FATAL("Boot routine failed");
-		}
-		bspDone = true;
-		cpuLock.Release();
-	}
-	else
-	{
-		while(!bspDone)	{}
-		cpuLock.Acquire();
-
-
-		if(machine.ApBoot())
-		{
-			INFO("AP " << (uint64_t)Cpu::CurrentProcessorId() << " boot routine complete");
-		}
-		else
-		{
-			FATAL("AP boot failed.");
-		}
-
-		cpuLock.Release();
-	}
-
-	ProcessManager& processManager = ProcessManager::GetInstance();
-	processManager.CreateNewSupervisorProcess((uintptr_t)(processManager.IdleTask));
-
-	FATAL("Reached end of main routine. No further code to execute");
-
-	_fini();	// technicality - we shouldn't reach here.
+	for(;;) {}
 }

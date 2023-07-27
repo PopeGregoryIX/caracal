@@ -8,6 +8,7 @@
 namespace arch
 {
     Spinlock Paging::_pageLock;
+    uintptr_t (*Paging::_getPagingStructure)();
 
     bool Paging::IsPagedIn(uintptr_t virtualAddress)
     {
@@ -27,9 +28,7 @@ namespace arch
 
     void Paging::PageIn2m(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress)
 	{
-        (void)flags;(void)virtualAddress;(void)physicalAddress;
-
-		/*uint64_t* pml4 = (uint64_t*)X86_64::ReadCr3();
+		uint64_t* pml4 = (uint64_t*)X86_64::ReadCr3();
 		
 		if(virtualAddress == UINT64_MAX) FATAL("Unable to page in - no physical memory allocated.");
 		if((virtualAddress % 0x200000ULL) != 0) FATAL("Please align virtual address before paging in! At:" << virtualAddress);
@@ -40,14 +39,14 @@ namespace arch
 		uint64_t* pdpt = (uint64_t*)(pml4[PML4_INDEX(virtualAddress)] & ~0xFFFULL);
 		if(pdpt == nullptr)
 		{
-			pml4[PML4_INDEX(virtualAddress)] = ((uint64_t)HeapManager::GetNewPagingStructure()) | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
+			pml4[PML4_INDEX(virtualAddress)] = ((uint64_t)_getPagingStructure()) | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
 			pdpt = (uint64_t*)(pml4[PML4_INDEX(virtualAddress)] & ~0xFFFULL);
 		}
 
 		uint64_t* pd = (uint64_t*)(pdpt[PDPT_INDEX(virtualAddress)] & ~0xFFFULL);
 		if(pd == nullptr)
 		{
-			pdpt[PDPT_INDEX(virtualAddress)] = ((uint64_t)HeapManager::GetNewPagingStructure()) | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
+			pdpt[PDPT_INDEX(virtualAddress)] = ((uint64_t)_getPagingStructure()) | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
 			pd = (uint64_t*)(pdpt[PDPT_INDEX(virtualAddress)] & ~0xFFFULL);
 		}
 
@@ -55,8 +54,8 @@ namespace arch
 		if(pde == 0)
 			pd[PD_INDEX(virtualAddress)] = physicalAddress | flags;
 
-		InvalidatePage(virtualAddress);
+		X86_64::InvalidatePage(virtualAddress);
 
-		_pageLock.Release();*/
+		_pageLock.Release();
 	}
 }

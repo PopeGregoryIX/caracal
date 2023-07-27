@@ -13,6 +13,11 @@
 #include <elf64.h>
 #include <memorylayout.h>
 
+namespace arch
+{
+    void AllocatorSetup(MemoryArray& mmap);
+}
+
 bool bspInitialised = false;
 Spinlock mainLock;
 DebugConsole& debug = DebugConsole::GetInstance();
@@ -42,7 +47,8 @@ void bmain( void )
 
         //  Allocate (slowly!) using the system memory map for now
         mmap.Initialise(&(bootboot.mmap));
-
+        arch::AllocatorSetup(mmap);
+        
         //  Locate the kernel on the initrd
         INFO(initRd.GetCurrentDirectorySize());
         uintptr_t kernelPointer = initRd.GetEntryHandle("sys/kernel");

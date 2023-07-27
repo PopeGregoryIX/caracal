@@ -54,19 +54,19 @@ debug:
 	-drive file="$(IMGDIR)/$(TRIPLET)-caracal.img",if=ide,index=1,format=raw
 
 all-boot: makedirs
-	make -s -C cboot $(MAKE_EXPORTS)
+	make -C cboot $(MAKE_EXPORTS)
 
 install-boot: makedirs
-	make install -s -C cboot $(MAKE_EXPORTS)
+	make install -C cboot $(MAKE_EXPORTS)
 
 clean-boot:
 	@make clean -s -C cboot $(MAKE_EXPORTS)
 
 all-lib: makedirs
-	make -s -C libkernel $(MAKE_EXPORTS)
+	make -C libkernel $(MAKE_EXPORTS)
 
 install-lib: makedirs
-	make install -s -C libkernel $(MAKE_EXPORTS)
+	make install -C libkernel $(MAKE_EXPORTS)
 
 makedirs:
 	@mkdir -p $(OBJBASE)

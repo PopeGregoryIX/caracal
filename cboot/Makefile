@@ -19,7 +19,7 @@ TARGETSDIR?=./targets
 # binaries
 AS?= $(CPPDIR)/$(TRIPLET)-as
 AR?= $(CPPDIR)/$(TRIPLET)-ar
-CXX?= $(CPPDIR)/$(TRIPLET)-gcc-$(CPPVER)
+CXX= $(CPPDIR)/$(TRIPLET)-gcc-$(CPPVER)
 LD?= $(CPPDIR)/$(TRIPLET)-ld
 OBJCOPY?= $(CPPDIR)/$(TRIPLET)-objcopy
 OBJDUMP?= $(CPPDIR)/$(TRIPLET)-objdump
@@ -48,8 +48,8 @@ OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%.cpp.o,$(CPPSRC)) \
 
 # C++ Runtime
 CRTI_OBJ=$(OBJDIR)/arch/$(CPU)/crti.o
-CRTBEGIN_OBJ:=$(shell $(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -print-file-name=crtbegin.o)
-CRTEND_OBJ:=$(shell $(CPU)-$(BINFORMAT)-gcc-$(CPPVER) $(CPPFLAGS) -print-file-name=crtend.o)
+CRTBEGIN_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtbegin.o)
+CRTEND_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtend.o)
 CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/crtn.o
 
 # Linker and Compiler Flags

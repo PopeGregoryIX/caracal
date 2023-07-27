@@ -19,7 +19,7 @@ TARGETSDIR?=./targets
 # binaries
 AS?= $(CPPDIR)/$(TRIPLET)-as
 AR?= $(CPPDIR)/$(TRIPLET)-ar
-CXX= $(CPPDIR)/$(TRIPLET)-gcc-$(CPPVER)
+CXX= $(CPPDIR)/$(TRIPLET)-gcc-$(CPPVER)	# CXX is set by the system as g++ - we need to override this regardles of its status
 LD?= $(CPPDIR)/$(TRIPLET)-ld
 OBJCOPY?= $(CPPDIR)/$(TRIPLET)-objcopy
 OBJDUMP?= $(CPPDIR)/$(TRIPLET)-objdump

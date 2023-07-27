@@ -2,6 +2,8 @@
 #include <debug/lfbconsoleoutput.h>
 #include <cxx.h>
 
+DebugConsole DebugConsole::_instance;
+
 void DebugConsole::AddOutputDevice(ConsoleOutput& device)
 {
 	for(int i = 0; i < MAXOUTPUTDEVICES; ++i)
@@ -84,5 +86,14 @@ void DebugConsole::PutString(const char* s)
 	{
 		if(_outputDevices[i] != nullptr)
 			_outputDevices[i]->PutString(s);
+	}
+}
+
+void DebugConsole::SetOutputColour(uint32_t foreground, uint32_t background)
+{
+	for(int i = 0; i < MAXOUTPUTDEVICES; ++i)
+	{
+		if(_outputDevices[i] != nullptr)
+			_outputDevices[i]->SetColour(foreground, background);
 	}
 }

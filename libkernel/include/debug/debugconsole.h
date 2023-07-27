@@ -7,6 +7,8 @@
 class DebugConsole
 {
     public:
+        static inline DebugConsole& GetInstance( void ) {   return _instance;   }
+
         inline void LockConsole( void )     {   _processLock.Acquire();    }
         inline void UnlockConsole( void )   {   _processLock.Release();    }
 
@@ -37,6 +39,8 @@ class DebugConsole
 
         static const int MAXOUTPUTDEVICES = 3;
 	    ConsoleOutput* _outputDevices[MAXOUTPUTDEVICES];
+
+        static DebugConsole _instance;
 };
 
 #endif

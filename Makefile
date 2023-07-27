@@ -16,7 +16,13 @@ CPPDIR?= ~/opt/cross/bin
 #	System Binaries
 QEMU?= qemu-system-$(CPU)
 MKBOOTIMG?= ./tools/bootboot/mkbootimg
-
+AS= $(CPPDIR)/$(TRIPLET)-as
+AR?= $(CPPDIR)/$(TRIPLET)-ar
+CXX= $(CPPDIR)/$(TRIPLET)-gcc-$(CPPVER)	# CXX is set by the system as g++ - we need to override this regardles of its status
+LD= $(CPPDIR)/$(TRIPLET)-ld
+OBJCOPY?= $(CPPDIR)/$(TRIPLET)-objcopy
+OBJDUMP?= $(CPPDIR)/$(TRIPLET)-objdump
+RANLIB?= $(CPPDIR)/$(TRIPLET)-ranlib
 
 #	Make System
 MAKE_EXPORTS:= ARCH=$(ARCH) MACHINE=$(MACHINE) CPU=$(CPU) BINFORMAT=$(BINFORMAT)
@@ -54,19 +60,19 @@ debug:
 	-drive file="$(IMGDIR)/$(TRIPLET)-caracal.img",if=ide,index=1,format=raw
 
 all-boot: makedirs
-	make -C cboot $(MAKE_EXPORTS)
+	make -s -C cboot $(MAKE_EXPORTS)
 
 install-boot: makedirs
-	make install -C cboot $(MAKE_EXPORTS)
+	make install -s -C cboot $(MAKE_EXPORTS)
 
 clean-boot:
 	@make clean -s -C cboot $(MAKE_EXPORTS)
 
 all-lib: makedirs
-	make -C libkernel $(MAKE_EXPORTS)
+	make -s -C libkernel $(MAKE_EXPORTS)
 
 install-lib: makedirs
-	make install -C libkernel $(MAKE_EXPORTS)
+	make install -s -C libkernel $(MAKE_EXPORTS)
 
 makedirs:
 	@mkdir -p $(OBJBASE)

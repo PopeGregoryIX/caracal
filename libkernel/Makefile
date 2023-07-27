@@ -59,7 +59,7 @@ WFLAGS+= -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion
 WFLAGS+= -Wmissing-declarations -Wno-long-long -Werror
 
 INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)/../include/arch/machine -I $(SRCDIR)/../include/arch/cpu
-INCLUDES+= -I $(SRCDIR)/../include/arch/cpu/$(CPU) -I $(SRCDIR)/../include/arch/machine/$(ARCH)
+INCLUDES+= -I $(SRCDIR)/../include/arch/$(CPU) -I $(SRCDIR)/../include/arch/$(MACHINE)
 INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include
 INCLUDES+= -I $(HOME)/opt/cross/lib/gcc/$(CPU)-$(BINFORMAT)/$(CPPVER)/include-fixed
 

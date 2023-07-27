@@ -10,6 +10,7 @@ void Tar::PrintDirectoryListing( TarHeader* cd )
     if(strncmp((char*)cd->ustar, (char*)"ustar", 5) != 0) FATAL("Tar header is invalid.");
     while(strncmp((char*)cd->ustar, (char*)"ustar", 5) == 0)
     {
+        if(cd->type == LNKTYPE) INFO("LINK");
         INFO((char*)(cd->fileName) << "(" << (uintptr_t)GetFileSize((uintptr_t)cd) << ")");
         cd = GetNextHeader(cd);
     }

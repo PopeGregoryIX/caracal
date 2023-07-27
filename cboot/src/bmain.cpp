@@ -1,8 +1,9 @@
 #include <bmain.h>
 #include <cboot.h>
+#include <caracal.h>
 #include <bootboot.h>
 #include <cxx.h>
-#include <cpuUtilities.h>
+#include <cpuutilities.h>
 #include <spinlock.h>
 #include <debug.h>
 #include <debug/debugconsole.h>
@@ -10,6 +11,7 @@
 #include <memory/memoryarray.h>
 #include <tar.h>
 #include <elf64.h>
+#include <memorylayout.h>
 
 bool bspInitialised = false;
 Spinlock mainLock;
@@ -43,12 +45,15 @@ void bmain( void )
 
         //  Locate the kernel on the initrd
         INFO(initRd.GetCurrentDirectorySize());
-        initRd.PrintDirectoryListing();
         uintptr_t kernelPointer = initRd.GetEntryHandle("sys/kernel");
+        if(kernelPointer == 0) FATAL("Unable to locate sys/kernel on initial RAM disk.");
+        Elf64 kernel((void*)initRd.GetFileData(kernelPointer));
+        if(!kernel.IsValid()) FATAL("Kernel is not a valid ELF64 file.");
+        INFO("Kernel found on initial RAM disk and is a valid ELF64.")
 
-        if(kernelPointer == 0)
-            FATAL("Unable to locate sys/kernel on initial RAM disk.");
-        
+        //  Arch-Dependent - ensure any virtual memory mapping is done
+        CpuUtilities::EnsureMemoryAccessible(kernel.GetLowestAddress(), kernel.GetMemorySize(), CARACAL_MEMORY_KERNEL_CODE);
+
         INFO("BSP (" << (uintptr_t)processorId << ") OK");    
         bspInitialised = true;
     }

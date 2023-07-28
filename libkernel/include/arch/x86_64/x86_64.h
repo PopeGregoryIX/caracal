@@ -6,6 +6,8 @@
 
 namespace arch
 {
+	extern "C" void __stackReset(uintptr_t stackPtr, uintptr_t jumpPoint, uintptr_t jmpparams);
+
     #define INTERRUPT_USER 0x254
 
     class X86_64

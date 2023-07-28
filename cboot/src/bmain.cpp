@@ -17,6 +17,7 @@ namespace arch
 {
     void AllocatorSetup( void );
     void SetupArchitectureStructures( void );
+    void LaunchKernel( void (*kernelEntry)() );
 }
 
 bool bspInitialised = false;
@@ -73,7 +74,10 @@ void bmain( void )
 
     //  Allow Architecture-Dependent Objects to be Created
     arch::SetupArchitectureStructures();
-
     mainLock.Release();
-    kernelEntry();
+
+    CBoot* cboot = (CBoot*)MEMRANGE_CBOOT;
+    cboot->magic = 0x0CA8ACAl;
+
+    arch::LaunchKernel(kernelEntry);
 }

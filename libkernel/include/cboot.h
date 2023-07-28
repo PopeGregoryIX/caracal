@@ -21,8 +21,8 @@ struct CBoot_ARM
 
 union CBoot_Arch
 {
-    CBoot_PC*  cbootArchPC;
-    CBoot_ARM* cbootArchArm;
+    CBoot_PC  cbootArchPC;
+    CBoot_ARM cbootArchArm;
 };
 
 struct CBoot
@@ -31,7 +31,6 @@ struct CBoot
     uint32_t version;           // 1
     uint32_t size;
     uint32_t bspId;
-    uint32_t cpuCount;
     uint64_t lfbAddress;
     uint64_t lfbSize;
     uint32_t lfbFormat;
@@ -42,6 +41,8 @@ struct CBoot
     uint64_t mmapBytes;
     uint64_t configStringAddress;
     uint64_t configStringBytes;
+    uint64_t initRdAddress;
+    uint64_t initRdSize;
     CBoot_Arch cbootArchData;
 } __attribute__((packed));
 

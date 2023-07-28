@@ -9,6 +9,7 @@
  * 
  */
 #include <caracal.h>
+#include <cboot.h>
 
 /**
  * @brief Kernel entry point.
@@ -21,7 +22,8 @@
  * 	- Implement the Machine object.
  * 	- Implement archdef.h.
  */
-void kmain()
+void kmain(CBoot* cbootPtr)
 {
+	CBoot& cboot = *cbootPtr;
 	for(;;) {}
 }

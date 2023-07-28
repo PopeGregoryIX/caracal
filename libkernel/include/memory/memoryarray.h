@@ -47,23 +47,22 @@ class MemoryArray
 
         size_t GetHighestAddress( void );
 
-        MemoryMapEntry* GetFirst( void ) { return _data; }
+        MemoryMapEntry* GetFirst( void ) { return (MemoryMapEntry*)_mmap; }
 
         MemoryMapEntry* GetNext(MemoryMapEntry* current)
         {
-            uintptr_t index = ((uintptr_t)current - (uintptr_t)_data) / sizeof(MemoryMapEntry);
+            uintptr_t index = ((uintptr_t)current - (uintptr_t)_mmap) / sizeof(MemoryMapEntry);
             if((index + 1) >= this->Count())
                 return nullptr;
             else
-                return &(_data[index + 1]);
+                return &(_mmap[index + 1]);
         }
 
-        inline virtual  size_t Count( void ) { return _count; }
+        inline size_t Count( void ) { return _count; }
 
-        inline virtual size_t Size( void ) { return _count * sizeof(MemoryMapEntry); }
+        inline size_t Size( void ) { return _count * sizeof(MemoryMapEntry); }
     private:
         static MemoryArray _instance;
-        MemoryMapEntry* _data;
         size_t _maxCount;
         size_t _count;
         static const char* _memoryType[4];

@@ -41,7 +41,7 @@ all: all-lib install-lib all-boot all-kernel
 install:
 	@echo Installing...
 	@cp $(BINBASE)/cboot/$(TRIPLET)/cboot.sys ./filesystem/sys/core
-	@cp $(BINBASE)/kernel/$(TRIPLET)/caracal.sys ./filesystem/kernel
+	@cp $(BINBASE)/kernel/$(TRIPLET)/caracal.sys ./filesystem/sys/kernel
 	@$(MKBOOTIMG) $(CONFIGDIR)/$(TRIPLET)-bootboot.json $(IMGDIR)/$(TRIPLET)-caracal.img
 	
 clean: clean-boot clean-lib clean-kernel

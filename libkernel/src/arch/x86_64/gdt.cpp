@@ -7,6 +7,7 @@
 #include <stdint.h>
 #include <gdt.h>
 #include <cxx.h>
+#include <debug.h>
 
 namespace arch
 {

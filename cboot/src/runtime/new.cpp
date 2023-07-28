@@ -9,6 +9,7 @@
  * 
  */
 #include <stddef.h>
+#include <stdint.h>
 
 /**
  * @brief Standard new operator - assumes allocations in the kernel heap.

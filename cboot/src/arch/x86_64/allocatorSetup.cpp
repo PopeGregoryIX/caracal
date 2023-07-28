@@ -1,15 +1,17 @@
 #include <stdint.h>
 #include <stddef.h>
-
+#include <bootboot.h>
 #include <memory/memoryarray.h>
 #include <paging.h>
 #include <cpuutilities.h>
 
 namespace arch
 {
-    void AllocatorSetup(MemoryArray& mmap)
+    void AllocatorSetup()
     {
-        Paging::SetGetPageFunction(mmap.AllocateMemorySmall);
-        CpuUtilities::SetPageRoutines(mmap.AllocateMemorySmall, mmap.AllocateMemoryLarge);
+        MemoryArray::GetInstance().Initialise(&(bootboot.mmap));
+        
+        Paging::SetGetPageFunction(MemoryArray::AllocateMemorySmall);
+        CpuUtilities::SetPageRoutines(MemoryArray::AllocateMemorySmall, MemoryArray::AllocateMemoryLarge);
     }
 }

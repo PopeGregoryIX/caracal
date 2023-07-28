@@ -8,7 +8,7 @@ PHDRS
 }
 SECTIONS
 {
-    . = 0xfffffffff8002000;
+    . = 0xFFFFFE8100000000;
     kernelStart = .;
     .text : {
         KEEP(*(.text.boot*)) 

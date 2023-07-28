@@ -18,8 +18,6 @@ const char* MemoryArray::_memoryType[4] = { "Used", "Free", "ACPI", "MMIO" };
 
 void MemoryArray::Initialise( const MMapEnt* firstEntry )
 {
-    _data = _mmap;
-    _maxCount = MMAP_MAX_ENTRIES;
     //  pull in the BootBoot memory map so that we can perform allocations
     _count = 0;
 
@@ -28,6 +26,7 @@ void MemoryArray::Initialise( const MMapEnt* firstEntry )
     while((uintptr_t)nextEntry < (uintptr_t)&bootboot + bootboot.size)
     {
         _mmap[_count++] = {nextEntry->ptr, nextEntry->size & ~0xFULL, (uint8_t)MMapEnt_Type(nextEntry) };
+        if(_count > MMAP_MAX_ENTRIES) FATAL("MemoryMap size exceeds limit!");
         nextEntry++;
     }
 }
@@ -144,4 +143,20 @@ size_t MemoryArray::GetTotalFreeMemory( void )
     }
 
     return returnValue;
+}
+
+void MemoryArray::Print( void )
+{
+    INFO(Count() << " items");
+    for(size_t i = 0; i < Count(); i++)
+    {
+        if(_mmap[i].IsFree())
+        {
+            INFO("Free Area " << _mmap[i].base << " - " << _mmap[i].Top());
+        }        
+        else
+        {
+            INFO("Used Area " << _mmap[i].base << " - " << _mmap[i].Top());
+        }
+    }
 }

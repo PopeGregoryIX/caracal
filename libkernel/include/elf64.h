@@ -54,6 +54,8 @@ class Elf64
 
         uintptr_t GetSymbolAddress( const char* symName ) { return GetSymbol(symName).st_value; }
 
+        inline uintptr_t GetEntry( void ) { return _header->e_entry; }
+
         void Relocate( void );
 
         void Start( void );

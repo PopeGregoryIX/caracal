@@ -13,7 +13,9 @@ all: makedirs $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(CRTEND_OBJ) $(CRTN_OBJ) $(OBJFILES) 
 	@$(OBJCOPY) --strip-debug $(BINDIR)/$(BINARY)
 
 clean:
-
+	@rm -rf $(OBJDIR)
+	@rm -rf $(BINDIR)
+	
 makedirs:
 	@mkdir -p $(OBJDIRS)
 	@mkdir -p $(BINDIR)

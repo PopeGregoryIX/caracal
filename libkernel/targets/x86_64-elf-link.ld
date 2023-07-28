@@ -1,12 +1,5 @@
 ENTRY(bmain)
 
-mmio                = 0xfffffffff0000000;
-fb                  = 0xfffffffff4000000;
-bootboot            = 0xfffffffff8000000;
-environment         = 0xfffffffff8001000;
-initstack           = 0x4000;
-cboot               = 0xFFFFFE8000608000;
-
 PHDRS
 {
   boot PT_LOAD;

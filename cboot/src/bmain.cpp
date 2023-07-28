@@ -76,8 +76,5 @@ void bmain( void )
     arch::SetupArchitectureStructures();
     mainLock.Release();
 
-    CBoot* cboot = (CBoot*)MEMRANGE_CBOOT;
-    cboot->magic = 0x0CA8ACAl;
-
     arch::LaunchKernel(kernelEntry);
 }

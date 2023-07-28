@@ -40,12 +40,12 @@ namespace arch
                 Paging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_LFB + (i * 0x200000), lfb_physical + (i * 0x200000));
 
             //  Page in the InitRd
-            uintptr_t ird_mem = bootboot.initrd_ptr;
+            uintptr_t ird_physical = bootboot.initrd_ptr;
             uintptr_t ird_pages = bootboot.initrd_size / 0x200000;
             if((bootboot.initrd_size % 0x200000) != 0) ird_pages++;
             for(int i = 0; i < ird_pages; i++)
                 Paging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_INITRD + (i * 0x200000), MemoryArray::AllocateMemoryLarge());
-            memcpy((void*)MEMRANGE_INITRD, (void*)ird_mem, bootboot.initrd_size);
+            memcpy((void*)MEMRANGE_INITRD, (void*)ird_physical, bootboot.initrd_size);
 
             //  Page in the CBoot structure
             Paging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_CBOOT, MemoryArray::AllocateMemorySmall());
@@ -61,8 +61,8 @@ namespace arch
             cboot->lfbScreenWidth = bootboot.fb_width;
             cboot->lfbScreenHeight = bootboot.fb_height;
             cboot->lfbScanlineBytes = bootboot.fb_scanline;
-            cboot->mmapAddress = MEMRANGE_MMAP;
-            cboot->mmapBytes = MemoryArray::GetInstance().Size();
+            cboot->mmapAddress = (MemoryMapEntry*)MEMRANGE_MMAP;
+            cboot->mmapBytes = 0;
             cboot->configStringAddress = MEMRANGE_CONFIG;
             cboot->configStringBytes = 0;
             cboot->initRdAddress = MEMRANGE_INITRD;

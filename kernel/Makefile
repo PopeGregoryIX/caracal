@@ -49,9 +49,9 @@ OBJFILES := $(patsubst $(SRCDIR)%.cpp,$(OBJDIR)%.cpp.o,$(CPPSRC)) \
 			$(patsubst $(SRCDIR)%.psf,$(OBJDIR)%.psf.o,$(FONTSRC))
 
 # Compiler Flags and C++ Runtime
-INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)/../include/arch/$(CPU) -I $(SRCDIR)/../include/arch/$(MACHINE)
+INCLUDES:= -I $(SRCDIR)/../include -I $(SRCDIR)/../include/arch -I $(SRCDIR)/../include/arch/$(CPU) -I $(SRCDIR)/../include/arch/$(MACHINE)
 INCLUDES+= -I $(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER)/include -I $(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER)/include-fixed
-INCLUDES+= -I $(LIBDIR)/include
+INCLUDES+= -I $(LIBDIR)/include -I $(LIBDIR)/include/arch -I $(LIBDIR)/include/arch/$(CPU) -I $(LIBDIR)/include/arch/$(MACHINE)
 
 CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -pedantic -pedantic-errors -fpic
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions

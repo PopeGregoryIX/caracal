@@ -39,10 +39,10 @@ struct CBoot
     uint32_t lfbScanlineBytes;
     uint64_t mmapAddress;
     uint64_t mmapBytes;
-    uint64_t configStringAddress;
-    uint64_t configStringBytes;
     uint64_t initRdAddress;
     uint64_t initRdSize;
+    uint64_t configStringAddress;
+    uint64_t configStringBytes;
     CBoot_Arch cbootArchData;
 } __attribute__((packed));
 

@@ -1,8 +1,3 @@
-#include <stdint.h>
-#include <stddef.h>
-#include <cpuutilities.h>
-#include <memorylayout.h>
-#include <gdt.h>
 #include <cboot.h>
 #include <caracal.h>
 #include <debug.h>
@@ -10,6 +5,9 @@
 #include <paging.h>
 #include <memory/memoryarray.h>
 #include <x86_64.h>
+#include <gdt.h>
+#include <memorylayout.h>
+#include <cpuutilities.h>
 
 namespace arch
 {
@@ -70,6 +68,7 @@ namespace arch
             cboot->cbootArchData.cbootArchPC.gdtAddress = MEMRANGE_GDT;
             cboot->cbootArchData.cbootArchPC.gdtBytes = sizeof(Gdt) * CpuUtilities::GetProcessorCount();
         }
+        
     
         gdt[CpuUtilities::GetCurrentProcessorId()].Load();
         gdt[CpuUtilities::GetCurrentProcessorId()].LoadTss();

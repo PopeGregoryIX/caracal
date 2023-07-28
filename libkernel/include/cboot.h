@@ -2,7 +2,6 @@
 #define __CBOOT_H_
 
 #include <stdint.h>
-#include <memory/memoryarray.h>
 
 #define CBOOT_MAGIC 0x0CA8ACA1
 
@@ -38,7 +37,7 @@ struct CBoot
     uint32_t lfbScreenWidth;
     uint32_t lfbScreenHeight;
     uint32_t lfbScanlineBytes;
-    MemoryMapEntry* mmapAddress;
+    uint64_t mmapAddress;
     uint64_t mmapBytes;
     uint64_t configStringAddress;
     uint64_t configStringBytes;

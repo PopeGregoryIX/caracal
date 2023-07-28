@@ -13,7 +13,7 @@ class CpuUtilities
             _getSmallPagingStructure = getSmallPagingStructure;
         }
         
-        static void EnsureMemoryAccessible(uintptr_t address, size_t bytes, uint32_t flags, bool showDebug = false);
+        static void EnsureMemoryAccessible(uintptr_t address, size_t bytes, uint32_t flags);
 
         static inline int GetBspId( void ) { return _bspId; }
         static inline void SetBspId( int bspId ) { _bspId = bspId; }

@@ -13,21 +13,14 @@ namespace arch
     bool Paging::IsPagedIn(uintptr_t virtualAddress)
     {
         uint64_t* pml4 = (uint64_t*)X86_64::ReadCr3();
-		INFO("PML4 " << (uintptr_t)pml4);
         if((virtualAddress % 0x1000) != 0) virtualAddress-= (virtualAddress % 0x1000);
-        INFO("b");
-		uint64_t* pdpt = (uint64_t*)(pml4[PML4_INDEX(virtualAddress)] & ~0xFFFULL);
-		INFO("PDPT " << (uintptr_t)pdpt);
+        uint64_t* pdpt = (uint64_t*)(pml4[PML4_INDEX(virtualAddress)] & ~0xFFFULL);
         if(pdpt == nullptr) return false;
-		INFO("c");
         uint64_t* pd = (uint64_t*)(pdpt[PDPT_INDEX(virtualAddress)] & ~0xFFFULL);
-		INFO("PD " << (uintptr_t)pd);
         if(pd == nullptr) return false;
 
-		INFO("d");
         uint64_t pt = (pd[PD_INDEX(virtualAddress)]);
-
-        if((pt & PAGE_LARGE) == PAGE_LARGE) 
+        if((virtualAddress & PAGE_LARGE) == PAGE_LARGE) 
             return true;
         else
             return ((pt & ~0xFFFULL) != 0);

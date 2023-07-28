@@ -31,11 +31,7 @@ class MemoryArray
         static inline uintptr_t AllocateMemorySmall( void ) { return _instance.Allocate(); }
         static inline uintptr_t AllocateMemoryLarge( void ) { return _instance.Allocate2M(0x200000); }
 
-        MemoryArray( void ) : _mmap((MemoryMapEntry*)_data) { }
-
-        void Initialise( const MMapEnt* firstEntry, uintptr_t mmapLimit );
-
-        void Initialise( MemoryMapEntry* firstEntry, size_t count );
+        void Initialise( const MMapEnt* firstEntry );
 
         void Align();
 
@@ -67,11 +63,10 @@ class MemoryArray
         inline size_t Size( void ) { return _count * sizeof(MemoryMapEntry); }
     private:
         static MemoryArray _instance;
-        MemoryMapEntry* _mmap;
         size_t _maxCount;
         size_t _count;
         static const char* _memoryType[4];
-        MemoryMapEntry _data[MMAP_MAX_ENTRIES];
+        MemoryMapEntry _mmap[MMAP_MAX_ENTRIES];
 };
 
 #endif

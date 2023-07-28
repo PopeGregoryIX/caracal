@@ -11,29 +11,24 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <memory/memoryarray.h>
+#include <bootboot.h>
 
 MemoryArray MemoryArray::_instance;
 const char* MemoryArray::_memoryType[4] = { "Used", "Free", "ACPI", "MMIO" };
 
-void MemoryArray::Initialise( const MMapEnt* firstEntry, uintptr_t mmapLimit )
+void MemoryArray::Initialise( const MMapEnt* firstEntry )
 {
     //  pull in the BootBoot memory map so that we can perform allocations
     _count = 0;
 
     MMapEnt* nextEntry = (MMapEnt*)firstEntry;
 
-    while((uintptr_t)nextEntry < mmapLimit)
+    while((uintptr_t)nextEntry < (uintptr_t)&bootboot + bootboot.size)
     {
         _mmap[_count++] = {nextEntry->ptr, nextEntry->size & ~0xFULL, (uint8_t)MMapEnt_Type(nextEntry) };
         if(_count > MMAP_MAX_ENTRIES) FATAL("MemoryMap size exceeds limit!");
         nextEntry++;
     }
-}
-
-void MemoryArray::Initialise( MemoryMapEntry* mmap, uintptr_t mmapSize)
-{
-    _mmap = mmap;
-    _count = mmapSize / sizeof(MemoryMapEntry);
 }
 
 void MemoryArray::Align()

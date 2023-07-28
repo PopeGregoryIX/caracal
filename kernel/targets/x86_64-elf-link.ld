@@ -1,7 +1,6 @@
 ENTRY(kmain)
 
 cboot               = 0xFFFFFE8000608000;
-bootboot               = 0xFFFFFE8000608000;
 
 PHDRS
 {

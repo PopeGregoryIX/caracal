@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stddef.h>
 #include <paging.h>
-#include <x86_64.h>
+#include <x86_64_utilities.h>
 #include <spinlock.h>
 
 namespace arch
@@ -12,7 +12,7 @@ namespace arch
 
     bool Paging::IsPagedIn(uintptr_t virtualAddress)
     {
-        uint64_t* pml4 = (uint64_t*)X86_64::ReadCr3();
+        uint64_t* pml4 = (uint64_t*)X86_64_Utilities::ReadCr3();
         if((virtualAddress % 0x1000) != 0) virtualAddress-= (virtualAddress % 0x1000);
         uint64_t* pdpt = (uint64_t*)(pml4[PML4_INDEX(virtualAddress)] & ~0xFFFULL);
         if(pdpt == nullptr) return false;
@@ -28,7 +28,7 @@ namespace arch
 
     void Paging::PageIn2m(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress)
 	{
-		uint64_t* pml4 = (uint64_t*)X86_64::ReadCr3();
+		uint64_t* pml4 = (uint64_t*)X86_64_Utilities::ReadCr3();
 
 		if(virtualAddress == UINT64_MAX) FATAL("Unable to page in - no physical memory allocated.");
 		if((virtualAddress % 0x200000ULL) != 0) FATAL("Please align virtual address before paging in! At:" << virtualAddress);
@@ -55,14 +55,14 @@ namespace arch
 		if(pde == 0)
 			pd[PD_INDEX(virtualAddress)] = physicalAddress | flags;
 
-		X86_64::InvalidatePage(virtualAddress);
+		X86_64_Utilities::InvalidatePage(virtualAddress);
 
 		_pageLock.Release();
 	}
 
 	void Paging::PageIn4k(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress)
 	{
-		uint64_t* pml4 = (uint64_t*)X86_64::ReadCr3();
+		uint64_t* pml4 = (uint64_t*)X86_64_Utilities::ReadCr3();
 		
 		if(virtualAddress == UINT64_MAX) FATAL("Unable to page in - no physical memory allocated.");
 		if((virtualAddress % 0x1000ULL) != 0) FATAL("Please align virtual address before paging in! At:" << virtualAddress);
@@ -96,7 +96,7 @@ namespace arch
 		if(pte == 0)
 			pt[PT_INDEX(virtualAddress)] = physicalAddress | flags;
 
-		X86_64::InvalidatePage(virtualAddress);
+		X86_64_Utilities::InvalidatePage(virtualAddress);
 
 		_pageLock.Release();
 	}

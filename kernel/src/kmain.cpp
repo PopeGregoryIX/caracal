@@ -10,6 +10,16 @@
  */
 #include <caracal.h>
 #include <cboot.h>
+#include <cpuutilities.h>
+#include <spinlock.h>
+#include <debug.h>
+#include <debug/lfbconsoleoutput.h>
+#include <arch/cpu.h>
+
+bool bspInitialised = false;
+Spinlock mainLock;
+DebugConsole& debug = DebugConsole::GetInstance();
+LfbConsoleOutput lfb;
 
 /**
  * @brief Kernel entry point.
@@ -25,5 +35,25 @@
 void kmain(CBoot* cbootPtr)
 {
 	CBoot& cboot = *cbootPtr;
+
+	if(CpuUtilities::IsBsp())
+	{
+		_init();
+
+		mainLock.Acquire();
+		lfb.Initialise(	cboot.lfbAddress, (const psf2_t*)&_binary_src_data_font_psf_start, 
+						cboot.lfbScreenWidth, cboot.lfbScreenHeight, cboot.lfbScanlineBytes, 4);
+		debug.AddOutputDevice(lfb);
+
+		INFO("Caracal Kernel Version 0.2.0");
+		arch::Cpu::EarlyMemorySetup(cboot);
+	}
+	else
+	{
+		while(!bspInitialised) {}
+		mainLock.Acquire();
+
+	}
+
 	for(;;) {}
 }

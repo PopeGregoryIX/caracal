@@ -10,7 +10,7 @@ namespace arch
 
     #define INTERRUPT_USER 0x254
 
-    class X86_64
+    class X86_64_Utilities
     {
         public:
             static inline void EnableInterrupts( void ) { asm volatile("sti"); }

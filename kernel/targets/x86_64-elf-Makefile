@@ -31,3 +31,6 @@ $(OBJDIR)/arch/$(CPU)/crtn.o: $(SRCDIR)/arch/$(CPU)/crtn.s
 
 $(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp
 	@$(CXX) $(CPPFLAGS) -MP -MMD -c $< -o $@
+
+$(OBJDIR)/%.s.o: $(SRCDIR)/%.s
+	$(AS) $(ASFLAGS) -o $@ $<

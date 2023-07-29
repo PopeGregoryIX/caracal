@@ -4,7 +4,7 @@
 #include <bootboot.h>
 #include <paging.h>
 #include <memory/memoryarray.h>
-#include <x86_64.h>
+#include <x86_64_utilities.h>
 #include <gdt.h>
 #include <memorylayout.h>
 #include <cpuutilities.h>
@@ -13,7 +13,7 @@ namespace arch
 {
     void SetupArchitectureStructures( void )
     {
-        X86_64::WriteCr3(X86_64::ReadCr3());
+        X86_64_Utilities::WriteCr3(X86_64_Utilities::ReadCr3());
 
         Gdt* gdt = (Gdt*)MEMRANGE_GDT;
 

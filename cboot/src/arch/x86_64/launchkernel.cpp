@@ -9,7 +9,7 @@
 #include <bootboot.h>
 #include <paging.h>
 #include <memory/memoryarray.h>
-#include <x86_64.h>
+#include <x86_64_utilities.h>
 
 namespace arch
 {

@@ -73,8 +73,8 @@ void bmain( void )
     }
 
     //  Allow Architecture-Dependent Objects to be Created
+    
     arch::SetupArchitectureStructures();
-
     mainLock.Release();
     arch::LaunchKernel(kernelEntry);
 }

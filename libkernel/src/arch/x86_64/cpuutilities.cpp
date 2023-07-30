@@ -2,7 +2,7 @@
 #include <c_cpuid.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <paging.h>
+#include <slowPaging.h>
 #include <caracal.h>
 #include <debug.h>
 
@@ -23,15 +23,15 @@ void CpuUtilities::EnsureMemoryAccessible(uintptr_t address, size_t bytes, uint3
     
     for(uintptr_t i = address; i < address + bytes; i += pageSize)
     {
-        if(!arch::Paging::IsPagedIn(address))
+        if(!arch::SlowPaging::IsPagedIn(address))
         {
             if(pageSize == 0x200000)
             {
-                arch::Paging::PageIn2m(cpuFlags, address, _getLargePagingStructure());
+                arch::SlowPaging::PageIn2m(cpuFlags, address, _getLargePagingStructure());
             }
             else
             {
-                arch::Paging::PageIn4k(cpuFlags, address, _getSmallPagingStructure());
+                arch::SlowPaging::PageIn4k(cpuFlags, address, _getSmallPagingStructure());
             }
         }
     }

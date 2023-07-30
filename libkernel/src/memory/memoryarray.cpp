@@ -58,7 +58,30 @@ void MemoryArray::Align()
     }
 }
 
-uintptr_t MemoryArray::Allocate()
+uintptr_t MemoryArray::Allocate(size_t bytes)
+{
+    if((bytes % 0x1000) != 0) bytes += (0x1000 - (bytes % 0x1000));
+
+    for(size_t i = Count() - 1; i > 0; --i)
+    {
+        if(_mmap[i].type == MMAP_FREE && _mmap[i].size >= bytes)
+        {
+            Insert(i);
+            _mmap[i].base = _mmap[i+1].base;
+            _mmap[i].size = bytes;
+            _mmap[i].type = MMAP_USED;
+
+            _mmap[i+1].base+= bytes;
+            _mmap[i+1].size-= bytes;
+
+            return _mmap[i].base;
+        }
+    }
+
+    return 0;
+}
+
+uintptr_t MemoryArray::Allocate4k()
 {
     size_t bytes = 0x1000;
     if((bytes % 0x1000) != 0) bytes += (0x1000 - (bytes % 0x1000));

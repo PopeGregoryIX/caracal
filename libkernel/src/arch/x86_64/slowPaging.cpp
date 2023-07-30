@@ -1,16 +1,16 @@
 #include <debug.h>
 #include <stdint.h>
 #include <stddef.h>
-#include <paging.h>
+#include <slowPaging.h>
 #include <x86_64_utilities.h>
 #include <memory/spinlock.h>
 
 namespace arch
 {
-    Spinlock Paging::_pageLock;
-    uintptr_t (*Paging::_getPagingStructure)();
+    Spinlock SlowPaging::_pageLock;
+    uintptr_t (*SlowPaging::_getPagingStructure)();
 
-    bool Paging::IsPagedIn(uintptr_t virtualAddress)
+    bool SlowPaging::IsPagedIn(uintptr_t virtualAddress)
     {
         uint64_t* pml4 = (uint64_t*)X86_64_Utilities::ReadCr3();
         if((virtualAddress % 0x1000) != 0) virtualAddress-= (virtualAddress % 0x1000);
@@ -26,7 +26,7 @@ namespace arch
             return ((pt & ~0xFFFULL) != 0);
     }
 
-    void Paging::PageIn2m(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress)
+    void SlowPaging::PageIn2m(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress)
 	{
 		uint64_t* pml4 = (uint64_t*)X86_64_Utilities::ReadCr3();
 
@@ -60,7 +60,7 @@ namespace arch
 		_pageLock.Release();
 	}
 
-	void Paging::PageIn4k(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress)
+	void SlowPaging::PageIn4k(uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress)
 	{
 		uint64_t* pml4 = (uint64_t*)X86_64_Utilities::ReadCr3();
 		

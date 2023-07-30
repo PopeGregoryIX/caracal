@@ -7,7 +7,7 @@
 #include <caracal.h>
 #include <debug.h>
 #include <bootboot.h>
-#include <paging.h>
+#include <slowPaging.h>
 #include <memory/memoryarray.h>
 #include <x86_64_utilities.h>
 #include <memory/spinlock.h>
@@ -31,7 +31,6 @@ namespace arch
         }
 
         mmapLock.Release();
-
         __stackReset(MEMRANGE_STACK_TOP(CpuUtilities::GetCurrentProcessorId()), (uintptr_t)kernelEntry, MEMRANGE_CBOOT);
     }
 }

@@ -63,7 +63,7 @@ namespace arch
 
         debug << "\n";
 
-        PrintRegisters("CS", registers->cs, "EIP", registers->rip);
+        PrintRegisters("CS", registers->cs, "RIP", registers->rip);
         PrintRegisters("Code", registers->errorCode, "Num", registers->interruptNumber);
 
         debug << "\n";

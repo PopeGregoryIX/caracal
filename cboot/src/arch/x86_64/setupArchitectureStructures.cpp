@@ -2,7 +2,7 @@
 #include <caracal.h>
 #include <debug.h>
 #include <bootboot.h>
-#include <paging.h>
+#include <slowPaging.h>
 #include <memory/memoryarray.h>
 #include <x86_64_utilities.h>
 #include <gdt.h>
@@ -27,7 +27,7 @@ namespace arch
                 gdt[i].Initialise();
 
                 uintptr_t cpuStack = MEMRANGE_STACK_BASE(i);
-                Paging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, cpuStack, MemoryArray::AllocateMemoryLarge());
+                SlowPaging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, cpuStack, MemoryArray::AllocateMemoryLarge());
             }
 
             // Page in the LFB
@@ -35,14 +35,14 @@ namespace arch
             uintptr_t lfb_pages = bootboot.fb_size / 0x200000;
             if((bootboot.fb_size % 0x200000) != 0) lfb_pages++;
             for(int i = 0; i < lfb_pages; i++)
-                Paging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_LFB + (i * 0x200000), lfb_physical + (i * 0x200000));
+                SlowPaging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_LFB + (i * 0x200000), lfb_physical + (i * 0x200000));
 
             //  Page in the InitRd
             uintptr_t ird_mem = bootboot.initrd_ptr;
             uintptr_t ird_pages = bootboot.initrd_size / 0x200000;
             if((bootboot.initrd_size % 0x200000) != 0) ird_pages++;
             for(int i = 0; i < ird_pages; i++)
-                Paging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_INITRD + (i * 0x200000), MemoryArray::AllocateMemoryLarge());
+                SlowPaging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_INITRD + (i * 0x200000), MemoryArray::AllocateMemoryLarge());
             memcpy((void*)MEMRANGE_INITRD, (void*)ird_mem, bootboot.initrd_size);
 
             //  Page in space for the memory map. Must leave space for at least 16 further kernel allocations (cboot specification)
@@ -52,10 +52,10 @@ namespace arch
             if((memoryArray.Size() % 0x1000) != 0) mmap_pages++;
             if(0x1000 - (memoryArray.Size() % 0x1000) < (0x10 * sizeof(MemoryMapEntry))) mmap_pages++;
             for(int i = 0; i < mmap_pages; i++)
-                Paging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_MMAP + (i * 0x1000), MemoryArray::AllocateMemorySmall());
+                SlowPaging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_MMAP + (i * 0x1000), MemoryArray::AllocateMemorySmall());
 
             //  Page in the CBoot structure
-            Paging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_CBOOT, MemoryArray::AllocateMemorySmall());
+            SlowPaging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_CBOOT, MemoryArray::AllocateMemorySmall());
 
             CBoot* cboot = (CBoot*)MEMRANGE_CBOOT;
             cboot->magic = 0x0CA8ACAl;

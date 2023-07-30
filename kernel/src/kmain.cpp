@@ -47,12 +47,12 @@ void kmain(CBoot* cbootPtr)
 
 		INFO("Caracal Kernel Version 0.2.0");
 		arch::Cpu::EarlyMemorySetup(cboot);
+		bspInitialised = true;
 	}
 	else
 	{
 		while(!bspInitialised) {}
-		mainLock.Acquire();
-
+		arch::Cpu::APSetup(cboot);
 	}
 
 	for(;;) {}

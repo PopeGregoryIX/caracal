@@ -9,6 +9,7 @@ namespace arch
     {
         public:
             static void EarlyMemorySetup( CBoot& cboot );
+            static void APSetup(CBoot& cboot);
     };
 }
 

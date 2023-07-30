@@ -28,7 +28,7 @@ class MemoryArray
     public:
         static MemoryArray& GetInstance( void )   {   return _instance; }
 
-        static inline uintptr_t AllocateMemorySmall( void ) { return _instance.Allocate(); }
+        static inline uintptr_t AllocateMemorySmall( void ) { return _instance.Allocate4k(); }
         static inline uintptr_t AllocateMemoryLarge( void ) { return _instance.Allocate2M(0x200000); }
 
         void Initialise( const MMapEnt* firstEntry, size_t sizeBytes );
@@ -37,7 +37,9 @@ class MemoryArray
 
         void Align();
 
-        uintptr_t Allocate();
+        uintptr_t Allocate(size_t bytes);
+
+        uintptr_t Allocate4k();
 
         uintptr_t Allocate2M(size_t bytes);
 

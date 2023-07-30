@@ -10,8 +10,8 @@
  */
 #include <caracal.h>
 #include <cboot.h>
-#include <cpuutilities.h>
-#include <spinlock.h>
+#include <arch/cpuutilities.h>
+#include <memory/spinlock.h>
 #include <debug.h>
 #include <debug/lfbconsoleoutput.h>
 #include <arch/cpu.h>

@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <spinlock.h>
+#include <memory/spinlock.h>
 
 namespace arch
 {

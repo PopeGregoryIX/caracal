@@ -7,7 +7,7 @@
 #include <x86_64_utilities.h>
 #include <gdt.h>
 #include <memorylayout.h>
-#include <cpuutilities.h>
+#include <arch/cpuutilities.h>
 
 namespace arch
 {

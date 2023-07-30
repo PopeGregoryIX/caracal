@@ -10,7 +10,7 @@
 
 #include <stdint.h>
 #include <debug/consolecolour.h>
-#include <spinlock.h>
+#include <memory/spinlock.h>
 
 class ConsoleOutput
 {

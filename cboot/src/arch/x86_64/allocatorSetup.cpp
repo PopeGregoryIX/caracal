@@ -3,7 +3,7 @@
 #include <bootboot.h>
 #include <memory/memoryarray.h>
 #include <paging.h>
-#include <cpuutilities.h>
+#include <arch/cpuutilities.h>
 
 namespace arch
 {

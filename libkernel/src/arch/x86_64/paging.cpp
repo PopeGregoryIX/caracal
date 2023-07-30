@@ -3,7 +3,7 @@
 #include <stddef.h>
 #include <paging.h>
 #include <x86_64_utilities.h>
-#include <spinlock.h>
+#include <memory/spinlock.h>
 
 namespace arch
 {

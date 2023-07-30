@@ -1,6 +1,6 @@
 #include <stdint.h>
 #include <stddef.h>
-#include <cpuutilities.h>
+#include <arch/cpuutilities.h>
 #include <memorylayout.h>
 #include <gdt.h>
 #include <cboot.h>
@@ -10,7 +10,7 @@
 #include <paging.h>
 #include <memory/memoryarray.h>
 #include <x86_64_utilities.h>
-#include <spinlock.h>
+#include <memory/spinlock.h>
 
 namespace arch
 {
@@ -31,7 +31,7 @@ namespace arch
         }
 
         mmapLock.Release();
-        
+
         __stackReset(MEMRANGE_STACK_TOP(CpuUtilities::GetCurrentProcessorId()), (uintptr_t)kernelEntry, MEMRANGE_CBOOT);
     }
 }

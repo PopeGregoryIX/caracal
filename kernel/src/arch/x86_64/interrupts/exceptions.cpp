@@ -15,8 +15,8 @@
 #include <debug.h>
 #include <arch/cpu.h>
 #include <x86_64_utilities.h>
-#include <spinlock.h>
-#include <cpuutilities.h>
+#include <memory/spinlock.h>
+#include <arch/cpuutilities.h>
 
 namespace arch
 {

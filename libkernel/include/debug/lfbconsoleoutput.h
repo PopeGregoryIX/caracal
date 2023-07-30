@@ -5,7 +5,7 @@
 #include <stddef.h>
 #include <debug/consoleoutput.h>
 #include <bootboot.h>
-#include <pcscreenfont.h>
+#include <format/pcscreenfont.h>
 
 class LfbConsoleOutput : public ConsoleOutput
 {

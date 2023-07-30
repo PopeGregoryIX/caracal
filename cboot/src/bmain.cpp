@@ -3,14 +3,14 @@
 #include <caracal.h>
 #include <bootboot.h>
 #include <cxx.h>
-#include <cpuutilities.h>
-#include <spinlock.h>
+#include <arch/cpuutilities.h>
+#include <memory/spinlock.h>
 #include <debug.h>
 #include <debug/debugconsole.h>
 #include <debug/lfbconsoleoutput.h>
 #include <memory/memoryarray.h>
-#include <tar.h>
-#include <elf64.h>
+#include <format/tar.h>
+#include <format/elf64.h>
 #include <memorylayout.h>
 
 namespace arch

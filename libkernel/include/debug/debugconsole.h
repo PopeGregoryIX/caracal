@@ -2,7 +2,7 @@
 #define __DEBUG_CONSOLE__H__
 
 #include <debug/consoleoutput.h>
-#include <spinlock.h>
+#include <memory/spinlock.h>
 
 class DebugConsole
 {

@@ -1,4 +1,4 @@
-#include <cpuutilities.h>
+#include <arch/cpuutilities.h>
 #include <c_cpuid.h>
 #include <stdint.h>
 #include <stddef.h>

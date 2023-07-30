@@ -1,4 +1,4 @@
-#include <spinlock.h>
+#include <memory/spinlock.h>
 
 extern "C" void __acquireLock(uintptr_t* lock);
 extern "C" void __releaseLock(uintptr_t* lock);

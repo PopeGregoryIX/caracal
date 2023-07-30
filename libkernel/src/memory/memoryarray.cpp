@@ -16,19 +16,28 @@
 MemoryArray MemoryArray::_instance;
 const char* MemoryArray::_memoryType[4] = { "Used", "Free", "ACPI", "MMIO" };
 
-void MemoryArray::Initialise( const MMapEnt* firstEntry )
+void MemoryArray::Initialise( const MMapEnt* firstEntry, size_t sizeBytes )
 {
+    _mmap = _memoryMapStaticData;
     //  pull in the BootBoot memory map so that we can perform allocations
     _count = 0;
+    _maxCount = MMAP_MAX_ENTRIES;
 
     MMapEnt* nextEntry = (MMapEnt*)firstEntry;
 
-    while((uintptr_t)nextEntry < (uintptr_t)&bootboot + bootboot.size)
+    while(((uintptr_t)nextEntry - (uintptr_t)firstEntry) <= sizeBytes)
     {
         _mmap[_count++] = {nextEntry->ptr, nextEntry->size & ~0xFULL, (uint8_t)MMapEnt_Type(nextEntry) };
-        if(_count > MMAP_MAX_ENTRIES) FATAL("MemoryMap size exceeds limit!");
+        if(_count > _maxCount) FATAL("MemoryMap size exceeds limit!");
         nextEntry++;
     }
+}
+
+void MemoryArray::Initialise( MemoryMapEntry* firstEntry, size_t sizeBytes, size_t limitSizeBytes )
+{
+    _mmap = firstEntry;
+    _count = sizeBytes / sizeof(MemoryMapEntry);
+    _maxCount = limitSizeBytes / sizeof(MemoryMapEntry);
 }
 
 void MemoryArray::Align()
@@ -147,7 +156,7 @@ size_t MemoryArray::GetTotalFreeMemory( void )
 
 void MemoryArray::Print( void )
 {
-    INFO(Count() << " items");
+    INFO(Count() << " items with a limit of " << _maxCount << " items." );
     for(size_t i = 0; i < Count(); i++)
     {
         if(_mmap[i].IsFree())

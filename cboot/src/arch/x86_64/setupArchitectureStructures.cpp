@@ -45,6 +45,15 @@ namespace arch
                 Paging::PageIn2m(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_INITRD + (i * 0x200000), MemoryArray::AllocateMemoryLarge());
             memcpy((void*)MEMRANGE_INITRD, (void*)ird_mem, bootboot.initrd_size);
 
+            //  Page in space for the memory map. Must leave space for at least 16 further kernel allocations (cboot specification)
+            MemoryArray& memoryArray = MemoryArray::GetInstance();
+            uintptr_t mmap_physical = (uintptr_t)memoryArray.GetFirst();
+            uintptr_t mmap_pages = memoryArray.Size() / 0x1000;
+            if((memoryArray.Size() % 0x1000) != 0) mmap_pages++;
+            if(0x1000 - (memoryArray.Size() % 0x1000) < (0x10 * sizeof(MemoryMapEntry))) mmap_pages++;
+            for(int i = 0; i < mmap_pages; i++)
+                Paging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_MMAP + (i * 0x1000), MemoryArray::AllocateMemorySmall());
+
             //  Page in the CBoot structure
             Paging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_CBOOT, MemoryArray::AllocateMemorySmall());
 
@@ -61,6 +70,7 @@ namespace arch
             cboot->lfbScanlineBytes = bootboot.fb_scanline;
             cboot->mmapAddress = MEMRANGE_MMAP;
             cboot->mmapBytes = MemoryArray::GetInstance().Size();
+            cboot->mmapLimit = mmap_pages * 0x1000;
             cboot->configStringAddress = MEMRANGE_CONFIG;
             cboot->configStringBytes = 0;
             cboot->initRdAddress = MEMRANGE_INITRD;

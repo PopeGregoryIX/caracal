@@ -23,10 +23,10 @@ makedirs:
 dump:
 
 # individual targets
-$(OBJDIR)/arch/$(CPU)/crti.o: $(SRCDIR)/arch/$(CPU)/crti.s
+$(OBJDIR)/arch/$(CPU)/runtime/crti.o: $(SRCDIR)/arch/$(CPU)/runtime/crti.s
 	@$(AS) $(ASFLAGS) -o $@ $<
 
-$(OBJDIR)/arch/$(CPU)/crtn.o: $(SRCDIR)/arch/$(CPU)/crtn.s
+$(OBJDIR)/arch/$(CPU)/runtime/crtn.o: $(SRCDIR)/arch/$(CPU)/runtime/crtn.s
 	@$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp

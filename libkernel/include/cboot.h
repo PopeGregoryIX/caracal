@@ -39,6 +39,7 @@ struct CBoot
     uint32_t lfbScanlineBytes;
     uint64_t mmapAddress;
     uint64_t mmapBytes;
+    uint64_t mmapLimit;         //  Will allow for at least 10 kernel memory allocations
     uint64_t initRdAddress;
     uint64_t initRdSize;
     uint64_t configStringAddress;

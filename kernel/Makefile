@@ -58,10 +58,10 @@ CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
 CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -g
 CPPFLAGS+= -D DEBUG=$(DEBUG)
 
-CRTI_OBJ=$(OBJDIR)/arch/$(CPU)/crti.o
+CRTI_OBJ=$(OBJDIR)/arch/$(CPU)/runtime/crti.o
 CRTBEGIN_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtbegin.o)
 CRTEND_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtend.o)
-CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/crtn.o
+CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/runtime/crtn.o
 
 # Linker Flags
 LDFLAGS:= -T $(TARGETSDIR)/$(TRIPLET)-link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)

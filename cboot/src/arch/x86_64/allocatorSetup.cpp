@@ -9,7 +9,7 @@ namespace arch
 {
     void AllocatorSetup()
     {
-        MemoryArray::GetInstance().Initialise(&(bootboot.mmap));
+        MemoryArray::GetInstance().Initialise(&(bootboot.mmap), bootboot.size - sizeof(BOOTBOOT));
         
         Paging::SetGetPageFunction(MemoryArray::AllocateMemorySmall);
         CpuUtilities::SetPageRoutines(MemoryArray::AllocateMemorySmall, MemoryArray::AllocateMemoryLarge);

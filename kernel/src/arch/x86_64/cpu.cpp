@@ -10,6 +10,7 @@
 #include <memorylayout.h>
 #include <slowPaging.h>
 #include <arch/cpuutilities.h>
+#include <memory/memoryallocator.h>
 
 namespace arch
 {

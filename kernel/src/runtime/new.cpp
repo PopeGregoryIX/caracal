@@ -10,6 +10,7 @@
  */
 #include <stddef.h>
 #include <stdint.h>
+#include <arch/machine.h>
 
 /**
  * @brief Standard new operator - assumes allocations in the kernel heap.
@@ -19,8 +20,7 @@
  */
 void *operator new(size_t size)
 {
-	(void)size;
-	return (void*)0;
+	return arch::Machine::GetHeapAllocator().Allocate(size);
 }
 
 /**
@@ -31,6 +31,5 @@ void *operator new(size_t size)
  */
 void *operator new[](size_t size)
 {
-	(void)size;
-	return (void*)0;
+	return arch::Machine::GetHeapAllocator().Allocate(size);
 }

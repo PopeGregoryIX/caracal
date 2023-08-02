@@ -3,14 +3,16 @@
 #include <memory/memoryallocator.h>
 #include <debug.h>
 #include <memorylayout.h>
+#include <memory/heapmanager.h>
 
-MemoryAllocator::MemoryAllocator( uintptr_t heapIncrement):
+MemoryAllocator::MemoryAllocator( arch::HeapManager& heapManager, uintptr_t heapIncrement, uintptr_t memoryType):
 _heapIncrement(heapIncrement),
 _heapStart(0),
 _heapTop(0),
+_memoryType(memoryType),
 _free(nullptr),
 _used(nullptr),
-_requestHeapBytes(nullptr)
+_heapManager(heapManager)
 {
 
 }
@@ -104,7 +106,7 @@ void MemoryAllocator::ExtendHeap(uintptr_t bytes)
     if(bytes < KERNEL_HEAP_INCREMENT) bytes = KERNEL_HEAP_INCREMENT;
 
     uintptr_t oldHeapTop = _heapTop;
-    _heapTop = _requestHeapBytes(bytes);
+    _heapTop = _heapManager.RequestHeapBytes(bytes);
     uintptr_t additionalSize = _heapTop - oldHeapTop;
     if(additionalSize < bytes) FATAL("Unable to extend heap by " << bytes);
 
@@ -120,23 +122,21 @@ void MemoryAllocator::Free(void* ptr)
     (void)ptr;
 }
 
-void MemoryAllocator::Initialise( requestHeapBytes allocator )
+void MemoryAllocator::Initialise( void )
 {
     if(KERNEL_HEAP_MINSPLIT < (sizeof(item_t) * 2))
         FATAL("KERNEL_HEAP_MINSPLIT must be at least " << (sizeof(item_t) * 2) <<" bytes to enable sensible heap management.");
 
     //  set up the free pages linked list and get some initial allocation
     //  space from the kernel.
-    _requestHeapBytes = allocator;
-
     if(_heapIncrement < 0x1000) _heapIncrement = 0x1000;
     if(_heapIncrement % 0x1000) _heapIncrement+= (0x1000 - (_heapIncrement % 0x1000));
 
-    _heapStart = _requestHeapBytes(0);  //  DO NOT USE EXTENDHEAP!
+    _heapStart = _heapManager.RequestHeapBytes(0);  //  DO NOT USE EXTENDHEAP!
     //INFO("New heap will start at" << _heapStart);
     if(_heapStart == 0) FATAL("Unable to set start of kernel heap.");
 
-    _heapTop = _requestHeapBytes(KERNEL_HEAP_INCREMENT);
+    _heapTop = _heapManager.RequestHeapBytes(KERNEL_HEAP_INCREMENT);
 
     //  place our first free list structure at the start of the heap
     _free = (item_t*)_heapStart;

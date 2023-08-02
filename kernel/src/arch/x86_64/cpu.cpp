@@ -11,6 +11,8 @@
 #include <slowPaging.h>
 #include <arch/cpuutilities.h>
 #include <memory/memoryallocator.h>
+#include <arch/machine.h>
+#include <memory/heapmanager.h>
 
 namespace arch
 {
@@ -48,8 +50,7 @@ namespace arch
         for(int i = 0; i < PML4_INDEX(0xFFFF800000000000); i++) pml4[i] = 0;    //  page out all of user space
 
         //  From now on, the bitmap page frame allocator and kernel pager (not "SlowPaging!") should be used.
-        uintptr_t* test = (uintptr_t*)MEMRANGE_HEAP;
-        test[0] = 0;
+        Machine::GetHeapAllocator().Initialise( );
     }
 
     void Cpu::APSetup(CBoot& cboot)
@@ -59,8 +60,6 @@ namespace arch
         X86_64_Utilities::WriteCr3(X86_64_Utilities::ReadCr3());
         Idt& idt = Idt::GetInstance();
         idt.Load();
-
-        
 
         __cpu__Early_Lock.Release();
     }

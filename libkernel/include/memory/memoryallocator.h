@@ -5,8 +5,7 @@
 #include <stddef.h>
 #include <memory/spinlock.h>
 #include <debug.h>
-
-typedef uintptr_t (*requestHeapBytes)(intptr_t bytes);
+#include <memory/heapmanager.h>
 
 /**
  * @brief Allocate memory in a given area. Equivalent to malloc.
@@ -40,9 +39,10 @@ class MemoryAllocator
         uintptr_t _heapIncrement;
         uintptr_t _heapStart;
         uintptr_t _heapTop;
+        uintptr_t _memoryType;
         item_t* _free;
         item_t* _used;
-        requestHeapBytes _requestHeapBytes;
+        arch::HeapManager& _heapManager;
         Spinlock _lock;
         
         inline uintptr_t HeapSize( void ) { return _heapTop - _heapStart; }
@@ -56,13 +56,15 @@ class MemoryAllocator
         void AddUsed( item_t* item);
         void RemoveUsed( item_t* item);
     public:
-        MemoryAllocator( uintptr_t heapIncrement );
+        MemoryAllocator( arch::HeapManager& heapmanager, uintptr_t heapIncrement, uintptr_t memoryType );
 
         void* Allocate(size_t bytes);
 
         void Free(void* ptr);
 
-        void Initialise( requestHeapBytes heapManager );
+        inline uintptr_t GetMemoryType( void ) { return _memoryType; }
+
+        void Initialise( void );
 
         inline bool IsAllocated(uintptr_t address)
         { return (address >= _heapStart && address < _heapTop); }

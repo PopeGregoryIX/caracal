@@ -6,14 +6,13 @@
 
 namespace arch
 {
-    uintptr_t HeapManager::_kernelHeapBreak = MEMRANGE_HEAP;
-    uintptr_t HeapManager::RequestKernelHeapBytes(intptr_t bytes)
+    uintptr_t HeapManager::RequestHeapBytes(intptr_t bytes)
     {
         if(bytes > 0)
-            _kernelHeapBreak = ((_kernelHeapBreak + bytes) > KERNEL_HEAP_MAX) ? KERNEL_HEAP_MAX : (_kernelHeapBreak + bytes);
+            _currentBreakPoint = ((_currentBreakPoint + bytes) > KERNEL_HEAP_MAX) ? KERNEL_HEAP_MAX : (_currentBreakPoint + bytes);
         else if(bytes < 0)
-            _kernelHeapBreak = ((_kernelHeapBreak + bytes) < MEMRANGE_HEAP) ? MEMRANGE_HEAP : (_kernelHeapBreak + bytes);
+            _currentBreakPoint = ((_currentBreakPoint + bytes) < MEMRANGE_HEAP) ? MEMRANGE_HEAP : (_currentBreakPoint + bytes);
         
-        return _kernelHeapBreak;
+        return _currentBreakPoint;
     }
 }

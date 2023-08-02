@@ -5,6 +5,8 @@
 #include <debug.h>
 #include <x86_64_utilities.h>
 #include <memorylayout.h>
+#include <arch/machine.h>
+#include <paging.h>
 
 namespace arch
 {
@@ -14,6 +16,12 @@ namespace arch
     {
         uintptr_t pfeLocation = X86_64_Utilities::ReadCr2();
         bool handled = false;
+
+        if(Machine::GetHeapAllocator().IsAllocated(pfeLocation))
+        {
+            Paging::PageIn2m(Machine::GetHeapAllocator().GetMemoryType(), pfeLocation, PageFrameAllocator::GetInstance().Allocate(0x200000));
+            FATAL("OK to page in.");
+        }
 
         if(!handled)
         {

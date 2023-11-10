@@ -9,8 +9,9 @@ BASEDIR?= $(shell pwd)
 OBJBASE?= $(BASEDIR)/obj
 BINBASE?= $(BASEDIR)/bin
 IMGDIR?= $(BASEDIR)/img
+FSDIR?= $(BASEDIR)/filesystem
 CONFIGDIR?= $(BASEDIR)/config
-CPPVER?= 13.1.0
+CPPVER?= 13.2.0
 CPPDIR?= ~/opt/cross/bin
 
 #	System Binaries
@@ -88,6 +89,7 @@ makedirs:
 	@mkdir -p $(OBJBASE)
 	@mkdir -p $(BINBASE)
 	@mkdir -p $(IMGDIR)
+	@mkdir -p $(FSDIR)
 
 gdb:
 	gdb -s ./bin/cboot/x86_64-elf/cboot.sys.sym -ex "target remote localhost:1234"

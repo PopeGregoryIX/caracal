@@ -10,7 +10,7 @@ OBJDIR?= $(OBJBASE)/libkernel/$(TRIPLET)
 BINDIR?= $(BINBASE)/libkernel/$(TRIPLET)
 IMGDIR?= $(BASEDIR)/img
 CONFIGDIR?= $(BASEDIR)/config
-CPPVER?= 13.1.0
+CPPVER?= 13.2.0
 CPPDIR?= ~/opt/cross/bin
 
 SRCDIR?= ./src

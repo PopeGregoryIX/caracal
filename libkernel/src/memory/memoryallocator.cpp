@@ -138,8 +138,6 @@ void MemoryAllocator::Initialise( void )
 
     _heapTop = _heapManager.RequestHeapBytes(KERNEL_HEAP_INCREMENT);
 
-
-    FATAL("Init");
     //  place our first free list structure at the start of the heap
     _free = (item_t*)_heapStart;
     _free->base = ((uint64_t)_heapStart) + sizeof(item_t);

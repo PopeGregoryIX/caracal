@@ -31,7 +31,6 @@ namespace arch
     #define PML4_Entry(Address) ((Address) / PML4E_RANGE)
     #define V_PML4_4K (0xFFFFFFFFFFFFF000)
 
-
     #define PAGE_PRESENT        (1ULL)
     #define PAGE_WRITE          (1ULL << 1)
     #define PAGE_USER           (1ULL << 2)

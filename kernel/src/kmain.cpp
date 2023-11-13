@@ -45,7 +45,6 @@ void kmain(CBoot* cbootPtr)
 						cboot.lfbScreenWidth, cboot.lfbScreenHeight, cboot.lfbScanlineBytes, 4);
 		debug.AddOutputDevice(lfb);
 
-		FATAL("");
 		INFO("Caracal Kernel Version 0.2.0");
 		arch::Cpu::EarlyMemorySetup(cboot);
 		bspInitialised = true;

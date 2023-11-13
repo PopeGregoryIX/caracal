@@ -51,6 +51,7 @@ namespace arch
 
         //  From now on, the bitmap page frame allocator and kernel pager (not "SlowPaging!") should be used.
         Machine::GetHeapAllocator().Initialise( );
+        FATAL("");
     }
 
     void Cpu::APSetup(CBoot& cboot)

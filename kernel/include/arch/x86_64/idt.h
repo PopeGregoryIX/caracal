@@ -110,7 +110,7 @@ namespace arch
 		inline void InstallExceptionHandler(size_t index, InterruptHandler_t handler)
 		{ 
 			if(index >= 0x20) FATAL("Cannot install exception handler > index 31.");
-			 __exception_call_table[index] = handler;	
+			 __exception_call_table[index] = handler;
 		}
 
 		inline void InstallInterruptHandler(size_t index, InterruptHandler_t handler)

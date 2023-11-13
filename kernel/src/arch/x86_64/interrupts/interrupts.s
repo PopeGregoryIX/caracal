@@ -23,6 +23,7 @@ mov		%rax,	%rsp
 popaq
 
 add		$0x10,	%rsp
+
 iretq
 .endm
 
@@ -31,7 +32,6 @@ iretq
 .globl isr\num
 isr\num:
 pushq	$\num
-
 pushaq
 
 mov		%rsp,	%rdi
@@ -40,8 +40,8 @@ call	*%rax
 mov		%rax,	%rsp
 
 popaq
-
 add		$0x10,	%rsp
+
 iretq
 .endm
 

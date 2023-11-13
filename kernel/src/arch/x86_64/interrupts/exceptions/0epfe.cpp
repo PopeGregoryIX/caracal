@@ -20,7 +20,8 @@ namespace arch
         if(Machine::GetHeapAllocator().IsAllocated(pfeLocation))
         {
             Paging::PageIn2m(Machine::GetHeapAllocator().GetMemoryType(), pfeLocation, PageFrameAllocator::GetInstance().Allocate(0x200000));
-            FATAL("OK to page in.");
+            handled = true;
+            INFO("Paged In");
         }
 
         if(!handled)

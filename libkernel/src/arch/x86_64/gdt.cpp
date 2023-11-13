@@ -56,7 +56,7 @@ namespace arch
 		_gdtr.size = (uint16_t)((GDT_ENTRY_COUNT * sizeof(GdtEntry)) - 1);
 		_gdtr.offset = (uintptr_t)_gdt;
 
-		__loadGdt((void*)&_gdtr, 0x08, 0x10);
+		__loadGdt((void*)&_gdtr, GDTE_RING0_CODE, GDTE_RING0_DATA);
 	}
 
 	void Gdt::LoadTss( void )

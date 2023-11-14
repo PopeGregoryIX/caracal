@@ -47,7 +47,18 @@ namespace arch
         pml4[PML4_INDEX(0xFFFFFF8000000000)] = ((uintptr_t)pml4) | PAGE_PRESENT | PAGE_WRITE;
         X86_64_Utilities::WriteCr3((uintptr_t)pml4);
         pml4 = (uint64_t*)V_PML4_4K;
-        for(int i = 0; i < PML4_INDEX(0xFFFF800000000000); i++) pml4[i] = 0;    //  page out all of user space
+        for(int i = 0; i < PML4_INDEX(MEMRANGE_SUPERVISOR); i++) pml4[i] = 0;    //  page out all of user space
+
+        for(int i = PML4_INDEX(MEMRANGE_SUPERVISOR); i < 0x1FF ; i++)
+        {
+            //  Map all of physical RAM to 0xFFFF FA00 0000 0000
+            uint64_t physicalMax = MEMRANGE_PHYSICAL + memoryArray.GetHighestAddress();
+            if(physicalMax > MEMRANGE_LFB) FATAL("Not enough virtual space has been allocated to map physical RAM.");
+            
+
+            
+            //  Ensure PML4 entries all exist for supervisor space   
+        }
 
         //  From now on, the bitmap page frame allocator and kernel pager (not "SlowPaging!") should be used.
         Machine::GetHeapAllocator().Initialise( );

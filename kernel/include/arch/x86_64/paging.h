@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <memory/spinlock.h>
 #include <pagingstructures.h>
+#include <memory/pageframeallocator.h>
 
 namespace arch
 {
@@ -12,6 +13,9 @@ namespace arch
     {
         public:
             static bool IsPagedIn(uintptr_t virtualAddress);
+            inline static void PageIn4k( uintptr_t flags, uintptr_t virtualAddress) 
+                { PageIn4k(flags, virtualAddress, PageFrameAllocator::GetInstance().Allocate(0x1000)); }
+                
             static void PageIn4k( uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress );
             static void PageIn2m( uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress );
 

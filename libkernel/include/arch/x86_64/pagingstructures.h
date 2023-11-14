@@ -6,30 +6,30 @@
 
 namespace arch
 {
-    //  PT Covers 2 MiB
-    #define PTE_RANGE   0x1000ULL
-    #define PT_RANGE    0x200000ULL
-    #define PT_INDEX(Address) (((Address) >> 12) & 0x1FFULL)
-    #define V_PT_4K(Address)  (0xFFFFFF8000000000 + (0x40000000 * PDPT_INDEX(Address)) + (0x200000 * PD_INDEX(Address)) + (0x1000 * PT_INDEX(Address)))
-
-    //  PD Covers 1GiB
-    #define PDE_RANGE   0x200000ULL
-    #define PD_RANGE    0x40000000ULL
-    #define PD_INDEX(Address) (((Address) >> 21) & 0x1FFULL)
-    #define V_PD_4K(Address)  (0xFFFFFFFFC0000000 + (0x200000 * PDPT_INDEX(Address)) + (0x1000 * PD_INDEX(Address)))
-
-    //  PDPT Covers 512GiB
-    #define PDPTE_RANGE 0x40000000ULL
-    #define PDPT_RANGE  0x8000000000ULL
-    #define PDPT_INDEX(Address) (((Address) >> 30) & 0x1FFULL)
-    #define V_PDPT_4K(Address)  (0xFFFFFFFFFFE00000	+ (0x1000 * PDPT_INDEX(Address)))
-
     //  Entire PML4 covers 256TiB
     #define PML4E_RANGE 0x8000000000ULL
     #define PML4_RANGE  0x10000000000000ULL
     #define PML4_INDEX(Address) (((Address) >> 39) & 0x1FFULL)
     #define PML4_Entry(Address) ((Address) / PML4E_RANGE)
     #define V_PML4_4K (0xFFFFFFFFFFFFF000)
+
+    //  PDPT Covers 512GiB
+    #define PDPTE_RANGE 0x40000000ULL
+    #define PDPT_RANGE  0x8000000000ULL
+    #define PDPT_INDEX(Address) (((Address) >> 30) & 0x1FFULL)
+    #define V_PDPT_4K(Address)  (0xFFFFFFFFFFE00000ULL	+ (0x1000ULL * PML4_INDEX(Address)))
+
+    //  PD Covers 1GiB
+    #define PDE_RANGE   0x200000ULL
+    #define PD_RANGE    0x40000000ULL
+    #define PD_INDEX(Address) (((Address) >> 21) & 0x1FFULL)
+    #define V_PD_4K(Address)  (0xFFFFFFFFC0000000 + (0x200000ULL * PML4_INDEX(Address)) + (0x1000ULL * PDPT_INDEX(Address)))
+
+    //  PT Covers 2 MiB
+    #define PTE_RANGE   0x1000ULL
+    #define PT_RANGE    0x200000ULL
+    #define PT_INDEX(Address) (((Address) >> 12) & 0x1FFULL)
+    #define V_PT_4K(Address)  (0xFFFFFF8000000000 + (0x40000000ULL * PML4_INDEX(Address)) + (0x200000ULL * PDPT_INDEX(Address)) + (0x1000ULL * PD_INDEX(Address)))  
 
     #define PAGE_PRESENT        (1ULL)
     #define PAGE_WRITE          (1ULL << 1)
@@ -55,7 +55,7 @@ namespace arch
         uint64_t available:3;
         uint64_t page:52;
 
-        inline uint64_t Address() { return page  * 0x1000;  }
+        inline uint64_t Address() { return page  * 0x1000ULL;  }
     };
 
     struct pageDirectoryEntry

@@ -52,7 +52,7 @@ namespace arch
         if(bitmapSizeBytes % sizeof(uint64_t)) bitmapSizeBytes += sizeof(uint64_t) - (bitmapSizeBytes % sizeof(uint64_t));
         size_t bitmapPages = bitmapSizeBytes / 0x200000;
         if((bitmapSizeBytes % 0x200000) != 0) bitmapPages++;
-        for(int i = 0; i < bitmapPages; i++) SlowPaging::PageIn2m(PAGE_PRESENT | PAGE_GLOBAL, MEMRANGE_BITMAP + (i * 0x200000), MemoryArray::AllocateMemoryLarge());
+        for(int i = 0; i < bitmapPages; i++) SlowPaging::PageIn2m(PAGE_PRESENT | PAGE_GLOBAL | PAGE_LARGE, MEMRANGE_BITMAP + (i * 0x200000), MemoryArray::AllocateMemoryLarge());
         PageFrameAllocator::GetInstance().Initialise(0x1000, memoryArray, MEMRANGE_BITMAP);
     }
 

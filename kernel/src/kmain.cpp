@@ -57,5 +57,6 @@ void kmain(CBoot* cbootPtr)
 		arch::Glue::APSetup(cboot);
 	}
 
+	FATAL("End of kmain reached");
 	for(;;) {}
 }

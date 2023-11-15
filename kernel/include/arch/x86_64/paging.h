@@ -17,6 +17,9 @@ namespace arch
                 { PageIn4k(flags, virtualAddress, PageFrameAllocator::GetInstance().Allocate(0x1000)); }
                 
             static void PageIn4k( uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress );
+
+            inline static void PageIn2m( uintptr_t flags, uintptr_t virtualAddress) 
+                { PageIn2m(flags, virtualAddress, PageFrameAllocator::GetInstance().Allocate(0x200000, 0x200000)); }
             static void PageIn2m( uintptr_t flags, uintptr_t virtualAddress, uintptr_t physicalAddress );
 
         private:

@@ -57,6 +57,7 @@ void kmain(CBoot* cbootPtr)
 		arch::Glue::APSetup(cboot);
 	}
 
-	FATAL("End of kmain reached");
+	
+	FATAL("End of kmain reached for CPU " <<  (uint64_t)CpuUtilities::GetCurrentProcessorId());
 	for(;;) {}
 }

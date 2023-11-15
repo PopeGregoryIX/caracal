@@ -13,7 +13,9 @@
 
 #include <stdint.h>
 #include <stddef.h>
+#include <cxx.h>
 #include <structures/staticbitmap.h>
+#include <memorylayout.h>
 
 /**
  * @brief Responsible for allocating frames of physical RAM.
@@ -45,6 +47,13 @@ class PageFrameAllocator
         {
             uintptr_t returnValue = _pages.FindAndSet(GetWholePages(bytes));
             return (returnValue == UINT64_MAX) ? UINT64_MAX : returnValue * 0x1000;
+        }
+
+        inline uintptr_t AllocateEmpty(size_t bytes) 
+        {
+            uintptr_t alloc = Allocate(bytes);
+            if(alloc != UINT64_MAX) memset(GET_VIRTUAL_POINTER(alloc), 0, bytes);
+            return alloc;
         }
 
         inline uintptr_t Allocate(size_t bytes, size_t alignment) 

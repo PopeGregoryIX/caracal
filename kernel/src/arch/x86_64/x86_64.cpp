@@ -64,17 +64,63 @@ namespace arch
         pml4[PML4_INDEX(0xFFFFFF8000000000)] = ((uintptr_t)pml4) | PAGE_PRESENT | PAGE_WRITE;
         X86_64_Utilities::WriteCr3((uintptr_t)pml4);
         pml4 = (uint64_t*)V_PML4_4K;
-        for(int i = 0; i < PML4_INDEX(MEMRANGE_SUPERVISOR); i++) pml4[i] = 0;    //  page out all of user space
+        for(int i = 0; i < PML4_INDEX(MEMRANGE_LFB); i++) pml4[i] = 0;    //  page out all of user space
 
-        for(int i = PML4_INDEX(MEMRANGE_SUPERVISOR); i < 0x1FF ; i++)
+        //  Map all of physical RAM to 0xFFFF FA00 0000 0000
+        uintptr_t memorySize = MemoryArray::GetInstance().GetHighestAddress();
+        uint64_t physicalMax = MEMRANGE_PHYSICAL + memorySize;
+        if(physicalMax > MEMRANGE_LFB) FATAL("Not enough virtual space has been allocated to map physical RAM.");
+        if(physicalMax % 0x200000) physicalMax+= ((0x200000) - physicalMax % 0x200000);
+
+        //  CREATE NEEDED PDPT's //////////////////////////////////////////////////////////////
+        uint64_t pdptNum = memorySize / PDPT_RANGE;
+        if((pdptNum == 0) || memorySize % PDPT_RANGE) pdptNum++;
+        uintptr_t tmpPdpt = (PageFrameAllocator::GetInstance().Allocate(0x1000 * pdptNum));
+        if(tmpPdpt == 0) FATAL("Unable to allocate memory for PDPT's.");
+
+        for(int i = 0; i < pdptNum; ++i) 
+            pml4[i + PML4_INDEX(MEMRANGE_PHYSICAL)] = (tmpPdpt + (0x1000 * i)) | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
+
+        X86_64_Utilities::WriteCr3(X86_64_Utilities::ReadCr3());
+
+        //  CREATE NEEDED PD's //////////////////////////////////////////////////////////////
+        uintptr_t pdpt = V_PDPT_4K(MEMRANGE_PHYSICAL);
+        uint64_t pdNum = memorySize / PD_RANGE;
+        if((pdNum == 0) || memorySize % PD_RANGE) pdNum++;
+        uintptr_t tmpPd = (PageFrameAllocator::GetInstance().Allocate(0x1000 * pdNum));
+        if(tmpPd == 0) FATAL("Unable to allocate memory for PD's.");
+        for (int i = 0; i < pdNum; ++i) ((uint64_t*)pdpt)[i] = (tmpPd + (0x1000 * i)) | PAGE_PRESENT | PAGE_WRITE;
+        if(pdNum % 0x200)
         {
-            //  Map all of physical RAM to 0xFFFF FA00 0000 0000
-            uint64_t physicalMax = MEMRANGE_PHYSICAL + MemoryArray::GetInstance().GetHighestAddress();
-            if(physicalMax > MEMRANGE_LFB) FATAL("Not enough virtual space has been allocated to map physical RAM.");
-            
+            int topEntry = pdNum + (0x200 - (pdNum % 0x200));
+            for(int i = pdNum; i < topEntry; ++i) ((uint64_t*)pdpt)[i] = 0;
+        }
 
-            
-            //  Ensure PML4 entries all exist for supervisor space   
+
+        X86_64_Utilities::WriteCr3(X86_64_Utilities::ReadCr3());
+
+        //  CREATE NEEDED PDE's //////////////////////////////////////////////////////////////
+        uintptr_t pd = V_PD_4K(MEMRANGE_PHYSICAL);
+        uint64_t pdEntries = memorySize / PT_RANGE;
+        if((pdEntries == 0) || memorySize % PT_RANGE) pdEntries++;
+        for(int i = 0; i < pdEntries; i++) ((uint64_t*)pd)[i] = (0x200000 * i) | PAGE_PRESENT | PAGE_WRITE | PAGE_LARGE;
+        X86_64_Utilities::WriteCr3(X86_64_Utilities::ReadCr3());
+        if(pdEntries % 0x200)
+        {
+            int topEntry = pdEntries + (0x200 - (pdEntries % 0x200));
+            for(int i = pdEntries; i < topEntry; i++) ((uint64_t*)pd)[i] = 0;
+
+        }
+        
+        //  Ensure PML4 entries all exist for supervisor space
+        for(int i = PML4_INDEX(MEMRANGE_SUPERVISOR); i < 0x1FE; i++)
+        {
+            if((pml4[i] & PAGE_PRESENT) == 0)
+            {
+                uintptr_t physMem = PageFrameAllocator::GetInstance().AllocateEmpty(0x1000);
+                if(physMem == 0) FATAL("Unable to allocate physical RAM for a kernel PDPT.");
+                pml4[i] = physMem | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
+            }
         }
     }
 }

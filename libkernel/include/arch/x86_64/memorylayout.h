@@ -58,6 +58,8 @@ namespace arch
 
 	#define USER_THREAD_STACK	  			0x0000000800000000
 	#define SUPERVISOR_THREAD_STACK			(0x0000800000000000 - 0x100000)
+
+    #define GET_VIRTUAL_POINTER(physicalAddress)   ((void*)(((uintptr_t)physicalAddress) + MEMRANGE_PHYSICAL))
 }
 
 #endif

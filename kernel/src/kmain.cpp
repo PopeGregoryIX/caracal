@@ -9,7 +9,9 @@
  * 
  */
 #include <caracal.h>
+#include <kernel.h>
 #include <cboot.h>
+#include <arch/glue.h>
 #include <arch/cpuutilities.h>
 #include <memory/spinlock.h>
 #include <debug.h>
@@ -35,7 +37,7 @@ LfbConsoleOutput lfb;
 void kmain(CBoot* cbootPtr)
 {
 	CBoot& cboot = *cbootPtr;
-
+	
 	if(CpuUtilities::IsBsp())
 	{
 		_init();
@@ -46,13 +48,13 @@ void kmain(CBoot* cbootPtr)
 		debug.AddOutputDevice(lfb);
 
 		INFO("Caracal Kernel Version 0.2.0");
-		arch::Cpu::EarlyMemorySetup(cboot);
+		arch::Glue::EarlyMemorySetup(cboot);
 		bspInitialised = true;
 	}
 	else
 	{
 		while(!bspInitialised) {}
-		arch::Cpu::APSetup(cboot);
+		arch::Glue::APSetup(cboot);
 	}
 
 	for(;;) {}

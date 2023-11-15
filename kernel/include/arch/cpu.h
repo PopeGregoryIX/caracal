@@ -8,8 +8,6 @@ namespace arch
     class Cpu
     {
         public:
-            static void EarlyMemorySetup( CBoot& cboot );
-            static void APSetup(CBoot& cboot);
 
         private:
             

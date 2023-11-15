@@ -26,7 +26,7 @@ namespace arch
 
         if((pml4[pml4i] & PAGE_PRESENT) == 0)
         {
-            uintptr_t newPdpt = PageFrameAllocator::GetInstance().AllocateEmpty(0x1000);
+            uintptr_t newPdpt = PageFrameAllocator::GetInstance().AllocateEmpty();
             if(newPdpt == 0) FATAL("Unable to allocate physical memory for new PDPT.");
             pml4[pml4i] = newPdpt | PAGE_PRESENT | PAGE_WRITE;
             X86_64_Utilities::InvalidatePage((uintptr_t)pdpt);
@@ -34,7 +34,7 @@ namespace arch
 
         if((pdpt[pdpti] & PAGE_PRESENT) == 0)
         {
-            uintptr_t newPd = PageFrameAllocator::GetInstance().AllocateEmpty(0x1000);
+            uintptr_t newPd = PageFrameAllocator::GetInstance().AllocateEmpty();
             if(newPd == 0) FATAL("Unable to allocate physical memory for new PD.");
             pdpt[pdpti] = newPd | PAGE_PRESENT | PAGE_WRITE;
             X86_64_Utilities::InvalidatePage((uintptr_t)pd);
@@ -42,7 +42,7 @@ namespace arch
 
         if((pd[pdi] & PAGE_PRESENT) == 0)
         {
-            uintptr_t newPt = PageFrameAllocator::GetInstance().AllocateEmpty(0x1000);
+            uintptr_t newPt = PageFrameAllocator::GetInstance().AllocateEmpty();
             if(newPt == 0) FATAL("Unable to allocate physical memory for new PT.");            
             pd[pdi] = newPt | flags;
             X86_64_Utilities::InvalidatePage((uintptr_t)pt);
@@ -68,7 +68,7 @@ namespace arch
 
         if((pml4[pml4i] & PAGE_PRESENT) == 0)
         {
-            uintptr_t newPdpt = PageFrameAllocator::GetInstance().AllocateEmpty(0x1000);
+            uintptr_t newPdpt = PageFrameAllocator::GetInstance().AllocateEmpty();
             if(newPdpt == 0) FATAL("Unable to allocate physical memory for new PDPT.");
             pml4[pml4i] = newPdpt | PAGE_PRESENT | PAGE_WRITE;
             X86_64_Utilities::InvalidatePage((uintptr_t)pdpt);
@@ -76,7 +76,7 @@ namespace arch
 
         if((pdpt[pdpti] & PAGE_PRESENT) == 0)
         {
-            uintptr_t newPd = PageFrameAllocator::GetInstance().AllocateEmpty(0x1000);
+            uintptr_t newPd = PageFrameAllocator::GetInstance().AllocateEmpty();
             if(newPd == 0) FATAL("Unable to allocate physical memory for new PD.");
             pdpt[pdpti] = newPd | PAGE_PRESENT | PAGE_WRITE;
             X86_64_Utilities::InvalidatePage((uintptr_t)pd);

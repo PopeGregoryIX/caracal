@@ -117,7 +117,7 @@ namespace arch
         {
             if((pml4[i] & PAGE_PRESENT) == 0)
             {
-                uintptr_t physMem = PageFrameAllocator::GetInstance().AllocateEmpty(0x1000);
+                uintptr_t physMem = PageFrameAllocator::GetInstance().AllocateEmpty();
                 if(physMem == 0) FATAL("Unable to allocate physical RAM for a kernel PDPT.");
                 pml4[i] = physMem | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
             }

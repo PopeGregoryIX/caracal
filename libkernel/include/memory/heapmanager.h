@@ -29,6 +29,7 @@ namespace arch
 
             uintptr_t _base;
             uintptr_t _limit;
+            Spinlock _lock;
     };
 }
 

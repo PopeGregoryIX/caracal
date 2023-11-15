@@ -28,6 +28,7 @@ class PageFrameAllocator
         static PageFrameAllocator _instance;
         StaticBitmap _pages;
         size_t _frameSize;
+        Spinlock _lock;
 
         inline uintptr_t GetWholePages(size_t bytes) 
         { 
@@ -41,11 +42,26 @@ class PageFrameAllocator
         void Initialise( size_t frameSize, class MemoryArray& memoryArray, uintptr_t virtualLocation );
 
         ///TODO: Needs a lock!
-        inline uintptr_t Allocate( void )   {   return _pages.FindAndSet() * _frameSize; }
+        inline uintptr_t Allocate( void )   
+        {   
+            _lock.Acquire();
+            uintptr_t alloc = _pages.FindAndSet() * _frameSize;
+            _lock.Release();
+            return alloc;
+        }
+
+        inline uintptr_t AllocateEmpty( void )
+        {
+            uintptr_t alloc = Allocate();
+            if(alloc != UINT64_MAX) memset(GET_VIRTUAL_POINTER(alloc), 0, _frameSize);
+            return alloc;
+        }
 
         inline uintptr_t Allocate(size_t bytes) 
         {
+            _lock.Acquire();
             uintptr_t returnValue = _pages.FindAndSet(GetWholePages(bytes));
+            _lock.Release();
             return (returnValue == UINT64_MAX) ? UINT64_MAX : returnValue * 0x1000;
         }
 
@@ -58,13 +74,25 @@ class PageFrameAllocator
 
         inline uintptr_t Allocate(size_t bytes, size_t alignment) 
         {
+            _lock.Acquire();
             uintptr_t returnValue = _pages.FindAndSet(GetWholePages(bytes), GetWholePages(alignment));
+            _lock.Release();
             return (returnValue == UINT64_MAX) ? UINT64_MAX : returnValue * 0x1000;
         }
 
-        inline void Free( uintptr_t page ) { _pages.Clear(page / _frameSize); }
+        inline void Free( uintptr_t page ) 
+        { 
+            _lock.Acquire();
+            _pages.Clear(page / _frameSize); 
+            _lock.Release();
+        }
 
-        inline void Free( uintptr_t page, size_t bytes ) { _pages.Clear(page / _frameSize, GetWholePages(bytes)); }
+        inline void Free( uintptr_t page, size_t bytes ) 
+        { 
+            _lock.Acquire();
+            _pages.Clear(page / _frameSize, GetWholePages(bytes)); 
+            _lock.Release();
+        }
 };
 
 #endif

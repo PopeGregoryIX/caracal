@@ -14,6 +14,7 @@
 #include <memory/memoryallocator.h>
 #include <arch/machine.h>
 #include <memory/heapmanager.h>
+#include <arch/glue.h>
 
 namespace arch
 {
@@ -26,6 +27,8 @@ namespace arch
         X86_64_Utilities::WriteCr3(X86_64_Utilities::ReadCr3());
         Idt& idt = Idt::GetInstance();
         idt.Load();
+
+        ::Glue::AddCurrentCpu();
 
         __cpu__Early_Lock.Release();
     }

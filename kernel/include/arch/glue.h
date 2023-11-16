@@ -2,15 +2,20 @@
 #define _GLUE_H_
 
 #include <cboot.h>
+#include <archdef.h>
 
-namespace arch
+class Glue
 {
-    class Glue
-    {
-        public:
-            static void EarlyMemorySetup( CBoot& cboot );
-            static void APSetup(CBoot& cboot);
-    };
-}
+    public:
+        static void AddCurrentCpu( void );
+        
+        static void APSetup(CBoot& cboot);
+
+        static void EarlyMemorySetup( CBoot& cboot );
+
+        static void MachineSetup( CBoot& cboot );
+
+        static class Process& GenerateInitialProcess( void );
+};
 
 #endif

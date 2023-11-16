@@ -34,11 +34,13 @@ class DebugConsole
         void PutHex(uint64_t h);
         void PutPaddedHex(uint64_t h);
         void PutString(const char* s);
-
+        void PutString(const class String& s);
+        
 	    ~DebugConsole(){}
 
         inline DebugConsole& operator<<(const char c) { PutChar(c); return *this; }
         inline DebugConsole& operator<<(const char* s) { PutString(s); return *this; }
+        inline DebugConsole& operator<<(const String& s) { PutString(s); return *this; }
         inline DebugConsole& operator<<(uint64_t i) 
         { 
             switch (_base)

@@ -27,6 +27,15 @@ namespace arch
              * \brief Load paging structures and lay out initial virtual memory.
              */
             static void PagingSetup(CBoot& cboot);
+
+            int GetId( void ) { return _id; }
+        private:
+            X86_64(int id) : _id(id){};
+
+
+            int _id;
+
+            friend class Pc;
     };    
 }
 

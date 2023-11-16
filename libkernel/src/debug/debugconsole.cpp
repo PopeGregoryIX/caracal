@@ -1,6 +1,7 @@
 #include <debug/debugconsole.h>
 #include <debug/lfbconsoleoutput.h>
 #include <cxx.h>
+#include <structures/string.h>
 
 DebugConsole DebugConsole::_instance;
 
@@ -81,6 +82,15 @@ void DebugConsole::PutPaddedHex(uint64_t h)
 }
 
 void DebugConsole::PutString(const char* s)
+{
+	for(int i = 0; i < MAXOUTPUTDEVICES; ++i)
+	{
+		if(_outputDevices[i] != nullptr)
+			_outputDevices[i]->PutString(s);
+	}
+}
+
+void DebugConsole::PutString(const String& s)
 {
 	for(int i = 0; i < MAXOUTPUTDEVICES; ++i)
 	{

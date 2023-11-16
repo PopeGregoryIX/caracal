@@ -19,6 +19,7 @@ public:
 
 	virtual void PutChar(const char c) = 0;
 	virtual void PutString(const char* s);
+	virtual void PutString(const class String& s);
 
 	virtual void Cls( void ) = 0;
 

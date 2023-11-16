@@ -10,22 +10,42 @@
 #include <arch/cpu.h>
 #include <arch/machine.h>
 #include <x86_64.h>
+#include <process/process.h>
+#include <debug.h>
+#include <x86_64_utilities.h>
+#include <pc.h>
 
-namespace arch
+void Glue::AddCurrentCpu( void )
 {
-    void Glue::EarlyMemorySetup(CBoot& cboot)
-    {
-        //  kmain already ensures that only the BSP calls this function.
-        X86_64::IdtSetup();
-        X86_64::PageFrameAllocationSetup(cboot);
-        X86_64::PagingSetup(cboot);
+    arch::Pc::GetInstance().AddCurrentCpu();
+}
 
-        //  From now on, the bitmap page frame allocator and kernel pager (not "SlowPaging!") should be used.
-        Machine::GetHeapAllocator().Initialise();
-    }
+void Glue::APSetup(CBoot& cboot)
+{
+    arch::X86_64::APSetup(cboot);
+}
 
-    void Glue::APSetup(CBoot& cboot)
-    {
-        X86_64::APSetup(cboot);
-    }
+void Glue::EarlyMemorySetup(CBoot& cboot)
+{
+    //  kmain already ensures that only the BSP calls this function.
+    arch::X86_64::IdtSetup();
+    arch::X86_64::PageFrameAllocationSetup(cboot);
+    arch::X86_64::PagingSetup(cboot);
+
+    //  From now on, the bitmap page frame allocator and kernel pager (not "SlowPaging!") should be used.
+    arch::Machine::GetHeapAllocator().Initialise();
+}
+
+void Glue::MachineSetup(CBoot& cboot)
+{
+    arch::Pc::GetInstance().Initialise(cboot);
+}
+
+Process& Glue::GenerateInitialProcess( void )
+{
+    Process* init = new Process();
+
+    init->_processInfo = arch::X86_64_Utilities::ReadCr3();
+
+    return *init;
 }

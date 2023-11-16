@@ -36,8 +36,6 @@ namespace arch
 
 			template <int N> static inline void SystemCall(uintptr_t function){ asm ( "int %0\n" : : "N"(N), "a"(function) ); }
 			static inline void SystemCall(uintptr_t function) { SystemCall<INTERRUPT_USER>(function); }
-
-			//static inline void PageInLarge(uintptr_t flags, uintptr_t virtualAddress) { X86_64::PageInLarge(flags, virtualAddress, PageFrameAllocator::GetInstance().Allocate(0x200000UL
     };
 }
 

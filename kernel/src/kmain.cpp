@@ -17,6 +17,8 @@
 #include <debug.h>
 #include <debug/lfbconsoleoutput.h>
 #include <arch/cpu.h>
+#include <arch/machine.h>
+#include <process/taskmanager.h>
 
 bool bspInitialised = false;
 Spinlock mainLock;
@@ -48,13 +50,18 @@ void kmain(CBoot* cbootPtr)
 		debug.AddOutputDevice(lfb);
 
 		INFO("Caracal Kernel Version 0.2." << DebugConsole::BASE10 << (uint64_t)__BUILD_NUMBER << DebugConsole::BASE16);
-		arch::Glue::EarlyMemorySetup(cboot);
+		Glue::EarlyMemorySetup(cboot);
+
+		//	Now arch memory has been initialised, set up higher-level kernel objects.
+		Glue::MachineSetup(cboot);	//	Other objects may rely on getting handles to Machine / Cpu objects. Allow arch to create these.
+		TaskManager::GetInstance().Initialise();
+		
 		bspInitialised = true;
 	}
 	else
 	{
 		while(!bspInitialised) {}
-		arch::Glue::APSetup(cboot);
+		Glue::APSetup(cboot);
 	}
 
 	

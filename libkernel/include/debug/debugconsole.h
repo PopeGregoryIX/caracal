@@ -43,13 +43,13 @@ class DebugConsole
         { 
             switch (_base)
             {
-                case NumericBase::BASE2:
+                case BASE2:
                     PutBinary(i);
                     break;
-                case NumericBase::BASE10:
+                case BASE10:
                     PutDecimal(i);
                     break;
-                case NumericBase::BASE16:
+                case BASE16:
                     PutHex(i);
                     break;
             }
@@ -63,7 +63,7 @@ class DebugConsole
         Spinlock _processLock;
         Spinlock _stringLock;
 
-        NumericBase _base = NumericBase::BASE16;
+        NumericBase _base = BASE16;
 
         static const int MAXOUTPUTDEVICES = 3;
 	    ConsoleOutput* _outputDevices[MAXOUTPUTDEVICES];

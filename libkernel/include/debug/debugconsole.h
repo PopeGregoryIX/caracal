@@ -7,6 +7,13 @@
 class DebugConsole
 {
     public:
+        enum NumericBase
+        {
+            BASE2 = 2,
+            BASE10 = 10,
+            BASE16 = 16
+        };
+    public:
         static inline DebugConsole& GetInstance( void ) {   return _instance;   }
 
         inline void LockConsole( void )     {   _processLock.Acquire();    }
@@ -17,6 +24,8 @@ class DebugConsole
         void SetOutputColour(uint32_t foreground, uint32_t background);
 	    inline void SetOutputColour(ConsoleColour c) { SetOutputColour(c.Foreground, c.Background); }
 	    
+        void SetNumericBase(NumericBase n) { _base = n; }
+
         void Cls( void );
 
         void PutBinary(uint64_t b);
@@ -30,12 +39,31 @@ class DebugConsole
 
         inline DebugConsole& operator<<(const char c) { PutChar(c); return *this; }
         inline DebugConsole& operator<<(const char* s) { PutString(s); return *this; }
-        inline DebugConsole& operator<<(uint64_t i) { PutHex(i); return *this; }
+        inline DebugConsole& operator<<(uint64_t i) 
+        { 
+            switch (_base)
+            {
+                case NumericBase::BASE2:
+                    PutBinary(i);
+                    break;
+                case NumericBase::BASE10:
+                    PutDecimal(i);
+                    break;
+                case NumericBase::BASE16:
+                    PutHex(i);
+                    break;
+            }
+            return *this; 
+        }
+
         inline DebugConsole& operator<<(ConsoleColour c) { SetOutputColour(c); return *this; }
+        inline DebugConsole& operator<<(NumericBase n) { SetNumericBase(n); return *this; }
     private:
         Spinlock _characterLock;
         Spinlock _processLock;
         Spinlock _stringLock;
+
+        NumericBase _base = NumericBase::BASE16;
 
         static const int MAXOUTPUTDEVICES = 3;
 	    ConsoleOutput* _outputDevices[MAXOUTPUTDEVICES];

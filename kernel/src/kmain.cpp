@@ -47,7 +47,7 @@ void kmain(CBoot* cbootPtr)
 						cboot.lfbScreenWidth, cboot.lfbScreenHeight, cboot.lfbScanlineBytes, 4);
 		debug.AddOutputDevice(lfb);
 
-		INFO("Caracal Kernel Version 0.2.0");
+		INFO("Caracal Kernel Version 0.2." << DebugConsole::BASE10 << (uint64_t)__BUILD_NUMBER << DebugConsole::BASE16);
 		arch::Glue::EarlyMemorySetup(cboot);
 		bspInitialised = true;
 	}
@@ -58,6 +58,6 @@ void kmain(CBoot* cbootPtr)
 	}
 
 	
-	FATAL("End of kmain reached for CPU " <<  (uint64_t)CpuUtilities::GetCurrentProcessorId());
+	FATAL("End of kmain reached for CPU " << DebugConsole::BASE10 << (uint64_t)CpuUtilities::GetCurrentProcessorId() << DebugConsole::BASE16);
 	for(;;) {}
 }

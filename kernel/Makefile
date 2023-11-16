@@ -15,6 +15,7 @@ CPPDIR?= ~/opt/cross/bin
 LIBDIR?= $(BINBASE)/libkernel/$(TRIPLET)
 SRCDIR?= ./src
 TARGETSDIR?=./targets
+BUILDNUMBERFILE?= $(BASEDIR)/buildnumber.txt
 
 # binaries
 AS?= $(CPPDIR)/$(TRIPLET)-as
@@ -57,6 +58,7 @@ CPPFLAGS:= $(WFLAGS) $(INCLUDES) -std=c++11 -O0 -pedantic -pedantic-errors -fpic
 CPPFLAGS+= -nostartfiles -ffreestanding -nodefaultlibs -fno-rtti -fno-exceptions
 CPPFLAGS+= -fno-builtin -nostdlib -nostdinc -fomit-frame-pointer -g
 CPPFLAGS+= -D DEBUG=$(DEBUG)
+CPPFLAGS+= -D __BUILD_DATE=$$(date +'%Y%m%d') -D __BUILD_NUMBER=$$(cat $(BUILDNUMBERFILE))
 
 CRTI_OBJ=$(OBJDIR)/arch/$(CPU)/runtime/crti.o
 CRTBEGIN_OBJ:=$(shell $(CXX) $(CPPFLAGS) -print-file-name=crtbegin.o)
@@ -66,10 +68,14 @@ CRTN_OBJ=$(OBJDIR)/arch/$(CPU)/runtime/crtn.o
 # Linker Flags
 LDFLAGS:= -T $(TARGETSDIR)/$(TRIPLET)-link.ld -nostdlib $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(OBJFILES) $(CRTEND_OBJ) $(CRTN_OBJ)
 LDADD:= --start-group -L $(CPPDIR)/../lib/gcc/$(TRIPLET)/$(CPPVER) -lgcc --end-group
-LDADD:= --start-group -L $(LIBDIR) -lkernel --end-group
+LDADD+= --start-group -L $(LIBDIR) -lkernel --end-group
 
 WFLAGS:= -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align
 WFLAGS+= -Wwrite-strings -Wredundant-decls -Winline -Wuninitialized -Wconversion
 WFLAGS+= -Wmissing-declarations -Wno-long-long -Werror
 
 -include $(TARGETSDIR)/$(TRIPLET)-Makefile
+
+$(BUILDNUMBERFILE): $(OBJFILES)
+	@if ! test -f $(BUILDNUMBERFILE); then echo 0 > $(BUILDNUMBERFILE); fi
+	@echo $$(($$(cat $(BUILDNUMBERFILE)) + 1)) > $(BUILDNUMBERFILE)

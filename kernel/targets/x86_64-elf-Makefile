@@ -6,7 +6,7 @@ CPPFLAGS+= -mno-red-zone -mcmodel=large
 
 .PHONY:	all	makedirs clean dump dist doc
 
-all: makedirs $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(CRTEND_OBJ) $(CRTN_OBJ) $(OBJFILES) Makefile
+all: makedirs $(CRTI_OBJ) $(CRTBEGIN_OBJ) $(CRTEND_OBJ) $(CRTN_OBJ) $(OBJFILES) Makefile $(BUILDNUMBERFILE)
 	@$(LD) $(LDFLAGS) -o $(BINDIR)/$(BINARY) $(LDADD)
 	@$(OBJDUMP) -xD $(BINDIR)/$(BINARY) > $(BINDIR)/$(DUMPFILE)
 	@$(OBJCOPY) --only-keep-debug $(BINDIR)/$(BINARY) $(BINDIR)/$(SYMFILE)

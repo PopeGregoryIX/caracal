@@ -19,6 +19,7 @@ class Thread
         
     friend class Process;
     friend class TaskManager;
+    friend class Glue;
 };
 
 #endif

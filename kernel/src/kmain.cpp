@@ -21,7 +21,6 @@
 #include <process/taskmanager.h>
 
 bool bspInitialised = false;
-Spinlock mainLock;
 DebugConsole& debug = DebugConsole::GetInstance();
 LfbConsoleOutput lfb;
 
@@ -44,7 +43,6 @@ void kmain(CBoot* cbootPtr)
 	{
 		_init();
 
-		mainLock.Acquire();
 		lfb.Initialise(	cboot.lfbAddress, (const psf2_t*)&_binary_src_data_font_psf_start, 
 						cboot.lfbScreenWidth, cboot.lfbScreenHeight, cboot.lfbScanlineBytes, 4);
 		debug.AddOutputDevice(lfb);

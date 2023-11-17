@@ -3,6 +3,7 @@
 
 #include <cboot.h>
 #include <archdef.h>
+#include <structures/string.h>
 
 class Glue
 {
@@ -14,6 +15,8 @@ class Glue
         static void EarlyMemorySetup( CBoot& cboot );
 
         static void MachineSetup( CBoot& cboot );
+
+        static class Process& CreateProcess( bool supervisor, String name );
 
         static class Process& GenerateInitialProcess( void );
 };

@@ -20,7 +20,9 @@
  */
 void *operator new(size_t size)
 {
-	return arch::Machine::GetHeapAllocator().Allocate(size);
+	void* returnValue = arch::Machine::GetHeapAllocator().Allocate(size);
+	if(returnValue == nullptr) FATAL("NULL memory allocation.");
+	return returnValue;
 }
 
 /**
@@ -31,5 +33,7 @@ void *operator new(size_t size)
  */
 void *operator new[](size_t size)
 {
-	return arch::Machine::GetHeapAllocator().Allocate(size);
+	void* returnValue = arch::Machine::GetHeapAllocator().Allocate(size);
+	if(returnValue == nullptr) FATAL("NULL memory allocation.");
+	return returnValue;
 }

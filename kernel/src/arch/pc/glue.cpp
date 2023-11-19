@@ -46,21 +46,8 @@ Process& Glue::CreateProcess(bool supervisor, String name)
     Process* process = new Process( name );
 
     process->_processInfo = PageFrameAllocator::GetInstance().AllocateEmpty();
+
     INFO("Created process: " << process->GetName());
-
-    String s1 = "String 1";
-    String s2 = "+String 2";
-    String s3 = "String 1";
-    String s4 = "true";
-    String s5 = "false";
-    
-    INFO((s1 + s2 + " and a string of characters."));
-    INFO(((s1 != s2) ? s4 : s5));
-    INFO(((s1 != s3) ? s4 : s5));
-    INFO(((s2 != s2) ? s4 : s5));
-    INFO(((s2 != "+String 1") ? s4 : s5));
-
-
 
     return *process;
 }

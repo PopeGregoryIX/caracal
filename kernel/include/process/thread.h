@@ -3,19 +3,22 @@
 
 #include <archdef.h>
 
+class Process;
+
 class Thread
 {
     public:
         inline threadId_t GetId( void ) { return _threadId; }
         inline threadInfo_t GetInfo( void ) { return _threadInfo; }
 
+        inline Process& GetParent( void ) { return _parent; }
     private:
         Thread(class Process& parent);
 
         threadId_t _threadId;
         threadInfo_t _threadInfo;
 
-        class Process& _parent;
+        Process& _parent;
         
     friend class Process;
     friend class TaskManager;

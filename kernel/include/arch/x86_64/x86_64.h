@@ -10,7 +10,6 @@ namespace arch
     {
         public: 
             // Boot and Setup Routines
-
             static void APSetup(CBoot& cboot);
 
             /**
@@ -30,7 +29,7 @@ namespace arch
 
             int GetId( void ) { return _id; }
         private:
-            X86_64(int id) : _id(id){};
+            X86_64(int id) : _id(id) {};
 
 
             int _id;

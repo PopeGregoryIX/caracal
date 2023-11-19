@@ -6,6 +6,22 @@
 
 class KernelObject
 {
+    protected:
+        /**
+         * \brief Early constructor - *avoid where possible*
+         * This allocates no memory, but also requires manual registration with
+         * the Object Manager.
+        */
+        KernelObject( void ) {}
+
+        /**
+         * \brief Preferred constructor.
+         * 
+         * Registers the object and the name with the ObjectManager.
+        */
+        KernelObject(const String& name);
+
+        ~KernelObject();
     public:
         handle_t GetHandle( void ) { return _handle; }
         String& GetName( void ) { return _name; }

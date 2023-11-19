@@ -3,14 +3,17 @@
 
 #include <cboot.h>
 
+class Thread;
+
 namespace arch
 {
     class Cpu
     {
         public:
+            inline Thread& GetCurrentThread( void ){ return *_currentThread; }
 
         private:
-            
+            Thread* _currentThread;
     };
 }
 

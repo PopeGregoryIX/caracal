@@ -5,8 +5,9 @@
 #include <structures/linkedlist.h>
 #include <process/thread.h>
 #include <structures/string.h>
+#include <object/kernelobject.h>
 
-class Process
+class Process : public KernelObject
 {
     public:
         inline processId_t GetId( void ) { return _processId; }
@@ -20,8 +21,6 @@ class Process
         processInfo_t _processInfo;
 
         LinkedList<class Thread> _threads;
-
-        String _name;
 
         friend class TaskManager;
         friend class Glue;

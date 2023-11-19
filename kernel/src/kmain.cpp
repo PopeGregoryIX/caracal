@@ -54,6 +54,8 @@ void kmain(CBoot* cbootPtr)
 		Glue::MachineSetup(cboot);	//	Other objects may rely on getting handles to Machine / Cpu objects. Allow arch to create these.
 		TaskManager::GetInstance().Initialise();
 		
+		//TaskManager::GetInstance().Yield();
+
 		bspInitialised = true;
 	}
 	else

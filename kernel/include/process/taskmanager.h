@@ -14,6 +14,7 @@ class TaskManager : public KernelObject
 
         void Initialise( void );
 
+        class Thread& Yield( void );
     private:
         static TaskManager _instance;
 

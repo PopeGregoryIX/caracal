@@ -19,6 +19,8 @@ class Glue
         static class Process& CreateProcess( bool supervisor, String name );
 
         static class Process& GenerateInitialProcess( void );
+
+        static void Yield( void );
 };
 
 #endif

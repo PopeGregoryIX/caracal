@@ -14,6 +14,7 @@
 #include <debug.h>
 #include <x86_64_utilities.h>
 #include <pc.h>
+#include <service/syscall.h>
 
 void Glue::AddCurrentCpu( void )
 {
@@ -61,4 +62,9 @@ Process& Glue::GenerateInitialProcess( void )
     Process& init = CreateProcess(true, "Init");
     arch::Machine::GetInstance().GetCurrentCpu().SetCurrentThread(init._threads.GetFirst());
     return init;
+}
+
+void Glue::Yield( void )
+{
+    arch::X86_64_Utilities::SystemCall<SYSCALL_VECTOR>(SYSCALL_YIELD);
 }

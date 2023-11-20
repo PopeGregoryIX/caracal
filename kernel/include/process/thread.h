@@ -12,6 +12,9 @@ class Thread
         inline threadInfo_t GetInfo( void ) { return _threadInfo; }
 
         inline Process& GetParent( void ) { return _parent; }
+
+        inline bool operator==(Thread& thread) { return _threadId == thread.GetId(); } 
+        inline bool operator!=(Thread& thread) { return !(*this == thread); }
     private:
         Thread(class Process& parent);
 

@@ -12,7 +12,7 @@
 
 namespace arch
 {
-	struct tssTable
+	struct Tss
 	{
 		uint32_t reserved0;
 		uint32_t rsp0_low;

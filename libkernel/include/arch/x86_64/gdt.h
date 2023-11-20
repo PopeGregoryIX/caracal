@@ -82,6 +82,7 @@ namespace arch
 
 		void Load( void );
 		void LoadTss( void );
+		Tss& GetTss( void ) { return _tss; }
 		
 		/// @brief An entry in the Global Descriptor Table
 		struct GdtEntry
@@ -151,7 +152,7 @@ namespace arch
 	private:
 		GdtEntry _gdt[GDT_ENTRY_COUNT] __attribute__((aligned(64)));
 		GdtDescriptor _gdtr __attribute__((aligned(64)));
-		tssTable _tss __attribute__((aligned(64)));		
+		Tss _tss __attribute__((aligned(64)));		
 	};
 }
 

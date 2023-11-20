@@ -92,13 +92,14 @@ namespace arch
 		{
 		   uint16_t offsetLow;
 		   uint16_t cs;
-		   uint8_t 	reserved;
+		   uint8_t  ist:4;
+		   uint8_t 	reserved:4;
 		   uint8_t	flags;
 		   uint16_t offsetHigh;
 		   uint32_t	offsetExtended;
 		   uint32_t	reserved64;
 
-		   IdtEntry() : offsetLow(0), cs(0), reserved(0), flags(0), offsetHigh(0), offsetExtended(0), reserved64(0){}
+		   IdtEntry() : offsetLow(0), cs(0), ist(0), reserved(0), flags(0), offsetHigh(0), offsetExtended(0), reserved64(0){}
 		   IdtEntry(isr_t isr, uint16_t cs_, uint8_t flags_) : cs(cs_), reserved(0), flags(flags_), reserved64(0)
 		   {
 			   offsetLow = (uint16_t)(((uintptr_t)isr) & 0xFFFF);

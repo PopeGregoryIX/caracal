@@ -29,6 +29,24 @@ class LinkedList
         inline size_t Count( void ) { return _count; }
         inline T& GetFirst( void ) { if(_count == 0) FATAL("GetFirst used on an empty linked list."); return _firstNode->data; }
 
+        void Remove(T& object)
+        {
+            LinkedListNode* parent = FindParent(object);
+            if(parent == nullptr)
+            {
+                LinkedListNode* node = Find(object);
+                _firstNode = node->next;
+                if(node == _lastNode) _lastNode = node->next;
+                _count--;
+            }
+            else
+            {
+                parent->next = parent->next->next;
+                if(parent->next == nullptr) _lastNode = parent;
+                _count--;
+            }
+        }
+
     private:
         struct LinkedListNode
         {
@@ -38,6 +56,32 @@ class LinkedList
             LinkedListNode* next;
         };
         
+        LinkedListNode* Find(T& object) const
+        {
+            LinkedListNode* node = _firstNode;
+            while(node != nullptr)
+            {
+                if(node->data == object) return node;
+                node = node-> next;
+            }
+
+            FATAL("Linked List item not found.");
+        }
+
+        LinkedListNode* FindParent(T& object) const
+        {
+            LinkedListNode* node = _firstNode;
+            LinkedListNode* parent = nullptr;
+            while(node != nullptr)
+            {
+                if(node->data == object) return parent;
+                parent = node;
+                node = node-> next;
+            }
+
+            FATAL("Linked List item parent not found.");
+        }
+
         Spinlock _lock;
 
         LinkedListNode* _firstNode;

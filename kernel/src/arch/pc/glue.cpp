@@ -45,8 +45,12 @@ Process& Glue::CreateProcess(bool supervisor, String name)
 {
     Process* process = new Process( name );
 
-    process->_processInfo = PageFrameAllocator::GetInstance().AllocateEmpty();
-
+    uintptr_t newPageMap = PageFrameAllocator::GetInstance().AllocateEmpty();
+    if(newPageMap == 0) FATAL("Unable to create page map for new process.");
+    uint64_t vPageMap = (uint64_t)GET_VIRTUAL_POINTER(newPageMap);
+    memcpy((void*)(vPageMap + 0x800), (void*)(V_PML4_4K + 0x800), 0x800);
+    process->_processInfo = newPageMap;
+    
     INFO("Created process: " << process->GetName());
 
     return *process;
@@ -54,5 +58,7 @@ Process& Glue::CreateProcess(bool supervisor, String name)
 
 Process& Glue::GenerateInitialProcess( void )
 {
-    return CreateProcess(true, "Init");
+    Process& init = CreateProcess(true, "Init");
+    arch::Machine::GetInstance().GetCurrentCpu().SetCurrentThread(init._threads.GetFirst());
+    return init;
 }

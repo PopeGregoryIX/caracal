@@ -15,6 +15,7 @@
 #include <arch/machine.h>
 #include <memory/heapmanager.h>
 #include <arch/glue.h>
+#include <paging.h>
 
 namespace arch
 {
@@ -125,5 +126,9 @@ namespace arch
                 pml4[i] = physMem | PAGE_PRESENT | PAGE_GLOBAL | PAGE_WRITE;
             }
         }
+
+        //  Check we're paged in for the DFE stack
+        uintptr_t dfeMem = PageFrameAllocator::GetInstance().AllocateEmpty();
+        Paging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_DFE_STACK);
     }
 }

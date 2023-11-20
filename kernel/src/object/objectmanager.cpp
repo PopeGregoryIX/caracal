@@ -10,5 +10,7 @@ handle_t ObjectManager::RegisterObject(KernelObject& object)
     object._handle = ++_nextHandle;
     _objects.Add(object);
 
+    INFO("Registered object " << object.GetName());
+
     return object._handle;
 }

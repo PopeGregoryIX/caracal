@@ -14,17 +14,31 @@ void TaskManager::Initialise( void )
     ObjectManager::GetInstance().RegisterObject(*this);
 
     Process& initProcess = Glue::GenerateInitialProcess();
-    FATAL("Init");
+    
     initProcess._processId = ++_nextProcessId;
-    initProcess._threads.GetFirst()._threadId = ++_nextThreadId;
+    Thread& initThread = initProcess._threads.GetFirst();
+    initThread._threadId = ++_nextThreadId;
+
+    _runningThreads.Add(initThread);
 }
 
 Thread& TaskManager::Yield( void )
 {
+    _scheduleLock.Acquire();
     //  Switch out the current thread and select a new one
     Thread& outgoingThread = arch::Machine::GetInstance().GetCurrentCpu().GetCurrentThread();
 
-    INFO("Outgoing thread: " << outgoingThread.GetId() << " on process: " << outgoingThread.GetParent().GetName());
+    INFO("Outgoing thread: " << (uint64_t)outgoingThread._threadId << " on process: " << outgoingThread.GetParent().GetName());
+    
+    _runningThreads.Remove(outgoingThread);
+    _availableThreads.Add(outgoingThread);
 
-    return outgoingThread;
+    Thread& incomingThread = _availableThreads.GetFirst();
+    _availableThreads.Remove(incomingThread);
+    _runningThreads.Add(incomingThread);
+
+    INFO("Incoming thread: " << (uint64_t)incomingThread._threadId << " on process: " << incomingThread.GetParent().GetName());
+
+    _scheduleLock.Release();
+    return incomingThread;
 }

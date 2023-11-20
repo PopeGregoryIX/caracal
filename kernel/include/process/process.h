@@ -19,7 +19,8 @@ class Process : public KernelObject
 
         processId_t _processId;
         processInfo_t _processInfo;
-
+    
+    protected:
         LinkedList<class Thread> _threads;
 
         friend class TaskManager;

@@ -18,10 +18,13 @@ class TaskManager : public KernelObject
     private:
         static TaskManager _instance;
 
+        Spinlock _scheduleLock;
+
         processId_t _nextProcessId;
         threadId_t _nextThreadId;
 
-        LinkedList<class Process> _processes;
+        LinkedList<class Thread> _availableThreads;
+        LinkedList<class Thread> _runningThreads;
 };
 
 #endif

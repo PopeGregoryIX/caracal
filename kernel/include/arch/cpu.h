@@ -4,6 +4,7 @@
 #include <cboot.h>
 
 class Thread;
+class Glue;
 
 namespace arch
 {
@@ -12,8 +13,11 @@ namespace arch
         public:
             inline Thread& GetCurrentThread( void ){ return *_currentThread; }
 
-        private:
+        protected:
+            inline void SetCurrentThread(Thread& thread) { _currentThread = &thread; }
             Thread* _currentThread;
+
+        friend Glue;
     };
 }
 

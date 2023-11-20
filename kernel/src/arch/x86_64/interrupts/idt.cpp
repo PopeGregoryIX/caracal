@@ -8,6 +8,7 @@
 #include <stdint.h>
 #include <idt.h>
 #include <debug.h>
+#include <exceptions.h>
 
 namespace arch
 {
@@ -49,6 +50,7 @@ namespace arch
 		__idt[31] = IdtEntry(isr31, 0x08, IDT_GATE_INTERRUPT | IDT_GATE_PRESENT);
 
 		__idt[0xF0] = IdtEntry(isr240, 0x08, IDT_GATE_INTERRUPT | IDT_GATE_PRESENT);
+		__idt[EXCEPTION_DOUBLE_FAULT].ist = 1;
 	}
 
 	void Idt::Load()

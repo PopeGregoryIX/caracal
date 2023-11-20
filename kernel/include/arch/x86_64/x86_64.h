@@ -3,6 +3,8 @@
 
 #include <cboot.h>
 #include <arch/cpu.h>
+#include <gdt.h>
+#include <memorylayout.h>
 
 namespace arch
 {    
@@ -28,11 +30,14 @@ namespace arch
             static void PagingSetup(CBoot& cboot);
 
             int GetId( void ) { return _id; }
-        private:
-            X86_64(int id) : _id(id) {};
 
+            Gdt& GetGdt( void ) { return _gdt; }
+        private:
+            X86_64(int id) : _id(id), _gdt(((Gdt*)MEMRANGE_GDT)[id]) {};
 
             int _id;
+            Gdt& _gdt;
+            
 
             friend class Pc;
     };    

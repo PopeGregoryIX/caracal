@@ -66,7 +66,7 @@ namespace arch
 
 	Registers* Idt::DefaultHandler(Registers* regs)
 	{
-		WARNING("Unhandled interrupt (" << regs->interruptNumber << ")");
+		FATAL("Unhandled interrupt (" << regs->interruptNumber << ")");
 		return regs;
 	}
 }

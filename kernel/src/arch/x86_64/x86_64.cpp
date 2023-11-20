@@ -130,5 +130,7 @@ namespace arch
         //  Check we're paged in for the DFE stack
         uintptr_t dfeMem = PageFrameAllocator::GetInstance().AllocateEmpty();
         Paging::PageIn4k(PAGE_PRESENT | PAGE_WRITE, MEMRANGE_DFE_STACK);
+
+        X86_64_Utilities::WriteCr3(X86_64_Utilities::ReadCr3());
     }
 }

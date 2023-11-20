@@ -15,6 +15,7 @@
 #include <x86_64_utilities.h>
 #include <pc.h>
 #include <service/syscall.h>
+#include <x86_64_utilities.h>
 
 void Glue::AddCurrentCpu( void )
 {
@@ -66,5 +67,7 @@ Process& Glue::GenerateInitialProcess( void )
 
 void Glue::Yield( void )
 {
+    INFO("Yield - PML4 at " << arch::X86_64_Utilities::ReadCr3());
     arch::X86_64_Utilities::SystemCall<SYSCALL_VECTOR>(SYSCALL_YIELD);
+    INFO("Yield2");
 }

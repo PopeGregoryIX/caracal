@@ -30,7 +30,7 @@ $(OBJDIR)/arch/$(CPU)/runtime/crtn.o: $(SRCDIR)/arch/$(CPU)/runtime/crtn.s
 	@$(AS) $(ASFLAGS) -o $@ $<
 
 $(OBJDIR)/%.cpp.o: $(SRCDIR)/%.cpp
-	@$(CXX) $(CPPFLAGS) -MP -MMD -c $< -o $@
+	@$(CXX) $(CPPFLAGS) -MP -MMD -g -c $< -o $@
 
 $(OBJDIR)/%.s.o: $(SRCDIR)/%.s
-	$(AS) $(ASFLAGS) -o $@ $<
+	$(AS) $(ASFLAGS) -g -o $@ $<

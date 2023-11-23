@@ -54,8 +54,7 @@ void kmain(CBoot* cbootPtr)
 		//	Now arch memory has been initialised, set up higher-level kernel objects.
 		Glue::MachineSetup(cboot);	//	Other objects may rely on getting handles to Machine / Cpu objects. Allow arch to create these.
 		TaskManager::GetInstance().Initialise();
-		
-
+		FATAL("Wait to yield");
 		Glue::Yield();
 		bspInitialised = true;
 	}

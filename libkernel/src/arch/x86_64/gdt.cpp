@@ -16,6 +16,8 @@ namespace arch
 
 	void Gdt::Initialise( void )
 	{
+		memset((void*)this, 0, sizeof(Gdt));
+		
 		//	NULL segment
 		_gdt[GDTI_NULL] = GdtEntry();
 
@@ -47,11 +49,6 @@ namespace arch
 		tssEntry.setLimit(sizeof(arch::Tss));
 		tssEntry.access = 0x89;
 		tssEntry.flags = 0x4;
-		
-		
-		//	Enable a TSS entry specifically for a stack for handling double-faults
-		//_tss.ist1_high = (MEMRANGE_DFE_STACK_TOP > 32) & 0xFFFFFFFFULL;
-		//_tss.ist1_low = MEMRANGE_DFE_STACK_TOP & 0x00000000FFFFFFFFULL;
 
 		GdtSystemEntry* gdtSys = (GdtSystemEntry*)&_gdt[GDTI_TSS];
 		memorycopy<GdtSystemEntry>(gdtSys, &tssEntry, 1);

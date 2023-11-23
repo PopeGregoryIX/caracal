@@ -61,7 +61,7 @@ namespace arch
 				);
 			}
 
-			static inline void SystemCall() { asm volatile ( " syscall " );}
+			static inline uint64_t SystemCall() { uint64_t ret; asm volatile ( " syscall " : "=a"(ret) : : "rcx", "r11", "memory"); return ret; }
     };
 }
 

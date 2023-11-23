@@ -2,9 +2,9 @@
 #include <object/objectmanager.h>
 #include <structures/string.h>
 
-KernelObject::KernelObject(const String& name)
+KernelObject::KernelObject(const String& name) : _name(name), _handle(0)
 {
-    _name = name;
+
     ObjectManager::GetInstance().RegisterObject(*this);
 }
 

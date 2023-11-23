@@ -10,7 +10,7 @@ template <class T>
 class LinkedList
 {
     public:
-        LinkedList( void ) : _firstNode(nullptr), _count(0) {}
+        LinkedList( void ) : _firstNode(nullptr), _lastNode(nullptr), _count(0) {}
 
         void Add(T& object)
         {

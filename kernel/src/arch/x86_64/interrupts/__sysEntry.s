@@ -44,4 +44,5 @@
 __sysEntry:
     pushaq
     popaq
+    movq     $0x01,%rcx
     sysretq

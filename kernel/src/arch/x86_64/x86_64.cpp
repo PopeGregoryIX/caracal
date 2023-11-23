@@ -40,6 +40,10 @@ namespace arch
         idt.Load();
         idt.InstallExceptionHandler(0x08, Exceptions::DoubleFaultExceptionHandler);
         idt.InstallExceptionHandler(0x0E, Exceptions::PageFaultExceptionHandler);
+
+        arch::X86_64_Utilities::WriteMsr(MSR_EFER, arch::X86_64_Utilities::ReadMsr(MSR_EFER) | 0x1);        //  enable syscall
+        arch::X86_64_Utilities::WriteMsr(MSR_LSTAR, (uint64_t)__sysEntry);
+        arch::X86_64_Utilities::WriteMsr(MSR_STAR, (uint64_t)(0x08ULL << 32));
     }
 
     void X86_64::PageFrameAllocationSetup(CBoot& cboot)

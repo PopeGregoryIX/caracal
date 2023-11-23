@@ -46,7 +46,7 @@ void Glue::MachineSetup(CBoot& cboot)
 Process& Glue::CreateProcess(bool supervisor, String name)
 {
     Process* process = new Process( name );
-
+    
     uintptr_t newPageMap = PageFrameAllocator::GetInstance().AllocateEmpty();
     if(newPageMap == 0) FATAL("Unable to create page map for new process.");
     uint64_t vPageMap = (uint64_t)GET_VIRTUAL_POINTER(newPageMap);
@@ -54,7 +54,6 @@ Process& Glue::CreateProcess(bool supervisor, String name)
     process->_processInfo = newPageMap;
     
     INFO("Created process: " << process->GetName());
-
     return *process;
 }
 
@@ -68,6 +67,6 @@ Process& Glue::GenerateInitialProcess( void )
 void Glue::Yield( void )
 {
     INFO("Yield - PML4 at " << arch::X86_64_Utilities::ReadCr3());
-    arch::X86_64_Utilities::SystemCall<SYSCALL_VECTOR>(SYSCALL_YIELD);
+    arch::X86_64_Utilities::SystemCall();
     INFO("Yield2");
 }

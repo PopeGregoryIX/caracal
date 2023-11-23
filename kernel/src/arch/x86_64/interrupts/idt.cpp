@@ -48,9 +48,6 @@ namespace arch
 		__idt[29] = IdtEntry(isr29, 0x08, IDT_GATE_INTERRUPT | IDT_GATE_PRESENT);
 		__idt[30] = IdtEntry(isr30, 0x08, IDT_GATE_INTERRUPT | IDT_GATE_PRESENT);
 		__idt[31] = IdtEntry(isr31, 0x08, IDT_GATE_INTERRUPT | IDT_GATE_PRESENT);
-
-		__idt[0xF0] = IdtEntry(isr240, 0x08, IDT_GATE_INTERRUPT | IDT_GATE_PRESENT);
-		//__idt[EXCEPTION_DOUBLE_FAULT].ist = 1;
 	}
 
 	void Idt::Load()

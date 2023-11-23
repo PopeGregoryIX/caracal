@@ -92,4 +92,4 @@ makedirs:
 	@mkdir -p $(FSDIR)
 
 gdb:
-	gdb -s ./bin/cboot/x86_64-elf/cboot.sys.sym -ex "target remote localhost:1234"
+	gdb -x ./tools/gdbcommands.txt -ex "target remote localhost:1234"

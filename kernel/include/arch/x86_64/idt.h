@@ -19,6 +19,8 @@
 
 namespace arch
 {
+	extern "C" void __sysEntry();
+	
 	typedef void (*isr_t)( void );
 	typedef Registers* (*InterruptHandler_t)(Registers*);
 

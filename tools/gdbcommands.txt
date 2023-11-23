@@ -1,0 +1,4 @@
+set debug-file-directory ./bin/kernel/x86_64-elf/
+add-symbol-file ./bin/kernel/x86_64-elf/caracal.sys.sym
+add-symbol-file ./bin/kernel/x86_64-elf/caracal.sys.txt
+add-symbol-file ./bin/kernel/x86_64-elf/caracal.sys

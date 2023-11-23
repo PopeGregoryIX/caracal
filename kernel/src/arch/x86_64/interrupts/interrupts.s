@@ -139,7 +139,6 @@ ISR 28
 ISR 29
 ISR 30
 ISR 31
-ISR 240
 
 .align 4
 .data

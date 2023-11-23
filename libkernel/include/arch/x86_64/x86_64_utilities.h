@@ -4,11 +4,17 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#define MSR_EFER	0xC0000080
+#define MSR_STAR	0xC0000081
+#define MSR_LSTAR 	0xC0000082
+#define MSR_SFMASK 	0xC0000084
+
 namespace arch
 {
 	extern "C" void __stackReset(uintptr_t stackPtr, uintptr_t jumpPoint, uintptr_t jmpparams);
+	extern "C" void __systemCall();
 
-    #define INTERRUPT_USER 0x254
+    #define INTERRUPT_USER 0xF0
 
     class X86_64_Utilities
     {
@@ -34,8 +40,28 @@ namespace arch
 			static inline void WriteCr3(uint64_t value) { asm volatile ( "movq %0, %%cr3" : : "a"(value) ); }
 			static inline void WriteCr4(uint64_t value) { asm volatile ( "movq %0, %%cr4" : : "a"(value) ); }
 
-			template <int N> static inline void SystemCall(uintptr_t function){ asm ( "int %0\n" : : "N"(N), "a"(function) ); }
-			static inline void SystemCall(uintptr_t function) { SystemCall<INTERRUPT_USER>(function); }
+			static inline uint64_t ReadMsr(uint64_t msr)
+			{			
+				uint32_t low, high;
+				asm volatile (
+				"rdmsr"
+				: "=a"(low), "=d"(high)
+				: "c"(msr));
+				return ((uint64_t)high << 32) | low;
+			}
+
+			static inline void WriteMsr(uint64_t msr, uint64_t value)
+			{
+				uint64_t low = value & 0xFFFFFFFFULL;
+				uint64_t high = value >> 32;
+				asm volatile (
+					"wrmsr"
+					:
+					: "c"(msr), "a"((uint32_t)low), "d"((uint32_t)high)
+				);
+			}
+
+			static inline void SystemCall() { asm volatile ( " syscall " );}
     };
 }
 

@@ -9,11 +9,13 @@
 #define KERNEL_INCLUDE_ARCH_CPU_X86_64_TABLES_TSS_H_
 
 #include <stdint.h>
+#include <cxx.h>
 
 namespace arch
 {
 	struct Tss
 	{
+		Tss() { memset((void*)this, 0, sizeof(Tss)); }
 		uint32_t reserved0;
 		uint32_t rsp0_low;
 		uint32_t rsp0_high;

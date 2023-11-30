@@ -43,7 +43,7 @@ void kmain(CBoot* cbootPtr)
 	if(CpuUtilities::IsBsp())
 	{
 		_init();
-
+		
 		lfb.Initialise(	cboot.lfbAddress, (const psf2_t*)&_binary_src_data_font_psf_start, 
 						cboot.lfbScreenWidth, cboot.lfbScreenHeight, cboot.lfbScanlineBytes, 4);
 		debug.AddOutputDevice(lfb);

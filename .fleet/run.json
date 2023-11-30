@@ -1,0 +1,22 @@
+{
+    "configurations": [
+        {
+            "name": "Run Caracal",
+            "type": "command",
+            "program": "make",
+            "args": [ "clean", "all", "install", "run"]
+        },
+        {
+            "name": "Debug Caracal",
+            "type": "command",
+            "program": "make",
+            "args": [ "clean", "all", "install", "debug"]
+        },
+        {
+            "name": "GDB",
+            "type": "command",
+            "program": "make",
+            "args": [ "gdb"]
+        }
+    ]
+}
